@@ -1,526 +1,1733 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" class="scroll-smooth">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>bitco | Websites and apps built bit by bit</title>
-<link rel="icon" type="image/svg+xml" href="logo-icon.svg">
-<meta name="description" content="Digital agency building websites, e-commerce stores, and Android & iOS apps.">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>bitco | Websites and apps built bit by bit</title>
+    <link rel="icon" type="image/svg+xml" href="images/logo-icon.svg" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#070a1a" />
+    <script>
+      // Runs before the page is painted: use the saved choice, otherwise dark (the default look of the site).
+      (function () {
+        var t = "dark";
+        try {
+          var s = localStorage.getItem("theme");
+          if (s === "light" || s === "dark") t = s;
+        } catch (e) {}
+        document.documentElement.dataset.theme = t;
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.content = t === "light" ? "#f8fafc" : "#070a1a";
+      })();
+    </script>
+    <meta
+      name="description"
+      content="Digital agency building websites, e-commerce stores, and Android & iOS apps."
+    />
 
-<!-- Fonts, Tailwind (play CDN) and Lucide icons -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com/3.4.17"></script>
-<script src="https://cdn.jsdelivr.net/npm/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+    <!-- Fonts, Tailwind (play CDN) and Lucide icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.344.0/dist/umd/lucide.min.js"></script>
 
-<script>
-  // Tailwind theme extension: brand colors + font
-  tailwind.config = {
-    theme: { extend: {
-      fontFamily: { sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'] },
-      colors: { ink: '#070a1a', panel: '#0e1330', neon: '#22d3ee', violet: '#8b5cf6' }
-    } }
-  };
-</script>
+    <script>
+      // Tailwind theme extension: brand colors + font
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Plus Jakarta Sans"', "system-ui", "sans-serif"],
+            },
+            colors: {
+              ink: "rgb(var(--ink) / <alpha-value>)",
+              panel: "rgb(var(--panel) / <alpha-value>)",
+              neon: "rgb(var(--neon) / <alpha-value>)",
+              violet: "#8b5cf6",
+            },
+          },
+        },
+      };
+    </script>
 
-<style>
-  body { background:#070a1a; color:#e2e8f0; }
-  /* Reusable brand gradient for text and buttons */
-  .grad-text { background:linear-gradient(90deg,#60a5fa,#a78bfa 50%,#22d3ee); -webkit-background-clip:text; background-clip:text; color:transparent; }
-  .grad-bg { background:linear-gradient(135deg,#3b82f6,#8b5cf6 55%,#22d3ee); }
-  /* Soft ambient glow blobs behind sections */
-  .blob { position:absolute; border-radius:9999px; filter:blur(90px); opacity:.35; pointer-events:none; }
-  /* Card: glowing gradient border on hover (mask trick) */
-  .glow-card { position:relative; transition:transform .3s ease, box-shadow .3s ease; }
-  /* pointer-events:none keeps this decorative border layer from covering (and blocking clicks on) the card's content */
-  .glow-card::before { content:""; position:absolute; inset:0; border-radius:inherit; padding:1px; pointer-events:none;
-    background:linear-gradient(135deg,rgba(96,165,250,.25),rgba(255,255,255,.05),rgba(34,211,238,.25));
-    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; transition:background .3s; }
-  .glow-card:hover { transform:translateY(-6px) scale(1.02); box-shadow:0 0 40px -8px rgba(139,92,246,.6); }
-  .glow-card:hover::before { background:linear-gradient(135deg,#60a5fa,#a78bfa,#22d3ee); }
-  /* Floating hero elements */
-  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
-  .float { animation:float 6s ease-in-out infinite; }
-  .float-slow { animation:float 8s ease-in-out infinite reverse; }
-  /* Fade-in on scroll */
-  .reveal { opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease; }
-  .reveal.show { opacity:1; transform:none; }
-  /* Project card image. The gradient frame is 3:2. At rest the image sits in the bottom-right with EQUAL gradient strips
+    <style>
+      /* ===== Theme tokens (dark = default). Light values are set below on html[data-theme="light"] ===== */
+      :root {
+        --ink: 7 10 26;
+        --panel: 14 19 48;
+        --neon: 34 211 238;
+        --fg: #e2e8f0;
+        --g1: #60a5fa;
+        --g2: #a78bfa;
+        --g3: #22d3ee;
+        color-scheme: dark;
+      }
+      html[data-theme="light"] {
+        --ink: 248 250 252;
+        --panel: 255 255 255;
+        --neon: 14 116 144;
+        --fg: #0f172a;
+        --g1: #2563eb;
+        --g2: #7c3aed;
+        --g3: #0e7490;
+        color-scheme: light;
+      }
+      body {
+        background: rgb(var(--ink));
+        color: var(--fg);
+      }
+      /* Reusable brand gradient for text and buttons */
+      .grad-text {
+        background: linear-gradient(90deg, var(--g1), var(--g2) 50%, var(--g3));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .grad-bg {
+        background: linear-gradient(135deg, #3b82f6, #8b5cf6 55%, #22d3ee);
+      }
+      /* Soft ambient glow blobs behind sections */
+      .blob {
+        position: absolute;
+        border-radius: 9999px;
+        filter: blur(90px);
+        opacity: 0.35;
+        pointer-events: none;
+      }
+      /* Card: glowing gradient border on hover (mask trick) */
+      .glow-card {
+        position: relative;
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+      /* pointer-events:none keeps this decorative border layer from covering (and blocking clicks on) the card's content */
+      .glow-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        border-radius: inherit;
+        padding: 1px;
+        pointer-events: none;
+        background: linear-gradient(
+          135deg,
+          rgba(96, 165, 250, 0.25),
+          rgba(255, 255, 255, 0.05),
+          rgba(34, 211, 238, 0.25)
+        );
+        -webkit-mask:
+          linear-gradient(#000 0 0) content-box,
+          linear-gradient(#000 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        transition: background 0.3s;
+      }
+      .glow-card:hover {
+        transform: translateY(-6px) scale(1.02);
+        box-shadow: 0 0 40px -8px rgba(139, 92, 246, 0.6);
+      }
+      .glow-card:hover::before {
+        background: linear-gradient(135deg, #60a5fa, #a78bfa, #22d3ee);
+      }
+      /* Floating hero elements */
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-14px);
+        }
+      }
+      .float {
+        animation: float 6s ease-in-out infinite;
+      }
+      .float-slow {
+        animation: float 8s ease-in-out infinite reverse;
+      }
+      /* Fade-in on scroll */
+      .reveal {
+        opacity: 0;
+        transform: translateY(24px);
+        transition:
+          opacity 0.7s ease,
+          transform 0.7s ease;
+      }
+      .reveal.show {
+        opacity: 1;
+        transform: none;
+      }
+      /* Project card image. The gradient frame is 3:2. At rest the image sits in the bottom-right with EQUAL gradient strips
      (--o) on the top and left; its box is then a little too short for a 3:2 picture, so the picture is anchored to the top
      and trimmed slightly at the bottom. On hover the box grows to the full 3:2 frame and the whole picture is shown. */
-  .shot { --o:16px; position:relative; overflow:hidden; border-radius:1.5rem; aspect-ratio:3/2; }
-  @media (min-width:640px) { .shot { --o:24px; } }
-  .shot-img { position:absolute; right:0; bottom:0; width:calc(100% - var(--o)); height:calc(100% - var(--o));
-    overflow:hidden; border-top-left-radius:1rem;
-    transition:width .5s cubic-bezier(.2,.7,.2,1), height .5s cubic-bezier(.2,.7,.2,1), border-radius .5s cubic-bezier(.2,.7,.2,1); }
-  .shot-img img { object-position:50% 0; }  /* keep the top, trim the bottom */
-  .slide:focus-within .shot-img { width:100%; height:100%; border-top-left-radius:0; }
-  @media (hover:hover) and (pointer:fine) {
-    .slide:hover .shot-img { width:100%; height:100%; border-top-left-radius:0; }
-  }
-  /* Projects slider: hidden scrollbar, mouse-drag state */
-  .no-scrollbar { scrollbar-width:none; -ms-overflow-style:none; }
-  .no-scrollbar::-webkit-scrollbar { display:none; }
-  #track { cursor:grab; }
-  #track.dragging { scroll-snap-type:none !important; scroll-behavior:auto !important; cursor:grabbing; user-select:none; }
-  #track img { -webkit-user-drag:none; user-select:none; }
-  /* Visible keyboard focus */
-  :focus-visible { outline:2px solid #22d3ee; outline-offset:3px; }
-  @media (prefers-reduced-motion:reduce){ .shot-img{transition:none}  .float,.float-slow{animation:none} .reveal{opacity:1;transform:none;transition:none} html{scroll-behavior:auto} }
-  section[id] { scroll-margin-top:80px; }
-</style>
-</head>
-
-<body class="font-sans antialiased">
-
-<!-- ============ NAVIGATION ============ -->
-<header class="fixed top-0 inset-x-0 z-50 border-b border-white/10 bg-ink/60 backdrop-blur-xl">
-  <nav class="mx-auto flex max-w-7xl items-center justify-between px-5 py-4" aria-label="Main">
-    <a href="#home" aria-label="bitco, home"><img src="logo-horizontal.svg" alt="bitco" class="h-10 w-auto"></a>
-    <ul class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
-      <li><a class="hover:text-white transition" href="#home">Home</a></li>
-      <li><a class="hover:text-white transition" href="#services">Services</a></li>
-      <li><a class="hover:text-white transition" href="#portfolio">Portfolio</a></li>
-      <li><a class="hover:text-white transition" href="#process">Process</a></li>
-      <li><a class="hover:text-white transition" href="#contact">Contact</a></li>
-    </ul>
-    <a href="#contact" class="grad-bg hidden md:inline-block rounded-full px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-violet/30 transition hover:scale-105">Get a Quote</a>
-    <button id="menuBtn" class="md:hidden p-2" aria-label="Toggle menu" aria-expanded="false"><i data-lucide="menu" class="h-6 w-6"></i></button>
-  </nav>
-  <!-- Mobile menu -->
-  <div id="mobileMenu" class="hidden md:hidden border-t border-white/10 bg-ink/95 px-5 pb-5">
-    <a class="block py-3" href="#home">Home</a>
-    <a class="block py-3" href="#services">Services</a>
-    <a class="block py-3" href="#portfolio">Portfolio</a>
-    <a class="block py-3" href="#process">Process</a>
-    <a class="block py-3" href="#contact">Contact</a>
-    <a href="#contact" class="grad-bg mt-2 block rounded-full px-5 py-3 text-center font-semibold text-white">Get a Quote</a>
-  </div>
-</header>
-
-<main>
-<!-- ============ HERO ============ -->
-<section id="home" class="relative overflow-hidden pt-36 pb-24 lg:pt-44">
-  <div class="blob -left-32 top-20 h-96 w-96 bg-blue-600"></div>
-  <div class="blob right-0 top-40 h-96 w-96 bg-violet"></div>
-  <div class="relative mx-auto grid max-w-7xl items-center gap-16 px-5 lg:grid-cols-2">
-    <div>
-      <p class="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-sm text-slate-300">
-        <span class="h-2 w-2 rounded-full bg-neon"></span> Booking new projects for next month
-      </p>
-      <h1 class="text-4xl font-extrabold leading-tight sm:text-5xl lg:text-6xl">
-        We turn your ideas into powerful <span class="grad-text">web &amp; mobile apps</span>
-      </h1>
-      <p class="mt-6 max-w-xl text-lg text-slate-400">
-        Websites, online stores and Android &amp; iOS apps, designed and built by one small team from first sketch to store launch.
-      </p>
-      <div class="mt-9 flex flex-wrap gap-4">
-        <a href="#portfolio" class="grad-bg inline-flex items-center gap-2 rounded-full px-7 py-3.5 font-semibold text-white shadow-lg shadow-violet/30 transition hover:scale-105">Our Work <i data-lucide="arrow-right" class="h-4 w-4"></i></a>
-        <a href="#contact" class="inline-flex items-center gap-2 rounded-full border border-white/20 px-7 py-3.5 font-semibold transition hover:border-neon hover:bg-white/5">Contact Us</a>
-      </div>
-    </div>
-
-    <!-- Floating UI mockups (pure HTML/CSS placeholders) -->
-    <div class="relative mx-auto h-[420px] w-full max-w-lg" aria-hidden="true">
-      <!-- Browser window -->
-      <div class="float absolute left-0 top-6 w-[78%] rounded-2xl border border-white/10 bg-panel/90 p-4 shadow-2xl backdrop-blur">
-        <div class="mb-4 flex gap-1.5"><i class="h-2.5 w-2.5 rounded-full bg-red-400"></i><i class="h-2.5 w-2.5 rounded-full bg-yellow-400"></i><i class="h-2.5 w-2.5 rounded-full bg-green-400"></i></div>
-        <div class="grad-bg mb-3 h-24 rounded-xl opacity-80"></div>
-        <div class="mb-2 h-3 w-3/4 rounded bg-white/15"></div>
-        <div class="mb-4 h-3 w-1/2 rounded bg-white/10"></div>
-        <div class="grid grid-cols-3 gap-2"><div class="h-14 rounded-lg bg-white/10"></div><div class="h-14 rounded-lg bg-white/10"></div><div class="h-14 rounded-lg bg-white/10"></div></div>
-      </div>
-      <!-- Phone -->
-      <div class="float-slow absolute bottom-0 right-2 w-[38%] rounded-[2rem] border-4 border-slate-700 bg-ink p-3 shadow-2xl shadow-violet/30">
-        <div class="mx-auto mb-3 h-1.5 w-10 rounded-full bg-slate-700"></div>
-        <div class="mb-2 h-20 rounded-xl bg-gradient-to-br from-neon to-violet"></div>
-        <div class="mb-2 h-2.5 w-full rounded bg-white/15"></div>
-        <div class="mb-3 h-2.5 w-2/3 rounded bg-white/10"></div>
-        <div class="grad-bg h-8 rounded-full"></div>
-      </div>
-      <!-- Stat chip -->
-      <div class="float absolute right-0 top-0 flex items-center gap-3 rounded-2xl border border-white/10 bg-panel/90 px-4 py-3 shadow-xl backdrop-blur">
-        <i data-lucide="trending-up" class="h-5 w-5 text-neon"></i>
-        <div><p class="text-sm font-bold">+68% conversions</p><p class="text-xs text-slate-400">after relaunch</p></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ SERVICES ============ -->
-<section id="services" class="relative py-24">
-  <div class="mx-auto max-w-7xl px-5">
-    <div class="reveal mx-auto mb-14 max-w-2xl text-center">
-      <h2 class="text-3xl font-extrabold sm:text-4xl">What we build</h2>
-      <p class="mt-4 text-slate-400">Three services that cover everything from the first wireframe to the live product.</p>
-    </div>
-    <div class="grid gap-6 md:grid-cols-3">
-
-      <article class="reveal glow-card rounded-3xl bg-panel p-8">
-        <span class="grad-bg mb-6 grid h-14 w-14 place-items-center rounded-2xl"><i data-lucide="globe" class="h-7 w-7 text-white"></i></span>
-        <h3 class="text-xl font-bold">Web Development</h3>
-        <p class="mt-3 text-slate-400">Fast landing pages, online stores, and custom web apps that are easy to update and built to grow.</p>
-        <div class="mt-6 flex flex-wrap gap-2 text-xs">
-          <span class="rounded-full bg-blue-500/15 px-3 py-1 text-blue-300">React</span>
-          <span class="rounded-full bg-blue-500/15 px-3 py-1 text-blue-300">Node.js</span>
-          <span class="rounded-full bg-blue-500/15 px-3 py-1 text-blue-300">Next.js</span>
-        </div>
-      </article>
-
-      <article class="reveal glow-card rounded-3xl bg-panel p-8">
-        <span class="grad-bg mb-6 grid h-14 w-14 place-items-center rounded-2xl"><i data-lucide="smartphone" class="h-7 w-7 text-white"></i></span>
-        <h3 class="text-xl font-bold">Mobile App Development</h3>
-        <p class="mt-3 text-slate-400">One codebase, two stores. Native-feeling Android and iOS apps built with Flutter or React Native.</p>
-        <div class="mt-6 flex flex-wrap gap-2 text-xs">
-          <span class="rounded-full bg-violet/15 px-3 py-1 text-violet-300 text-purple-300">Flutter</span>
-          <span class="rounded-full bg-violet/15 px-3 py-1 text-purple-300">iOS</span>
-          <span class="rounded-full bg-violet/15 px-3 py-1 text-purple-300">Android</span>
-          <span class="rounded-full bg-violet/15 px-3 py-1 text-purple-300">Firebase</span>
-        </div>
-      </article>
-
-      <article class="reveal glow-card rounded-3xl bg-panel p-8">
-        <span class="grad-bg mb-6 grid h-14 w-14 place-items-center rounded-2xl"><i data-lucide="pen-tool" class="h-7 w-7 text-white"></i></span>
-        <h3 class="text-xl font-bold">UI/UX Design</h3>
-        <p class="mt-3 text-slate-400">Clear interfaces tested with real users, from low-fidelity wireframes to a full design system.</p>
-        <div class="mt-6 flex flex-wrap gap-2 text-xs">
-          <span class="rounded-full bg-cyan-500/15 px-3 py-1 text-cyan-300">Figma</span>
-          <span class="rounded-full bg-cyan-500/15 px-3 py-1 text-cyan-300">Wireframing</span>
-        </div>
-      </article>
-
-    </div>
-  </div>
-</section>
-
-<!-- ============ PORTFOLIO / PROJECTS SLIDER ============ -->
-<section id="portfolio" class="relative py-24">
-  <div class="mx-auto max-w-7xl px-5">
-    <div class="reveal mb-10">
-      <h2 class="text-3xl font-extrabold sm:text-4xl">Our Projects</h2>
-      <p class="mt-4 max-w-xl text-slate-400">Long-term partnerships and recent launches in ticketing, e-commerce and banking.</p>
-    </div>
-
-    <div class="reveal relative" role="region" aria-roledescription="carousel" aria-label="Our projects">
-      <!-- Prev / next buttons on the left and right sides (no autoplay: clicks, swipes or dragging only) -->
-      <button id="prevBtn" type="button" aria-label="Previous projects" class="absolute left-2 top-[36%] z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-ink/70 text-white backdrop-blur transition hover:border-neon disabled:pointer-events-none disabled:opacity-30 md:left-3"><i data-lucide="chevron-left" class="h-5 w-5"></i></button>
-      <button id="nextBtn" type="button" aria-label="Next projects" class="absolute right-2 top-[36%] z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-ink/70 text-white backdrop-blur transition hover:border-neon disabled:pointer-events-none disabled:opacity-30 md:right-3"><i data-lucide="chevron-right" class="h-5 w-5"></i></button>
-
-      <ul id="track" tabindex="0" class="no-scrollbar flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth pb-2">
-        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
-          <article>
-            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
-            <div class="shot grad-bg shadow-lg shadow-violet/20">
-              <div class="shot-img bg-panel">
-                <img src="achimatica.jpg" alt="Illustration of an event ticket, seat map and calendar" draggable="false" loading="lazy" class="h-full w-full object-cover">
-              </div>
-            </div>
-            <h3 class="mt-5 text-xl font-bold"><a href="https://karabas.com" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">Karabas <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
-            <p class="mt-2 text-sm text-slate-400">Ticketing platform for cultural events. We have supported it for 3+ years and launched 9 localized versions for European countries.</p>
-          </article>
-        </li>
-        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
-          <article>
-            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
-            <div class="shot grad-bg shadow-lg shadow-violet/20">
-              <div class="shot-img bg-panel">
-                <img src="hyla.jpg" alt="Illustration of a tire and online store product cards" draggable="false" loading="lazy" class="h-full w-full object-cover">
-              </div>
-            </div>
-            <h3 class="mt-5 text-xl font-bold"><a href="https://automir-pneu.sk/en" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">Automir Pneu <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
-            <p class="mt-2 text-sm text-slate-400">Online store for car tires, built for our new client from the Czech Republic.</p>
-          </article>
-        </li>
-        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
-          <article>
-            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
-            <div class="shot grad-bg shadow-lg shadow-violet/20">
-              <div class="shot-img bg-panel">
-                <img src="guzema.jpg" alt="Illustration of a bank teller-window tablet app" draggable="false" loading="lazy" class="h-full w-full object-cover">
-              </div>
-            </div>
-            <h3 class="mt-5 text-xl font-bold">Teller Window Display</h3>
-            <p class="mt-2 text-sm text-slate-400">Tablet app for bank service desks: cashier info, currency, metal and coin rates, documents and break timers.</p>
-          </article>
-        </li>
-        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
-          <article>
-            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
-            <div class="shot grad-bg shadow-lg shadow-violet/20">
-              <div class="shot-img bg-panel">
-                <img src="xoffice.jpg" alt="Illustration of an event ticket, seat map and calendar" draggable="false" loading="lazy" class="h-full w-full object-cover">
-              </div>
-            </div>
-            <h3 class="mt-5 text-xl font-bold"><a href="https://karabas.com" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">Karabas <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
-            <p class="mt-2 text-sm text-slate-400">Ticketing platform for cultural events. We have supported it for 3+ years and launched 9 localized versions for European countries.</p>
-          </article>
-        </li>
-        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
-          <article>
-            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
-            <div class="shot grad-bg shadow-lg shadow-violet/20">
-              <div class="shot-img bg-panel">
-                <img src="diia-business.jpg" alt="Illustration of a tire and online store product cards" draggable="false" loading="lazy" class="h-full w-full object-cover">
-              </div>
-            </div>
-            <h3 class="mt-5 text-xl font-bold"><a href="https://automir-pneu.sk/en" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">Automir Pneu <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
-            <p class="mt-2 text-sm text-slate-400">Online store for car tires, built for our new client from the Czech Republic.</p>
-          </article>
-        </li>
-        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
-          <article>
-            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
-            <div class="shot grad-bg shadow-lg shadow-violet/20">
-              <div class="shot-img bg-panel">
-                <img src="shashlikyan.jpg" alt="Illustration of a bank teller-window tablet app" draggable="false" loading="lazy" class="h-full w-full object-cover">
-              </div>
-            </div>
-            <h3 class="mt-5 text-xl font-bold">Teller Window Display</h3>
-            <p class="mt-2 text-sm text-slate-400">Tablet app for bank service desks: cashier info, currency, metal and coin rates, documents and break timers.</p>
-          </article>
-        </li>
-        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
-          <article>
-            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
-            <div class="shot grad-bg shadow-lg shadow-violet/20">
-              <div class="shot-img bg-panel">
-                <img src="project-karabas.svg" alt="Illustration of an event ticket, seat map and calendar" draggable="false" loading="lazy" class="h-full w-full object-cover">
-              </div>
-            </div>
-            <h3 class="mt-5 text-xl font-bold"><a href="https://karabas.com" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">Karabas <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
-            <p class="mt-2 text-sm text-slate-400">Ticketing platform for cultural events. We have supported it for 3+ years and launched 9 localized versions for European countries.</p>
-          </article>
-        </li>
-        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
-          <article>
-            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
-            <div class="shot grad-bg shadow-lg shadow-violet/20">
-              <div class="shot-img bg-panel">
-                <img src="project-automir.svg" alt="Illustration of a tire and online store product cards" draggable="false" loading="lazy" class="h-full w-full object-cover">
-              </div>
-            </div>
-            <h3 class="mt-5 text-xl font-bold"><a href="https://automir-pneu.sk/en" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">Automir Pneu <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
-            <p class="mt-2 text-sm text-slate-400">Online store for car tires, built for our new client from the Czech Republic.</p>
-          </article>
-        </li>
-        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
-          <article>
-            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
-            <div class="shot grad-bg shadow-lg shadow-violet/20">
-              <div class="shot-img bg-panel">
-                <img src="project-bank-tablet.svg" alt="Illustration of a bank teller-window tablet app" draggable="false" loading="lazy" class="h-full w-full object-cover">
-              </div>
-            </div>
-            <h3 class="mt-5 text-xl font-bold">Teller Window Display</h3>
-            <p class="mt-2 text-sm text-slate-400">Tablet app for bank service desks: cashier info, currency, metal and coin rates, documents and break timers.</p>
-          </article>
-        </li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- ============ PROCESS ============ -->
-<section id="process" class="relative py-24">
-  <div class="mx-auto max-w-7xl px-5">
-    <div class="reveal mx-auto mb-14 max-w-2xl text-center">
-      <h2 class="text-3xl font-extrabold sm:text-4xl">How we work</h2>
-      <p class="mt-4 text-slate-400">Four stages, with a review at the end of each one so there are no surprises.</p>
-    </div>
-    <!-- Horizontal on desktop, vertical on mobile -->
-    <ol class="relative grid gap-10 md:grid-cols-4 md:gap-6">
-      <div class="absolute left-6 top-6 hidden h-px w-[calc(100%-3rem)] bg-gradient-to-r from-blue-500 via-violet to-neon md:block"></div>
-      <div class="absolute left-6 top-6 h-[calc(100%-3rem)] w-px bg-gradient-to-b from-blue-500 via-violet to-neon md:hidden"></div>
-
-      <li class="reveal relative pl-20 md:pl-0 md:pt-20">
-        <span class="grad-bg absolute left-0 top-0 grid h-12 w-12 place-items-center rounded-full ring-8 ring-ink"><i data-lucide="search" class="h-5 w-5 text-white"></i></span>
-        <h3 class="font-bold">Discovery</h3>
-        <p class="mt-2 text-sm text-slate-400">We learn your goals, users and budget, then agree on scope and timeline.</p>
-      </li>
-      <li class="reveal relative pl-20 md:pl-0 md:pt-20">
-        <span class="grad-bg absolute left-0 top-0 grid h-12 w-12 place-items-center rounded-full ring-8 ring-ink"><i data-lucide="pen-tool" class="h-5 w-5 text-white"></i></span>
-        <h3 class="font-bold">Design</h3>
-        <p class="mt-2 text-sm text-slate-400">Wireframes and clickable Figma prototypes you can test before any code is written.</p>
-      </li>
-      <li class="reveal relative pl-20 md:pl-0 md:pt-20">
-        <span class="grad-bg absolute left-0 top-0 grid h-12 w-12 place-items-center rounded-full ring-8 ring-ink"><i data-lucide="code-2" class="h-5 w-5 text-white"></i></span>
-        <h3 class="font-bold">Development</h3>
-        <p class="mt-2 text-sm text-slate-400">Two-week sprints with a working demo at the end of each one.</p>
-      </li>
-      <li class="reveal relative pl-20 md:pl-0 md:pt-20">
-        <span class="grad-bg absolute left-0 top-0 grid h-12 w-12 place-items-center rounded-full ring-8 ring-ink"><i data-lucide="rocket" class="h-5 w-5 text-white"></i></span>
-        <h3 class="font-bold">QA &amp; Launch</h3>
-        <p class="mt-2 text-sm text-slate-400">Device and browser testing, store submission, and 30 days of free support.</p>
-      </li>
-    </ol>
-  </div>
-</section>
-
-<!-- ============ CONTACT ============ -->
-<section id="contact" class="relative overflow-hidden py-24">
-  <div class="blob -right-20 bottom-0 h-96 w-96 bg-blue-600"></div>
-  <div class="relative mx-auto grid max-w-7xl gap-12 px-5 lg:grid-cols-2">
-    <div class="reveal">
-      <h2 class="text-3xl font-extrabold sm:text-4xl">Tell us about your project</h2>
-      <p class="mt-4 max-w-md text-slate-400">Send a few details and we will reply within one business day with questions and a rough estimate.</p>
-      <ul class="mt-8 space-y-4 text-slate-300">
-        <li class="flex items-center gap-3"><i data-lucide="mail" class="h-5 w-5 text-neon"></i> hello@webmobilesolutions.example</li>
-        <li class="flex items-center gap-3"><i data-lucide="clock" class="h-5 w-5 text-neon"></i> Mon–Fri, 9:00–18:00</li>
-      </ul>
-    </div>
-
-    <form id="contactForm" class="reveal glow-card space-y-5 rounded-3xl bg-panel p-8" novalidate>
-      <div>
-        <label for="name" class="mb-2 block text-sm font-medium">Name</label>
-        <input id="name" name="name" required type="text" autocomplete="name" class="w-full rounded-xl border border-white/10 bg-ink px-4 py-3 outline-none transition focus:border-neon">
-      </div>
-      <div>
-        <label for="email" class="mb-2 block text-sm font-medium">Email</label>
-        <input id="email" name="email" required type="email" autocomplete="email" class="w-full rounded-xl border border-white/10 bg-ink px-4 py-3 outline-none transition focus:border-neon">
-      </div>
-      <div>
-        <label for="type" class="mb-2 block text-sm font-medium">Project type</label>
-        <select id="type" name="type" class="w-full rounded-xl border border-white/10 bg-ink px-4 py-3 outline-none transition focus:border-neon">
-          <option>Website or landing page</option>
-          <option>E-commerce store</option>
-          <option>Custom web app</option>
-          <option>Mobile app (Android &amp; iOS)</option>
-          <option>UI/UX design only</option>
-        </select>
-      </div>
-      <div>
-        <label for="message" class="mb-2 block text-sm font-medium">Message</label>
-        <textarea id="message" name="message" rows="4" required class="w-full rounded-xl border border-white/10 bg-ink px-4 py-3 outline-none transition focus:border-neon"></textarea>
-      </div>
-      <button type="submit" class="grad-bg w-full rounded-full py-3.5 font-semibold text-white shadow-lg shadow-violet/30 transition hover:scale-[1.02]">Send message</button>
-      <p id="formStatus" class="min-h-[1.25rem] text-center text-sm" role="status"></p>
-    </form>
-  </div>
-</section>
-</main>
-
-<!-- ============ FOOTER ============ -->
-<footer class="border-t border-white/10 py-10">
-  <div class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-5 md:flex-row">
-    <p class="text-sm text-slate-400">© <span id="year"></span> bitco. All rights reserved.</p>
-    <nav class="flex gap-6 text-sm text-slate-300" aria-label="Footer">
-      <a class="hover:text-white" href="#services">Services</a>
-      <a class="hover:text-white" href="#portfolio">Portfolio</a>
-      <a class="hover:text-white" href="#contact">Contact</a>
-    </nav>
-    <div class="flex gap-4">
-      <a href="#" aria-label="GitHub" class="text-slate-400 hover:text-neon"><i data-lucide="github" class="h-5 w-5"></i></a>
-      <a href="#" aria-label="LinkedIn" class="text-slate-400 hover:text-neon"><i data-lucide="linkedin" class="h-5 w-5"></i></a>
-      <a href="#" aria-label="Twitter" class="text-slate-400 hover:text-neon"><i data-lucide="twitter" class="h-5 w-5"></i></a>
-    </div>
-  </div>
-</footer>
-
-<script>
-  // Render Lucide icons
-  lucide.createIcons();
-
-  // Footer year
-  document.getElementById('year').textContent = new Date().getFullYear();
-
-  // Mobile menu toggle (closes after choosing a link)
-  const btn = document.getElementById('menuBtn'), menu = document.getElementById('mobileMenu');
-  btn.addEventListener('click', () => {
-    const open = menu.classList.toggle('hidden') === false;
-    btn.setAttribute('aria-expanded', open);
-  });
-  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => menu.classList.add('hidden')));
-
-  // Fade-in on scroll
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('show'); io.unobserve(e.target); } });
-  }, { threshold: 0.15 });
-  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-
-  // Projects slider: buttons, mouse drag and keyboard. Touch uses native swipe + scroll-snap. No autoplay.
-  (() => {
-    const track = document.getElementById('track');
-    if (!track) return;
-    const prev = document.getElementById('prevBtn'), next = document.getElementById('nextBtn');
-    const step = () => {
-      const card = track.querySelector('.slide');
-      const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
-      return card.getBoundingClientRect().width + gap;
-    };
-    const update = () => {
-      const max = track.scrollWidth - track.clientWidth;
-      prev.disabled = track.scrollLeft <= 2;
-      next.disabled = track.scrollLeft >= max - 2;
-      // hide arrows when every card already fits on screen
-      prev.classList.toggle('hidden', max <= 2);
-      next.classList.toggle('hidden', max <= 2);
-    };
-    prev.addEventListener('click', () => track.scrollBy({ left: -step(), behavior: 'smooth' }));
-    next.addEventListener('click', () => track.scrollBy({ left: step(), behavior: 'smooth' }));
-    track.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update);
-    window.addEventListener('load', update);
-    // Tailwind's CDN builds its CSS a moment after this script runs, so re-check whenever the layout changes
-    if ('ResizeObserver' in window) {
-      const ro = new ResizeObserver(update);
-      ro.observe(track);
-      track.querySelectorAll('.slide').forEach((s) => ro.observe(s));
-    }
-    track.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowLeft') prev.click();
-      if (e.key === 'ArrowRight') next.click();
-    });
-
-    // Drag with the mouse (touch screens scroll natively)
-    let down = false, startX = 0, startLeft = 0, moved = 0;
-    track.addEventListener('pointerdown', (e) => {
-      if (e.pointerType !== 'mouse' || e.button !== 0) return;
-      down = true; moved = 0; startX = e.clientX; startLeft = track.scrollLeft;
-      track.classList.add('dragging');
-    });
-    window.addEventListener('pointermove', (e) => {
-      if (!down) return;
-      const dx = e.clientX - startX;
-      moved = Math.max(moved, Math.abs(dx));
-      track.scrollLeft = startLeft - dx;
-    });
-    const endDrag = () => {
-      if (!down) return;
-      down = false;
-      track.classList.remove('dragging');
-      // settle on the nearest card position (the last positions are clamped to the end of the track)
-      const s = step(), max = track.scrollWidth - track.clientWidth;
-      let target = 0, best = Infinity;
-      for (let i = 0; i < track.children.length; i++) {
-        const t = Math.min(i * s, max), d = Math.abs(t - track.scrollLeft);
-        if (d < best) { best = d; target = t; }
+      .shot {
+        display: block;
+        --o: 16px;
+        position: relative;
+        overflow: hidden;
+        border-radius: 1.5rem;
+        aspect-ratio: 3/2;
       }
-      track.scrollTo({ left: target, behavior: 'smooth' });
-    };
-    window.addEventListener('pointerup', endDrag);
-    window.addEventListener('pointercancel', endDrag);
-    track.addEventListener('dragstart', (e) => e.preventDefault());
-    // a drag must not count as a click on a project link
-    track.addEventListener('click', (e) => { if (moved > 5) { e.preventDefault(); e.stopPropagation(); moved = 0; } }, true);
-    update();
-  })();
+      @media (min-width: 640px) {
+        .shot {
+          --o: 24px;
+        }
+      }
+      @supports not (aspect-ratio: 1/1) {
+        .shot::before {
+          content: "";
+          display: block;
+          padding-top: 66.6667%;
+        }
+      }
+      a.shot {
+        cursor: pointer;
+      }
+      #track.dragging a.shot,
+      #track.dragging * {
+        cursor: grabbing;
+      }
+      .shot-img {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        width: calc(100% - var(--o));
+        height: calc(100% - var(--o));
+        overflow: hidden;
+        border-top-left-radius: 1rem;
+        transition:
+          width 0.5s cubic-bezier(0.2, 0.7, 0.2, 1),
+          height 0.5s cubic-bezier(0.2, 0.7, 0.2, 1),
+          border-radius 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+      }
+      .shot-img img {
+        object-position: 50% 0;
+      } /* keep the top, trim the bottom */
+      .slide:focus-within .shot-img {
+        width: 100%;
+        height: 100%;
+        border-top-left-radius: 0;
+      }
+      @media (hover: hover) and (pointer: fine) {
+        .slide:hover .shot-img {
+          width: 100%;
+          height: 100%;
+          border-top-left-radius: 0;
+        }
+      }
+      .slide + .slide {
+        margin-left: 1.5rem;
+      } /* spacing between cards (margin works everywhere, unlike flex gap in old Safari) */
 
-  // Contact form: front-end validation only. Replace the body of this handler
-  // with a fetch() to your backend or a service like Formspree.
-  document.getElementById('contactForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const form = e.target, status = document.getElementById('formStatus');
-    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.value);
-    if (!form.name.value.trim() || !emailOk || !form.message.value.trim()) {
-      status.textContent = 'Please enter your name, a valid email and a message.';
-      status.className = 'min-h-[1.25rem] text-center text-sm text-red-400';
-      return;
-    }
-    status.textContent = 'Message sent. We will reply within one business day.';
-    status.className = 'min-h-[1.25rem] text-center text-sm text-emerald-400';
-    form.reset();
-  });
-</script>
-</body>
+      /* ===== Light theme overrides: the Tailwind utilities below were written for a dark page ===== */
+      html[data-theme="light"] .text-slate-300 {
+        color: #334155;
+      }
+      html[data-theme="light"] .text-slate-400 {
+        color: #475569;
+      }
+      html[data-theme="light"] .hover\:text-white:hover {
+        color: #0f172a;
+      }
+      html[data-theme="light"] .text-blue-300 {
+        color: #1d4ed8;
+      }
+      html[data-theme="light"] .text-purple-300,
+      html[data-theme="light"] .text-violet-300 {
+        color: #6d28d9;
+      }
+      html[data-theme="light"] .text-cyan-300 {
+        color: #0e7490;
+      }
+      html[data-theme="light"] .text-red-400 {
+        color: #dc2626;
+      }
+      html[data-theme="light"] .text-emerald-400 {
+        color: #047857;
+      }
+      html[data-theme="light"] .border-white\/10 {
+        border-color: rgba(15, 23, 42, 0.1);
+      }
+      html[data-theme="light"] .border-white\/15 {
+        border-color: rgba(15, 23, 42, 0.15);
+      }
+      html[data-theme="light"] .border-white\/20 {
+        border-color: rgba(15, 23, 42, 0.2);
+      }
+      html[data-theme="light"] .bg-white\/5 {
+        background-color: rgba(15, 23, 42, 0.04);
+      }
+      html[data-theme="light"] .bg-white\/10 {
+        background-color: rgba(15, 23, 42, 0.07);
+      }
+      html[data-theme="light"] .bg-white\/15 {
+        background-color: rgba(15, 23, 42, 0.1);
+      }
+      html[data-theme="light"] .hover\:bg-white\/5:hover {
+        background-color: rgba(15, 23, 42, 0.04);
+      }
+      html[data-theme="light"] .hover\:bg-white\/10:hover {
+        background-color: rgba(15, 23, 42, 0.07);
+      }
+      /* controls that use white text on a dark pill in the dark theme */
+      html[data-theme="light"] #langBtn,
+      html[data-theme="light"] #langItem,
+      html[data-theme="light"] #prevBtn,
+      html[data-theme="light"] #nextBtn {
+        color: #0f172a;
+      }
+      html[data-theme="light"] .blob {
+        opacity: 0.14;
+      }
+      html[data-theme="light"] .glow-card {
+        box-shadow:
+          0 1px 3px rgba(15, 23, 42, 0.08),
+          0 10px 28px -14px rgba(15, 23, 42, 0.18);
+      }
+      html[data-theme="light"] .glow-card:hover {
+        box-shadow: 0 0 40px -8px rgba(139, 92, 246, 0.45);
+      }
+      html[data-theme="light"] .glow-card::before {
+        background: linear-gradient(
+          135deg,
+          rgba(37, 99, 235, 0.3),
+          rgba(15, 23, 42, 0.08),
+          rgba(14, 116, 144, 0.3)
+        );
+      }
+      html[data-theme="light"] .glow-card:hover::before {
+        background: linear-gradient(135deg, #2563eb, #7c3aed, #0e7490);
+      }
+      /* logo: a darker variant for the light page */
+      .logo-light {
+        display: none;
+      }
+      html[data-theme="light"] .logo-dark {
+        display: none;
+      }
+      html[data-theme="light"] .logo-light {
+        display: inline;
+      }
+      /* footer theme switcher: the active icon gets the brand gradient */
+      .theme-btn[aria-pressed="true"],
+      html[data-theme] .theme-btn[aria-pressed="true"]:hover {
+        background: linear-gradient(135deg, #3b82f6, #8b5cf6 55%, #22d3ee);
+        color: #fff;
+        box-shadow: 0 4px 12px -4px rgba(139, 92, 246, 0.6);
+      }
+      /* in the light theme the switcher is a white pill with a clearer outline so it reads as its own block */
+      html[data-theme="light"] #themeSwitch {
+        background-color: #fff;
+        border-color: rgba(15, 23, 42, 0.18);
+      }
+      /* smooth colour change while switching (class is removed again right after) */
+      html.theme-fade,
+      html.theme-fade * {
+        transition:
+          background-color 0.35s ease,
+          color 0.35s ease,
+          border-color 0.35s ease,
+          fill 0.35s ease !important;
+      }
+      /* Language switcher: dropdown fade/slide and rotating chevron */
+      .lang-menu {
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-6px);
+        transition:
+          opacity 0.2s ease,
+          transform 0.2s ease,
+          visibility 0.2s;
+      }
+      .lang-menu.open {
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+      }
+      .lang-chevron {
+        transition: transform 0.25s ease;
+      }
+      #langBtn[aria-expanded="true"] .lang-chevron {
+        transform: rotate(180deg);
+      }
+      /* gradient border ring (same gradient as the buttons) shown on hover and while the menu is open */
+      #langBtn::before {
+        content: "";
+        position: absolute;
+        top: -1px;
+        right: -1px;
+        bottom: -1px;
+        left: -1px;
+        border-radius: inherit;
+        padding: 1px;
+        pointer-events: none;
+        background: linear-gradient(
+          135deg,
+          var(--g1),
+          var(--g2) 55%,
+          var(--g3)
+        );
+        -webkit-mask:
+          linear-gradient(#000 0 0) content-box,
+          linear-gradient(#000 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0;
+        transition: opacity 0.25s ease;
+      }
+      #langBtn:hover::before,
+      #langBtn[aria-expanded="true"]::before {
+        opacity: 1;
+      }
+      /* slider arrows disappear when disabled (nothing more to scroll that way) */
+      #prevBtn:disabled,
+      #nextBtn:disabled {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+      /* Projects slider: hidden scrollbar, mouse-drag state */
+      .no-scrollbar {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      #track {
+        cursor: grab;
+      }
+      #track.dragging {
+        scroll-snap-type: none !important;
+        scroll-behavior: auto !important;
+        cursor: grabbing;
+        user-select: none;
+      }
+      #track img {
+        -webkit-user-drag: none;
+        user-select: none;
+      }
+      /* Visible keyboard focus */
+      :focus-visible {
+        outline: 2px solid #22d3ee;
+        outline-offset: 3px;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .shot-img {
+          transition: none;
+        }
+        .lang-menu,
+        .lang-chevron {
+          transition: none;
+        }
+        html.theme-fade,
+        html.theme-fade * {
+          transition: none !important;
+        }
+        .float,
+        .float-slow {
+          animation: none;
+        }
+        .reveal {
+          opacity: 1;
+          transform: none;
+          transition: none;
+        }
+        html {
+          scroll-behavior: auto;
+        }
+      }
+      section[id] {
+        scroll-margin-top: 80px;
+      }
+    </style>
+  </head>
+
+  <body class="font-sans antialiased">
+    <!-- ============ NAVIGATION ============ -->
+    <header
+      class="fixed top-0 inset-x-0 z-50 border-b border-white/10 bg-ink/60 backdrop-blur-xl"
+    >
+      <nav
+        class="mx-auto flex max-w-7xl items-center justify-between px-5 py-4"
+        aria-label="Main"
+      >
+        <a href="#home" aria-label="bitco, home"
+          ><img
+            src="images/logo-bitco.svg"
+            alt="bitco production"
+            class="logo-dark h-10 w-auto md:h-11" /><img
+            src="images/logo-bitco-light.svg"
+            alt="bitco production"
+            class="logo-light h-10 w-auto md:h-11"
+        /></a>
+        <ul
+          class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300"
+        >
+          <li><a class="hover:text-white transition" href="#home">Home</a></li>
+          <li>
+            <a class="hover:text-white transition" href="#services">Services</a>
+          </li>
+          <li>
+            <a class="hover:text-white transition" href="#portfolio"
+              >Portfolio</a
+            >
+          </li>
+          <li>
+            <a class="hover:text-white transition" href="#process">Process</a>
+          </li>
+          <li>
+            <a class="hover:text-white transition" href="#contact">Contact</a>
+          </li>
+        </ul>
+        <!-- Right side: language switcher, then the CTA (desktop) or the burger (mobile) -->
+        <div class="flex items-center gap-2 md:gap-4">
+          <div id="lang" class="relative">
+            <button
+              id="langBtn"
+              type="button"
+              aria-haspopup="true"
+              aria-expanded="false"
+              aria-controls="langMenu"
+              aria-label="Language: English. Change language"
+              class="relative inline-flex h-9 items-center gap-1.5 rounded-full border border-white/15 bg-white/5 pl-3 pr-2.5 text-sm font-bold tracking-wide text-white transition hover:bg-white/10"
+            >
+              <!-- Globe icon with the same gradient as the site buttons -->
+              <svg
+                class="h-4 w-4 shrink-0"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <defs>
+                  <linearGradient
+                    id="globeGrad"
+                    gradientUnits="userSpaceOnUse"
+                    x1="2"
+                    y1="2"
+                    x2="22"
+                    y2="22"
+                  >
+                    <stop offset="0" style="stop-color: var(--g1)" />
+                    <stop offset=".55" style="stop-color: var(--g2)" />
+                    <stop offset="1" style="stop-color: var(--g3)" />
+                  </linearGradient>
+                </defs>
+                <g stroke="url(#globeGrad)">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+                  <path d="M2 12h20" />
+                </g>
+              </svg>
+              <span id="langCode">EN</span>
+              <svg
+                class="lang-chevron h-4 w-4 shrink-0 text-slate-400"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </button>
+            <!-- Dropdown is as wide as the button and uses the same left padding and gap, so the flag sits exactly under the
+             globe and the abbreviation exactly under the current abbreviation. Only the NOT selected language is listed. -->
+            <div
+              id="langMenu"
+              class="lang-menu absolute left-0 top-full z-50 mt-2 w-full overflow-hidden rounded-2xl border border-white/10 bg-panel/95 shadow-xl shadow-violet/20 backdrop-blur-xl"
+            >
+              <button
+                id="langItem"
+                type="button"
+                data-lang="ua"
+                aria-label="Switch to Українська"
+                class="flex h-9 w-full items-center gap-1.5 pl-3 pr-2.5 text-left text-sm font-bold tracking-wide text-white transition hover:bg-white/10"
+              >
+                <span class="grid h-4 w-4 shrink-0 place-items-center"
+                  ><svg
+                    id="flagUa"
+                    class="h-4 w-4"
+                    viewBox="0 0 16 16"
+                    aria-hidden="true"
+                  >
+                    <defs>
+                      <clipPath id="clipUa">
+                        <circle cx="8" cy="8" r="8" />
+                      </clipPath>
+                    </defs>
+                    <g clip-path="url(#clipUa)">
+                      <rect width="16" height="8" fill="#0057b7" />
+                      <rect y="8" width="16" height="8" fill="#ffd700" />
+                    </g></svg
+                  ><svg
+                    id="flagEn"
+                    class="h-4 w-4 hidden"
+                    viewBox="15 0 30 30"
+                    aria-hidden="true"
+                  >
+                    <defs>
+                      <clipPath id="clipEn">
+                        <circle cx="30" cy="15" r="15" />
+                      </clipPath>
+                      <clipPath id="clipEnX">
+                        <path d="M30,15h30v15zv15h-30zh-30v-15zv-15h30z" />
+                      </clipPath>
+                    </defs>
+                    <g clip-path="url(#clipEn)">
+                      <rect x="0" width="60" height="30" fill="#012169" />
+                      <path
+                        d="M0,0L60,30M60,0L0,30"
+                        stroke="#fff"
+                        stroke-width="6"
+                      />
+                      <path
+                        d="M0,0L60,30M60,0L0,30"
+                        clip-path="url(#clipEnX)"
+                        stroke="#c8102e"
+                        stroke-width="4"
+                      />
+                      <path
+                        d="M30,0v30M0,15h60"
+                        stroke="#fff"
+                        stroke-width="10"
+                      />
+                      <path
+                        d="M30,0v30M0,15h60"
+                        stroke="#c8102e"
+                        stroke-width="6"
+                      />
+                    </g></svg
+                ></span>
+                <span id="langItemCode">UA</span>
+              </button>
+            </div>
+          </div>
+          <a
+            href="#contact"
+            class="grad-bg hidden md:inline-block rounded-full px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-violet/30 transition hover:scale-105"
+            >Get a Quote</a
+          >
+          <button
+            id="menuBtn"
+            class="md:hidden p-2"
+            aria-label="Toggle menu"
+            aria-expanded="false"
+          >
+            <i data-lucide="menu" class="h-6 w-6"></i>
+          </button>
+        </div>
+      </nav>
+      <!-- Mobile menu -->
+      <div
+        id="mobileMenu"
+        class="hidden md:hidden border-t border-white/10 bg-ink/95 px-5 pb-5"
+      >
+        <a class="block py-3" href="#home">Home</a>
+        <a class="block py-3" href="#services">Services</a>
+        <a class="block py-3" href="#portfolio">Portfolio</a>
+        <a class="block py-3" href="#process">Process</a>
+        <a class="block py-3" href="#contact">Contact</a>
+        <a
+          href="#contact"
+          class="grad-bg mt-2 block rounded-full px-5 py-3 text-center font-semibold text-white"
+          >Get a Quote</a
+        >
+      </div>
+    </header>
+
+    <main>
+      <!-- ============ HERO ============ -->
+      <section id="home" class="relative overflow-hidden pt-36 pb-24 lg:pt-44">
+        <div class="blob -left-32 top-20 h-96 w-96 bg-blue-600"></div>
+        <div class="blob right-0 top-40 h-96 w-96 bg-violet"></div>
+        <div
+          class="relative mx-auto grid max-w-7xl items-center gap-16 px-5 lg:grid-cols-2"
+        >
+          <div>
+            <p
+              class="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-sm text-slate-300"
+            >
+              <span class="h-2 w-2 rounded-full bg-neon"></span> Booking new
+              projects for next month
+            </p>
+            <h1
+              class="text-4xl font-extrabold leading-tight sm:text-5xl lg:text-6xl"
+            >
+              We turn your ideas into powerful
+              <span class="grad-text">web &amp; mobile apps</span>
+            </h1>
+            <p class="mt-6 max-w-xl text-lg text-slate-400">
+              Websites, online stores and Android &amp; iOS apps, designed and
+              built by one small team from first sketch to store launch.
+            </p>
+            <div class="mt-9 flex flex-wrap gap-4">
+              <a
+                href="#portfolio"
+                class="grad-bg inline-flex items-center gap-2 rounded-full px-7 py-3.5 font-semibold text-white shadow-lg shadow-violet/30 transition hover:scale-105"
+                >Our Work <i data-lucide="arrow-right" class="h-4 w-4"></i
+              ></a>
+              <a
+                href="#contact"
+                class="inline-flex items-center gap-2 rounded-full border border-white/20 px-7 py-3.5 font-semibold transition hover:border-neon hover:bg-white/5"
+                >Contact Us</a
+              >
+            </div>
+          </div>
+
+          <!-- Floating UI mockups (pure HTML/CSS placeholders) -->
+          <div
+            class="relative mx-auto h-[420px] w-full max-w-lg"
+            aria-hidden="true"
+          >
+            <!-- Browser window -->
+            <div
+              class="float absolute left-0 top-6 w-[78%] rounded-2xl border border-white/10 bg-panel/90 p-4 shadow-2xl backdrop-blur"
+            >
+              <div class="mb-4 flex gap-1.5">
+                <i class="h-2.5 w-2.5 rounded-full bg-red-400"></i
+                ><i class="h-2.5 w-2.5 rounded-full bg-yellow-400"></i
+                ><i class="h-2.5 w-2.5 rounded-full bg-green-400"></i>
+              </div>
+              <div class="grad-bg mb-3 h-24 rounded-xl opacity-80"></div>
+              <div class="mb-2 h-3 w-3/4 rounded bg-white/15"></div>
+              <div class="mb-4 h-3 w-1/2 rounded bg-white/10"></div>
+              <div class="grid grid-cols-3 gap-2">
+                <div class="h-14 rounded-lg bg-white/10"></div>
+                <div class="h-14 rounded-lg bg-white/10"></div>
+                <div class="h-14 rounded-lg bg-white/10"></div>
+              </div>
+            </div>
+            <!-- Phone -->
+            <div
+              class="float-slow absolute bottom-0 right-2 w-[38%] rounded-[2rem] border-4 border-slate-700 bg-ink p-3 shadow-2xl shadow-violet/30"
+            >
+              <div
+                class="mx-auto mb-3 h-1.5 w-10 rounded-full bg-slate-700"
+              ></div>
+              <div
+                class="mb-2 h-20 rounded-xl bg-gradient-to-br from-neon to-violet"
+              ></div>
+              <div class="mb-2 h-2.5 w-full rounded bg-white/15"></div>
+              <div class="mb-3 h-2.5 w-2/3 rounded bg-white/10"></div>
+              <div class="grad-bg h-8 rounded-full"></div>
+            </div>
+            <!-- Stat chip -->
+            <div
+              class="float absolute right-0 top-0 flex items-center gap-3 rounded-2xl border border-white/10 bg-panel/90 px-4 py-3 shadow-xl backdrop-blur"
+            >
+              <i data-lucide="trending-up" class="h-5 w-5 text-neon"></i>
+              <div>
+                <p class="text-sm font-bold">+68% conversions</p>
+                <p class="text-xs text-slate-400">after relaunch</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SERVICES ============ -->
+      <section id="services" class="relative py-24">
+        <div class="mx-auto max-w-7xl px-5">
+          <div class="reveal mx-auto mb-14 max-w-2xl text-center">
+            <h2 class="text-3xl font-extrabold sm:text-4xl">What we build</h2>
+            <p class="mt-4 text-slate-400">
+              Three services that cover everything from the first wireframe to
+              the live product.
+            </p>
+          </div>
+          <div class="grid gap-6 md:grid-cols-3">
+            <article class="reveal glow-card rounded-3xl bg-panel p-8">
+              <span
+                class="grad-bg mb-6 grid h-14 w-14 place-items-center rounded-2xl"
+                ><i data-lucide="globe" class="h-7 w-7 text-white"></i
+              ></span>
+              <h3 class="text-xl font-bold">Web Development</h3>
+              <p class="mt-3 text-slate-400">
+                Fast landing pages, online stores, and custom web apps that are
+                easy to update and built to grow.
+              </p>
+              <div class="mt-6 flex flex-wrap gap-2 text-xs">
+                <span
+                  class="rounded-full bg-blue-500/15 px-3 py-1 text-blue-300"
+                  >React</span
+                >
+                <span
+                  class="rounded-full bg-blue-500/15 px-3 py-1 text-blue-300"
+                  >Node.js</span
+                >
+                <span
+                  class="rounded-full bg-blue-500/15 px-3 py-1 text-blue-300"
+                  >Next.js</span
+                >
+              </div>
+            </article>
+
+            <article class="reveal glow-card rounded-3xl bg-panel p-8">
+              <span
+                class="grad-bg mb-6 grid h-14 w-14 place-items-center rounded-2xl"
+                ><i data-lucide="smartphone" class="h-7 w-7 text-white"></i
+              ></span>
+              <h3 class="text-xl font-bold">Mobile App Development</h3>
+              <p class="mt-3 text-slate-400">
+                One codebase, two stores. Native-feeling Android and iOS apps
+                built with Flutter or React Native.
+              </p>
+              <div class="mt-6 flex flex-wrap gap-2 text-xs">
+                <span
+                  class="rounded-full bg-violet/15 px-3 py-1 text-violet-300 text-purple-300"
+                  >Flutter</span
+                >
+                <span
+                  class="rounded-full bg-violet/15 px-3 py-1 text-purple-300"
+                  >iOS</span
+                >
+                <span
+                  class="rounded-full bg-violet/15 px-3 py-1 text-purple-300"
+                  >Android</span
+                >
+                <span
+                  class="rounded-full bg-violet/15 px-3 py-1 text-purple-300"
+                  >Firebase</span
+                >
+              </div>
+            </article>
+
+            <article class="reveal glow-card rounded-3xl bg-panel p-8">
+              <span
+                class="grad-bg mb-6 grid h-14 w-14 place-items-center rounded-2xl"
+                ><i data-lucide="pen-tool" class="h-7 w-7 text-white"></i
+              ></span>
+              <h3 class="text-xl font-bold">UI/UX Design</h3>
+              <p class="mt-3 text-slate-400">
+                Clear interfaces tested with real users, from low-fidelity
+                wireframes to a full design system.
+              </p>
+              <div class="mt-6 flex flex-wrap gap-2 text-xs">
+                <span
+                  class="rounded-full bg-cyan-500/15 px-3 py-1 text-cyan-300"
+                  >Figma</span
+                >
+                <span
+                  class="rounded-full bg-cyan-500/15 px-3 py-1 text-cyan-300"
+                  >Wireframing</span
+                >
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ PORTFOLIO / PROJECTS SLIDER ============ -->
+      <section id="portfolio" class="relative py-24">
+        <div class="mx-auto max-w-7xl px-5">
+          <div class="reveal mb-10">
+            <h2 class="text-3xl font-extrabold sm:text-4xl">Our Projects</h2>
+            <p class="mt-4 max-w-xl text-slate-400">
+              Long-term partnerships and recent launches in ticketing,
+              e-commerce and banking.
+            </p>
+          </div>
+
+          <div
+            class="reveal relative"
+            role="region"
+            aria-roledescription="carousel"
+            aria-label="Our projects"
+          >
+            <!-- Prev / next buttons on the left and right sides (no autoplay: clicks, swipes or dragging only) -->
+            <button
+              id="prevBtn"
+              type="button"
+              aria-label="Previous projects"
+              class="absolute left-2 top-[36%] z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-ink/70 text-white backdrop-blur transition hover:border-neon disabled:invisible disabled:opacity-0 md:left-3"
+            >
+              <i data-lucide="chevron-left" class="h-5 w-5"></i>
+            </button>
+            <button
+              id="nextBtn"
+              type="button"
+              aria-label="Next projects"
+              class="absolute right-2 top-[36%] z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-ink/70 text-white backdrop-blur transition hover:border-neon disabled:invisible disabled:opacity-0 md:right-3"
+            >
+              <i data-lucide="chevron-right" class="h-5 w-5"></i>
+            </button>
+
+            <ul
+              id="track"
+              tabindex="0"
+              class="no-scrollbar flex snap-x snap-mandatory overflow-x-auto scroll-smooth pb-2"
+            >
+              <li
+                class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]"
+              >
+                <article>
+                  <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+                  <a
+                    href="https://karabas.com"
+                    target="_blank"
+                    rel="noopener"
+                    tabindex="-1"
+                    aria-hidden="true"
+                    class="shot grad-bg shadow-lg shadow-violet/20"
+                  >
+                    <div class="shot-img bg-panel">
+                      <img
+                        src="images/karabas.jpg"
+                        alt="Illustration of an event ticket, seat map and calendar"
+                        draggable="false"
+                        loading="lazy"
+                        class="h-full w-full object-cover"
+                      />
+                    </div>
+                  </a>
+                  <h3 class="mt-5 text-xl font-bold">
+                    <a
+                      href="https://karabas.com"
+                      target="_blank"
+                      rel="noopener"
+                      class="inline-flex items-center gap-1 transition hover:text-neon"
+                      >Karabas
+                      <i data-lucide="arrow-up-right" class="h-4 w-4"></i
+                    ></a>
+                  </h3>
+                  <p class="mt-2 text-sm text-slate-400">
+                    Ticketing platform for cultural events. We have supported it
+                    for 3+ years and launched 9 localized versions for European
+                    countries.
+                  </p>
+                </article>
+              </li>
+              <li
+                class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]"
+              >
+                <article>
+                  <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+                  <a
+                    href="https://automir-pneu.sk/en"
+                    target="_blank"
+                    rel="noopener"
+                    tabindex="-1"
+                    aria-hidden="true"
+                    class="shot grad-bg shadow-lg shadow-violet/20"
+                  >
+                    <div class="shot-img bg-panel">
+                      <img
+                        src="images/automir-pneu.jpg"
+                        alt="Illustration of a tire and online store product cards"
+                        draggable="false"
+                        loading="lazy"
+                        class="h-full w-full object-cover"
+                      />
+                    </div>
+                  </a>
+                  <h3 class="mt-5 text-xl font-bold">
+                    <a
+                      href="https://automir-pneu.sk/en"
+                      target="_blank"
+                      rel="noopener"
+                      class="inline-flex items-center gap-1 transition hover:text-neon"
+                      >Automir Pneu
+                      <i data-lucide="arrow-up-right" class="h-4 w-4"></i
+                    ></a>
+                  </h3>
+                  <p class="mt-2 text-sm text-slate-400">
+                    Online store for car tires, built for our new client from
+                    the Czech Republic.
+                  </p>
+                </article>
+              </li>
+              <li
+                class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]"
+              >
+                <article>
+                  <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+                  <div class="shot grad-bg shadow-lg shadow-violet/20">
+                    <div class="shot-img bg-panel">
+                      <img
+                        src="images/project-bank-tablet.svg"
+                        alt="Illustration of a bank teller-window tablet app"
+                        draggable="false"
+                        loading="lazy"
+                        class="h-full w-full object-cover"
+                      />
+                    </div>
+                  </div>
+                  <h3 class="mt-5 text-xl font-bold">Teller Window Display</h3>
+                  <p class="mt-2 text-sm text-slate-400">
+                    Tablet app for bank service desks: cashier info, currency,
+                    metal and coin rates, documents and break timers.
+                  </p>
+                </article>
+              </li>
+              <li
+                class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]"
+              >
+                <article>
+                  <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+                  <a
+                    href="https://karabas.com"
+                    target="_blank"
+                    rel="noopener"
+                    tabindex="-1"
+                    aria-hidden="true"
+                    class="shot grad-bg shadow-lg shadow-violet/20"
+                  >
+                    <div class="shot-img bg-panel">
+                      <img
+                        src="images/project-karabas.svg"
+                        alt="Illustration of an event ticket, seat map and calendar"
+                        draggable="false"
+                        loading="lazy"
+                        class="h-full w-full object-cover"
+                      />
+                    </div>
+                  </a>
+                  <h3 class="mt-5 text-xl font-bold">
+                    <a
+                      href="https://karabas.com"
+                      target="_blank"
+                      rel="noopener"
+                      class="inline-flex items-center gap-1 transition hover:text-neon"
+                      >Karabas
+                      <i data-lucide="arrow-up-right" class="h-4 w-4"></i
+                    ></a>
+                  </h3>
+                  <p class="mt-2 text-sm text-slate-400">
+                    Ticketing platform for cultural events. We have supported it
+                    for 3+ years and launched 9 localized versions for European
+                    countries.
+                  </p>
+                </article>
+              </li>
+              <li
+                class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]"
+              >
+                <article>
+                  <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+                  <a
+                    href="https://automir-pneu.sk/en"
+                    target="_blank"
+                    rel="noopener"
+                    tabindex="-1"
+                    aria-hidden="true"
+                    class="shot grad-bg shadow-lg shadow-violet/20"
+                  >
+                    <div class="shot-img bg-panel">
+                      <img
+                        src="images/project-automir.svg"
+                        alt="Illustration of a tire and online store product cards"
+                        draggable="false"
+                        loading="lazy"
+                        class="h-full w-full object-cover"
+                      />
+                    </div>
+                  </a>
+                  <h3 class="mt-5 text-xl font-bold">
+                    <a
+                      href="https://automir-pneu.sk/en"
+                      target="_blank"
+                      rel="noopener"
+                      class="inline-flex items-center gap-1 transition hover:text-neon"
+                      >Automir Pneu
+                      <i data-lucide="arrow-up-right" class="h-4 w-4"></i
+                    ></a>
+                  </h3>
+                  <p class="mt-2 text-sm text-slate-400">
+                    Online store for car tires, built for our new client from
+                    the Czech Republic.
+                  </p>
+                </article>
+              </li>
+              <li
+                class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]"
+              >
+                <article>
+                  <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+                  <div class="shot grad-bg shadow-lg shadow-violet/20">
+                    <div class="shot-img bg-panel">
+                      <img
+                        src="images/archimatika4.jpg"
+                        alt="Illustration of a bank teller-window tablet app"
+                        draggable="false"
+                        loading="lazy"
+                        class="h-full w-full object-cover"
+                      />
+                    </div>
+                  </div>
+                  <h3 class="mt-5 text-xl font-bold">Teller Window Display</h3>
+                  <p class="mt-2 text-sm text-slate-400">
+                    Tablet app for bank service desks: cashier info, currency,
+                    metal and coin rates, documents and break timers.
+                  </p>
+                </article>
+              </li>
+              <li
+                class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]"
+              >
+                <article>
+                  <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+                  <a
+                    href="https://karabas.com"
+                    target="_blank"
+                    rel="noopener"
+                    tabindex="-1"
+                    aria-hidden="true"
+                    class="shot grad-bg shadow-lg shadow-violet/20"
+                  >
+                    <div class="shot-img bg-panel">
+                      <img
+                        src="images/archimatika3.jpg"
+                        alt="Illustration of an event ticket, seat map and calendar"
+                        draggable="false"
+                        loading="lazy"
+                        class="h-full w-full object-cover"
+                      />
+                    </div>
+                  </a>
+                  <h3 class="mt-5 text-xl font-bold">
+                    <a
+                      href="https://karabas.com"
+                      target="_blank"
+                      rel="noopener"
+                      class="inline-flex items-center gap-1 transition hover:text-neon"
+                      >Karabas
+                      <i data-lucide="arrow-up-right" class="h-4 w-4"></i
+                    ></a>
+                  </h3>
+                  <p class="mt-2 text-sm text-slate-400">
+                    Ticketing platform for cultural events. We have supported it
+                    for 3+ years and launched 9 localized versions for European
+                    countries.
+                  </p>
+                </article>
+              </li>
+              <li
+                class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]"
+              >
+                <article>
+                  <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+                  <a
+                    href="https://automir-pneu.sk/en"
+                    target="_blank"
+                    rel="noopener"
+                    tabindex="-1"
+                    aria-hidden="true"
+                    class="shot grad-bg shadow-lg shadow-violet/20"
+                  >
+                    <div class="shot-img bg-panel">
+                      <img
+                        src="images/archimatika2.jpg"
+                        alt="Illustration of a tire and online store product cards"
+                        draggable="false"
+                        loading="lazy"
+                        class="h-full w-full object-cover"
+                      />
+                    </div>
+                  </a>
+                  <h3 class="mt-5 text-xl font-bold">
+                    <a
+                      href="https://automir-pneu.sk/en"
+                      target="_blank"
+                      rel="noopener"
+                      class="inline-flex items-center gap-1 transition hover:text-neon"
+                      >Automir Pneu
+                      <i data-lucide="arrow-up-right" class="h-4 w-4"></i
+                    ></a>
+                  </h3>
+                  <p class="mt-2 text-sm text-slate-400">
+                    Online store for car tires, built for our new client from
+                    the Czech Republic.
+                  </p>
+                </article>
+              </li>
+              <li
+                class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]"
+              >
+                <article>
+                  <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+                  <div class="shot grad-bg shadow-lg shadow-violet/20">
+                    <div class="shot-img bg-panel">
+                      <img
+                        src="images/archimatika.jpg"
+                        alt="Illustration of a bank teller-window tablet app"
+                        draggable="false"
+                        loading="lazy"
+                        class="h-full w-full object-cover"
+                      />
+                    </div>
+                  </div>
+                  <h3 class="mt-5 text-xl font-bold">Teller Window Display</h3>
+                  <p class="mt-2 text-sm text-slate-400">
+                    Tablet app for bank service desks: cashier info, currency,
+                    metal and coin rates, documents and break timers.
+                  </p>
+                </article>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ PROCESS ============ -->
+      <section id="process" class="relative py-24">
+        <div class="mx-auto max-w-7xl px-5">
+          <div class="reveal mx-auto mb-14 max-w-2xl text-center">
+            <h2 class="text-3xl font-extrabold sm:text-4xl">How we work</h2>
+            <p class="mt-4 text-slate-400">
+              Four stages, with a review at the end of each one so there are no
+              surprises.
+            </p>
+          </div>
+          <!-- Horizontal on desktop, vertical on mobile -->
+          <ol class="relative grid gap-10 md:grid-cols-4 md:gap-6">
+            <div
+              class="absolute left-6 top-6 hidden h-px w-[calc(100%-3rem)] bg-gradient-to-r from-blue-500 via-violet to-neon md:block"
+            ></div>
+            <div
+              class="absolute left-6 top-6 h-[calc(100%-3rem)] w-px bg-gradient-to-b from-blue-500 via-violet to-neon md:hidden"
+            ></div>
+
+            <li class="reveal relative pl-20 md:pl-0 md:pt-20">
+              <span
+                class="grad-bg absolute left-0 top-0 grid h-12 w-12 place-items-center rounded-full ring-8 ring-ink"
+                ><i data-lucide="search" class="h-5 w-5 text-white"></i
+              ></span>
+              <h3 class="font-bold">Discovery</h3>
+              <p class="mt-2 text-sm text-slate-400">
+                We learn your goals, users and budget, then agree on scope and
+                timeline.
+              </p>
+            </li>
+            <li class="reveal relative pl-20 md:pl-0 md:pt-20">
+              <span
+                class="grad-bg absolute left-0 top-0 grid h-12 w-12 place-items-center rounded-full ring-8 ring-ink"
+                ><i data-lucide="pen-tool" class="h-5 w-5 text-white"></i
+              ></span>
+              <h3 class="font-bold">Design</h3>
+              <p class="mt-2 text-sm text-slate-400">
+                Wireframes and clickable Figma prototypes you can test before
+                any code is written.
+              </p>
+            </li>
+            <li class="reveal relative pl-20 md:pl-0 md:pt-20">
+              <span
+                class="grad-bg absolute left-0 top-0 grid h-12 w-12 place-items-center rounded-full ring-8 ring-ink"
+                ><i data-lucide="code-2" class="h-5 w-5 text-white"></i
+              ></span>
+              <h3 class="font-bold">Development</h3>
+              <p class="mt-2 text-sm text-slate-400">
+                Two-week sprints with a working demo at the end of each one.
+              </p>
+            </li>
+            <li class="reveal relative pl-20 md:pl-0 md:pt-20">
+              <span
+                class="grad-bg absolute left-0 top-0 grid h-12 w-12 place-items-center rounded-full ring-8 ring-ink"
+                ><i data-lucide="rocket" class="h-5 w-5 text-white"></i
+              ></span>
+              <h3 class="font-bold">QA &amp; Launch</h3>
+              <p class="mt-2 text-sm text-slate-400">
+                Device and browser testing, store submission, and 30 days of
+                free support.
+              </p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- ============ CONTACT ============ -->
+      <section id="contact" class="relative overflow-hidden py-24">
+        <div class="blob -right-20 bottom-0 h-96 w-96 bg-blue-600"></div>
+        <div class="relative mx-auto grid max-w-7xl gap-12 px-5 lg:grid-cols-2">
+          <div class="reveal">
+            <h2 class="text-3xl font-extrabold sm:text-4xl">
+              Tell us about your project
+            </h2>
+            <p class="mt-4 max-w-md text-slate-400">
+              Send a few details and we will reply within one business day with
+              questions and a rough estimate.
+            </p>
+            <ul class="mt-8 space-y-4 text-slate-300">
+              <li>
+                <a
+                  href="https://t.me/bitco_studio"
+                  target="_blank"
+                  rel="noopener"
+                  class="flex items-center gap-3 transition hover:text-white"
+                  ><i data-lucide="send" class="h-5 w-5 text-neon"></i>
+                  @bitco_studio</a
+                >
+              </li>
+              <li>
+                <a
+                  href="mailto:hello@webmobilesolutions.example"
+                  class="flex items-center gap-3 transition hover:text-white"
+                  ><i data-lucide="mail" class="h-5 w-5 text-neon"></i>
+                  hello@webmobilesolutions.example</a
+                >
+              </li>
+              <li class="flex items-center gap-3">
+                <i data-lucide="clock" class="h-5 w-5 text-neon"></i> Mon–Fri,
+                9:00–18:00
+              </li>
+            </ul>
+          </div>
+
+          <form
+            id="contactForm"
+            class="reveal glow-card space-y-5 rounded-3xl bg-panel p-8"
+            novalidate
+          >
+            <div>
+              <label for="name" class="mb-2 block text-sm font-medium"
+                >Name</label
+              >
+              <input
+                id="name"
+                name="name"
+                required
+                type="text"
+                autocomplete="name"
+                class="w-full rounded-xl border border-white/10 bg-ink px-4 py-3 outline-none transition focus:border-neon"
+              />
+            </div>
+            <div>
+              <label for="email" class="mb-2 block text-sm font-medium"
+                >Email</label
+              >
+              <input
+                id="email"
+                name="email"
+                required
+                type="email"
+                autocomplete="email"
+                class="w-full rounded-xl border border-white/10 bg-ink px-4 py-3 outline-none transition focus:border-neon"
+              />
+            </div>
+            <div>
+              <label for="type" class="mb-2 block text-sm font-medium"
+                >Project type</label
+              >
+              <select
+                id="type"
+                name="type"
+                class="w-full rounded-xl border border-white/10 bg-ink px-4 py-3 outline-none transition focus:border-neon"
+              >
+                <option>Website or landing page</option>
+                <option>E-commerce store</option>
+                <option>Custom web app</option>
+                <option>Mobile app (Android &amp; iOS)</option>
+                <option>UI/UX design only</option>
+              </select>
+            </div>
+            <div>
+              <label for="message" class="mb-2 block text-sm font-medium"
+                >Message</label
+              >
+              <textarea
+                id="message"
+                name="message"
+                rows="4"
+                required
+                class="w-full rounded-xl border border-white/10 bg-ink px-4 py-3 outline-none transition focus:border-neon"
+              ></textarea>
+            </div>
+            <button
+              type="submit"
+              class="grad-bg w-full rounded-full py-3.5 font-semibold text-white shadow-lg shadow-violet/30 transition hover:scale-[1.02]"
+            >
+              Send message
+            </button>
+            <p
+              id="formStatus"
+              class="min-h-[1.25rem] text-center text-sm"
+              role="status"
+            ></p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="border-t border-white/10 py-10">
+      <div
+        class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-5 md:flex-row"
+      >
+        <p class="text-sm text-slate-400">
+          © <span id="year"></span> bitco. All rights reserved.
+        </p>
+        <nav class="flex gap-6 text-sm text-slate-300" aria-label="Footer">
+          <a class="hover:text-white" href="#services">Services</a>
+          <a class="hover:text-white" href="#portfolio">Portfolio</a>
+          <a class="hover:text-white" href="#contact">Contact</a>
+        </nav>
+        <div class="flex items-center gap-5">
+          <!-- Block 1: social links -->
+          <div class="flex items-center gap-4">
+            <a
+              href="https://t.me/bitco_studio"
+              target="_blank"
+              rel="noopener"
+              aria-label="Telegram"
+              class="text-slate-400 hover:text-neon"
+              ><i data-lucide="send" class="h-5 w-5"></i
+            ></a>
+            <a
+              href="#"
+              aria-label="LinkedIn"
+              class="text-slate-400 hover:text-neon"
+              ><i data-lucide="linkedin" class="h-5 w-5"></i
+            ></a>
+          </div>
+          <span class="h-6 w-px bg-white/15" aria-hidden="true"></span>
+          <!-- Block 2: theme switcher (its own bordered pill) -->
+          <div
+            id="themeSwitch"
+            role="group"
+            aria-label="Color theme"
+            class="inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/5 p-1"
+          >
+            <button
+              type="button"
+              data-theme-set="light"
+              aria-pressed="false"
+              aria-label="Light theme"
+              class="theme-btn grid h-8 w-8 place-items-center rounded-full text-slate-400 transition hover:text-white"
+            >
+              <svg
+                class="h-4 w-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="4" />
+                <path
+                  d="M12 2v2M12 20v2m-7.07-15.07 1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"
+                />
+              </svg>
+            </button>
+            <button
+              type="button"
+              data-theme-set="dark"
+              aria-pressed="true"
+              aria-label="Dark theme"
+              class="theme-btn grid h-8 w-8 place-items-center rounded-full text-slate-400 transition hover:text-white"
+            >
+              <svg
+                class="h-4 w-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Render Lucide icons
+      if (window.lucide) lucide.createIcons();
+
+      // Footer year
+      document.getElementById("year").textContent = new Date().getFullYear();
+
+      // Mobile menu toggle (closes after choosing a link)
+      const btn = document.getElementById("menuBtn"),
+        menu = document.getElementById("mobileMenu");
+      btn.addEventListener("click", () => {
+        const open = menu.classList.toggle("hidden") === false;
+        btn.setAttribute("aria-expanded", open);
+      });
+      menu
+        .querySelectorAll("a")
+        .forEach((a) =>
+          a.addEventListener("click", () => menu.classList.add("hidden")),
+        );
+
+      // Language switcher: shows the current language; the dropdown offers only the other one.
+      // The button changes immediately on click; the dropdown content changes only after the dropdown has finished closing,
+      // so you never see it flip to the other language while it fades out.
+      (() => {
+        const LANGS = {
+          en: { code: "EN", name: "English" },
+          ua: { code: "UA", name: "Українська" },
+        };
+        const CLOSE_MS = 250; // a little longer than the .2s CSS fade of .lang-menu
+        const wrap = document.getElementById("lang"),
+          btn = document.getElementById("langBtn"),
+          menu = document.getElementById("langMenu");
+        const item = document.getElementById("langItem");
+        if (!wrap) return;
+        let current = "en",
+          pending = null;
+        try {
+          const s = localStorage.getItem("lang");
+          if (LANGS[s]) current = s;
+        } catch (e) {}
+        const other = () => (current === "en" ? "ua" : "en");
+
+        const renderButton = () => {
+          document.getElementById("langCode").textContent = LANGS[current].code;
+          btn.setAttribute(
+            "aria-label",
+            "Language: " + LANGS[current].name + ". Change language",
+          );
+          document.documentElement.dataset.lang = current;
+        };
+        const renderMenu = () => {
+          const o = other();
+          item.dataset.lang = o;
+          document.getElementById("langItemCode").textContent = LANGS[o].code;
+          document
+            .getElementById("flagUa")
+            .classList.toggle("hidden", o !== "ua");
+          document
+            .getElementById("flagEn")
+            .classList.toggle("hidden", o !== "en");
+          item.setAttribute("aria-label", "Switch to " + LANGS[o].name);
+        };
+        const flushMenu = () => {
+          if (pending) {
+            clearTimeout(pending);
+            pending = null;
+            renderMenu();
+          }
+        };
+        const setOpen = (open) => {
+          if (open) flushMenu(); // reopened quickly: make sure the dropdown already shows the right language
+          menu.classList.toggle("open", open);
+          btn.setAttribute("aria-expanded", open);
+        };
+
+        btn.addEventListener("click", () =>
+          setOpen(!menu.classList.contains("open")),
+        );
+        item.addEventListener("click", () => {
+          if (pending) return; // the dropdown is still closing
+          current = item.dataset.lang;
+          try {
+            localStorage.setItem("lang", current);
+          } catch (e) {}
+          renderButton(); // button: right away
+          setOpen(false);
+          btn.focus();
+          pending = setTimeout(() => {
+            pending = null;
+            renderMenu();
+          }, CLOSE_MS); // dropdown: after it has closed
+          document.dispatchEvent(
+            new CustomEvent("languagechange", { detail: { lang: current } }),
+          );
+        });
+        document.addEventListener("click", (e) => {
+          if (!wrap.contains(e.target)) setOpen(false);
+        }); // click outside
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && menu.classList.contains("open")) {
+            setOpen(false);
+            btn.focus();
+          }
+        });
+        renderButton();
+        renderMenu();
+      })();
+
+      // Theme switcher: saves the choice in localStorage (the pre-paint script in <head> applies it on the next visit).
+      (() => {
+        const root = document.documentElement,
+          group = document.getElementById("themeSwitch");
+        if (!group) return;
+        const btns = group.querySelectorAll("[data-theme-set]");
+        const meta = document.querySelector('meta[name="theme-color"]');
+        const apply = (t) => {
+          root.dataset.theme = t;
+          if (meta) meta.content = t === "light" ? "#f8fafc" : "#070a1a";
+          btns.forEach((b) =>
+            b.setAttribute("aria-pressed", b.dataset.themeSet === t),
+          );
+        };
+        btns.forEach((b) =>
+          b.addEventListener("click", () => {
+            const t = b.dataset.themeSet;
+            if (root.dataset.theme === t) return;
+            root.classList.add("theme-fade");
+            apply(t);
+            try {
+              localStorage.setItem("theme", t);
+            } catch (e) {}
+            setTimeout(() => root.classList.remove("theme-fade"), 400);
+          }),
+        );
+        window.addEventListener("storage", (e) => {
+          if (
+            e.key === "theme" &&
+            (e.newValue === "light" || e.newValue === "dark")
+          )
+            apply(e.newValue);
+        }); // other tabs
+        apply(root.dataset.theme === "light" ? "light" : "dark");
+      })();
+
+      // Fade-in on scroll
+      if (!("IntersectionObserver" in window)) {
+        // very old browser: just show everything
+        document
+          .querySelectorAll(".reveal")
+          .forEach((el) => el.classList.add("show"));
+      } else {
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((e) => {
+              if (e.isIntersecting) {
+                e.target.classList.add("show");
+                io.unobserve(e.target);
+              }
+            });
+          },
+          { threshold: 0.15 },
+        );
+        document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+      }
+
+      // Projects slider: buttons, mouse drag and keyboard. Touch uses native swipe + scroll-snap. No autoplay.
+      (() => {
+        const track = document.getElementById("track");
+        if (!track) return;
+        const prev = document.getElementById("prevBtn"),
+          next = document.getElementById("nextBtn");
+        const step = () => {
+          const cards = track.querySelectorAll(".slide");
+          // distance from one card's left edge to the next one's, so it includes the spacing
+          return cards.length > 1
+            ? cards[1].offsetLeft - cards[0].offsetLeft
+            : cards[0].getBoundingClientRect().width;
+        };
+        const update = () => {
+          const max = track.scrollWidth - track.clientWidth;
+          prev.disabled = track.scrollLeft <= 2;
+          next.disabled = track.scrollLeft >= max - 2;
+          // hide arrows when every card already fits on screen
+          prev.classList.toggle("hidden", max <= 2);
+          next.classList.toggle("hidden", max <= 2);
+        };
+        prev.addEventListener("click", () =>
+          track.scrollBy({ left: -step(), behavior: "smooth" }),
+        );
+        next.addEventListener("click", () =>
+          track.scrollBy({ left: step(), behavior: "smooth" }),
+        );
+        track.addEventListener("scroll", update, { passive: true });
+        window.addEventListener("resize", update);
+        window.addEventListener("load", update);
+        // Tailwind's CDN builds its CSS a moment after this script runs, so re-check whenever the layout changes
+        if ("ResizeObserver" in window) {
+          const ro = new ResizeObserver(update);
+          ro.observe(track);
+          track.querySelectorAll(".slide").forEach((s) => ro.observe(s));
+        }
+        track.addEventListener("keydown", (e) => {
+          if (e.key === "ArrowLeft") prev.click();
+          if (e.key === "ArrowRight") next.click();
+        });
+
+        // Drag with the mouse (touch screens scroll natively)
+        let down = false,
+          startX = 0,
+          startLeft = 0,
+          moved = 0;
+        track.addEventListener("pointerdown", (e) => {
+          if (e.pointerType !== "mouse" || e.button !== 0) return;
+          down = true;
+          moved = 0;
+          startX = e.clientX;
+          startLeft = track.scrollLeft;
+          track.classList.add("dragging");
+        });
+        window.addEventListener("pointermove", (e) => {
+          if (!down) return;
+          const dx = e.clientX - startX;
+          moved = Math.max(moved, Math.abs(dx));
+          track.scrollLeft = startLeft - dx;
+        });
+        const endDrag = () => {
+          if (!down) return;
+          down = false;
+          track.classList.remove("dragging");
+          // settle on the nearest card position (the last positions are clamped to the end of the track)
+          const s = step(),
+            max = track.scrollWidth - track.clientWidth;
+          let target = 0,
+            best = Infinity;
+          for (let i = 0; i < track.children.length; i++) {
+            const t = Math.min(i * s, max),
+              d = Math.abs(t - track.scrollLeft);
+            if (d < best) {
+              best = d;
+              target = t;
+            }
+          }
+          track.scrollTo({ left: target, behavior: "smooth" });
+        };
+        window.addEventListener("pointerup", endDrag);
+        window.addEventListener("pointercancel", endDrag);
+        track.addEventListener("dragstart", (e) => e.preventDefault());
+        // a drag must not count as a click on a project link
+        track.addEventListener(
+          "click",
+          (e) => {
+            if (moved > 5) {
+              e.preventDefault();
+              e.stopPropagation();
+              moved = 0;
+            }
+          },
+          true,
+        );
+        update();
+      })();
+
+      // Contact form: front-end validation only. Replace the body of this handler
+      // with a fetch() to your backend or a service like Formspree.
+      document.getElementById("contactForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const form = e.target,
+          status = document.getElementById("formStatus");
+        const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.value);
+        if (!form.name.value.trim() || !emailOk || !form.message.value.trim()) {
+          status.textContent =
+            "Please enter your name, a valid email and a message.";
+          status.className = "min-h-[1.25rem] text-center text-sm text-red-400";
+          return;
+        }
+        status.textContent =
+          "Message sent. We will reply within one business day.";
+        status.className =
+          "min-h-[1.25rem] text-center text-sm text-emerald-400";
+        form.reset();
+      });
+    </script>
+  </body>
 </html>
