@@ -341,7 +341,7 @@
         }
       }
       /* in the light theme the switcher is a white pill with a clearer outline so it reads as its own block */
-      html[data-theme="light"] #themeSwitch {
+      html[data-theme="light"] .theme-switch {
         background-color: #fff;
         border-color: rgba(15, 23, 42, 0.18);
       }
@@ -431,6 +431,51 @@
         max-height: calc(100vh - 4.75rem);
         max-height: calc(100dvh - 4.75rem);
         overflow-y: auto;
+      }
+      /* burger menu items: no border; on click the same gradient ring as the language switcher appears */
+      .mm-item::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        border-radius: inherit;
+        padding: 1px;
+        pointer-events: none;
+        background: linear-gradient(
+          135deg,
+          var(--g1),
+          var(--g2) 55%,
+          var(--g3)
+        );
+        -webkit-mask:
+          linear-gradient(#000 0 0) content-box,
+          linear-gradient(#000 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0;
+        transition: opacity 0.15s ease;
+      }
+      .mm-item:active::before,
+      .mm-item.is-clicked::before {
+        opacity: 1;
+      }
+      /* <select> in the contact form: same height as the inputs in every browser and an arrow with a proper right margin */
+      #contactForm select {
+        -webkit-appearance: none;
+        appearance: none;
+        box-sizing: border-box;
+        height: 3.125rem;
+        line-height: 1.5rem;
+        padding-right: 2.75rem;
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 1rem 1rem;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      }
+      html[data-theme="light"] #contactForm select {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
       }
       /* Language switcher: dropdown fade/slide and rotating chevron */
       .lang-menu {
@@ -736,27 +781,27 @@
       >
         <div class="flex flex-col gap-1.5">
           <a
-            class="flex h-12 items-center justify-center rounded-full border border-white/15 px-5 font-medium transition hover:bg-white/10"
+            class="mm-item relative flex h-12 items-center justify-center rounded-full px-5 font-medium transition hover:bg-white/10"
             href="#home"
             >Home</a
           >
           <a
-            class="flex h-12 items-center justify-center rounded-full border border-white/15 px-5 font-medium transition hover:bg-white/10"
+            class="mm-item relative flex h-12 items-center justify-center rounded-full px-5 font-medium transition hover:bg-white/10"
             href="#services"
             >Services</a
           >
           <a
-            class="flex h-12 items-center justify-center rounded-full border border-white/15 px-5 font-medium transition hover:bg-white/10"
+            class="mm-item relative flex h-12 items-center justify-center rounded-full px-5 font-medium transition hover:bg-white/10"
             href="#portfolio"
             >Portfolio</a
           >
           <a
-            class="flex h-12 items-center justify-center rounded-full border border-white/15 px-5 font-medium transition hover:bg-white/10"
+            class="mm-item relative flex h-12 items-center justify-center rounded-full px-5 font-medium transition hover:bg-white/10"
             href="#process"
             >Process</a
           >
           <a
-            class="flex h-12 items-center justify-center rounded-full border border-white/15 px-5 font-medium transition hover:bg-white/10"
+            class="mm-item relative flex h-12 items-center justify-center rounded-full px-5 font-medium transition hover:bg-white/10"
             href="#contact"
             >Contact</a
           >
@@ -765,6 +810,82 @@
             class="grad-bg flex h-12 items-center justify-center rounded-full px-5 font-semibold text-white"
             >Get a Quote</a
           >
+        </div>
+        <!-- Same row as in the footer: theme switcher | Telegram + LinkedIn -->
+        <div
+          class="mt-4 flex items-center justify-between gap-5 border-t border-white/10 pt-4"
+        >
+          <div
+            role="group"
+            aria-label="Color theme"
+            class="theme-switch inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/5 p-1"
+          >
+            <button
+              type="button"
+              data-theme-set="light"
+              aria-pressed="false"
+              aria-label="Light theme"
+              class="theme-btn grid h-8 w-8 place-items-center rounded-full text-slate-400 transition"
+            >
+              <svg
+                class="h-4 w-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="4"></circle>
+                <path d="M12 2v2"></path>
+                <path d="M12 20v2"></path>
+                <path d="m4.93 4.93 1.41 1.41"></path>
+                <path d="m17.66 17.66 1.41 1.41"></path>
+                <path d="M2 12h2"></path>
+                <path d="M20 12h2"></path>
+                <path d="m6.34 17.66-1.41 1.41"></path>
+                <path d="m19.07 4.93-1.41 1.41"></path>
+              </svg>
+            </button>
+            <button
+              type="button"
+              data-theme-set="dark"
+              aria-pressed="true"
+              aria-label="Dark theme"
+              class="theme-btn grid h-8 w-8 place-items-center rounded-full text-slate-400 transition"
+            >
+              <svg
+                class="h-4 w-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+              </svg>
+            </button>
+          </div>
+          <span class="h-6 w-px bg-white/15" aria-hidden="true"></span>
+          <div class="flex items-center gap-4">
+            <a
+              href="https://t.me/bitco_studio"
+              target="_blank"
+              rel="noopener"
+              aria-label="Telegram"
+              class="text-slate-400 hover:text-neon"
+              ><i data-lucide="send" class="h-5 w-5"></i
+            ></a>
+            <a
+              href="#"
+              aria-label="LinkedIn"
+              class="text-slate-400 hover:text-neon"
+              ><i data-lucide="linkedin" class="h-5 w-5"></i
+            ></a>
+          </div>
         </div>
       </div>
     </header>
@@ -1502,10 +1623,9 @@
           <div class="flex items-center justify-between gap-5">
             <!-- Block 1: theme switcher (its own bordered pill) -->
             <div
-              id="themeSwitch"
               role="group"
               aria-label="Color theme"
-              class="inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/5 p-1"
+              class="theme-switch inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/5 p-1"
             >
               <button
                 type="button"
@@ -1597,9 +1717,16 @@
       btn.addEventListener("click", () =>
         setMenu(menu.classList.contains("hidden")),
       );
-      menu
-        .querySelectorAll("a")
-        .forEach((a) => a.addEventListener("click", () => setMenu(false)));
+      menu.querySelectorAll("a").forEach((a) =>
+        a.addEventListener("click", () => {
+          if (!a.classList.contains("mm-item")) return setMenu(false);
+          a.classList.add("is-clicked"); // show the gradient ring for a moment, then close
+          setTimeout(() => {
+            a.classList.remove("is-clicked");
+            setMenu(false);
+          }, 220);
+        }),
+      );
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape" && !menu.classList.contains("hidden"))
           setMenu(false);
@@ -1708,10 +1835,9 @@
 
       // Theme switcher: saves the choice in localStorage (the pre-paint script in <head> applies it on the next visit).
       (() => {
-        const root = document.documentElement,
-          group = document.getElementById("themeSwitch");
-        if (!group) return;
-        const btns = group.querySelectorAll("[data-theme-set]");
+        const root = document.documentElement;
+        const btns = document.querySelectorAll("[data-theme-set]"); // the footer switcher and the one in the burger menu
+        if (!btns.length) return;
         const meta = document.querySelector('meta[name="theme-color"]');
         const apply = (t) => {
           root.dataset.theme = t;
