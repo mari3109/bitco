@@ -4,7 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>bitco | Websites and apps built bit by bit</title>
-    <link rel="icon" type="image/svg+xml" href="images/logo-icon.svg" />
+    <link rel="icon" type="image/svg+xml" href="logo-icon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     <meta name="color-scheme" content="dark light" />
     <meta name="theme-color" content="#070a1a" />
     <script>
@@ -64,6 +66,8 @@
         --g1: #60a5fa;
         --g2: #a78bfa;
         --g3: #22d3ee;
+        --sb-thumb: rgba(139, 92, 246, 0.38);
+        --sb-thumb-hover: rgba(139, 92, 246, 0.65);
         color-scheme: dark;
       }
       html[data-theme="light"] {
@@ -74,6 +78,8 @@
         --g1: #2563eb;
         --g2: #7c3aed;
         --g3: #0e7490;
+        --sb-thumb: rgba(124, 58, 237, 0.32);
+        --sb-thumb-hover: rgba(124, 58, 237, 0.6);
         color-scheme: light;
       }
       body {
@@ -316,25 +322,71 @@
         display: inline;
       }
       /* footer theme switcher: the active icon gets the brand gradient */
-      .theme-btn[aria-pressed="true"],
-      html[data-theme] .theme-btn[aria-pressed="true"]:hover {
+      .theme-btn {
+        -webkit-tap-highlight-color: transparent;
+      }
+      /* selected button: gradient + light icon, identical in normal / hover / focus / active (so a sticky tap-hover on phones looks the same) */
+      html[data-theme] .theme-btn[aria-pressed="true"],
+      html[data-theme] .theme-btn[aria-pressed="true"]:hover,
+      html[data-theme] .theme-btn[aria-pressed="true"]:focus,
+      html[data-theme] .theme-btn[aria-pressed="true"]:active {
         background: linear-gradient(135deg, #3b82f6, #8b5cf6 55%, #22d3ee);
         color: #fff;
         box-shadow: 0 4px 12px -4px rgba(139, 92, 246, 0.6);
+      }
+      /* the unselected icon reacts to hover only on devices that really hover (no sticky hover after a tap) */
+      @media (hover: hover) and (pointer: fine) {
+        .theme-btn:not([aria-pressed="true"]):hover {
+          color: var(--fg);
+        }
       }
       /* in the light theme the switcher is a white pill with a clearer outline so it reads as its own block */
       html[data-theme="light"] #themeSwitch {
         background-color: #fff;
         border-color: rgba(15, 23, 42, 0.18);
       }
-      /* smooth colour change while switching (class is removed again right after) */
-      html.theme-fade,
-      html.theme-fade * {
-        transition:
-          background-color 0.35s ease,
-          color 0.35s ease,
-          border-color 0.35s ease,
-          fill 0.35s ease !important;
+      /* ===== Thin, subtle scrollbar in the site's violet (page + textarea). The slider keeps its own hidden scrollbar. ===== */
+      html,
+      textarea {
+        scrollbar-width: thin;
+        scrollbar-color: var(--sb-thumb) transparent;
+      }
+      @supports not (scrollbar-width: thin) {
+        /* older Chrome / Safari */
+        ::-webkit-scrollbar {
+          width: 8px;
+          height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+          background: var(--sb-thumb);
+          border-radius: 9999px;
+          border: 2px solid transparent;
+          background-clip: padding-box;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+          background: var(--sb-thumb-hover);
+          background-clip: padding-box;
+        }
+      }
+      /* header logo: 10% smaller on phones */
+      @media (max-width: 480px) {
+        header .logo-dark,
+        header .logo-light {
+          height: 2.25rem;
+        }
+      }
+      /* language label: EN and UA are stacked in one grid cell, so the button always has the width of the wider one */
+      .lang-codes {
+        display: inline-grid;
+      }
+      .lang-codes > span {
+        grid-area: 1 / 1;
+      }
+      .lang-codes > .is-off {
+        visibility: hidden;
       }
       /* Language switcher: dropdown fade/slide and rotating chevron */
       .lang-menu {
@@ -427,10 +479,6 @@
         .lang-chevron {
           transition: none;
         }
-        html.theme-fade,
-        html.theme-fade * {
-          transition: none !important;
-        }
         .float,
         .float-slow {
           animation: none;
@@ -456,20 +504,20 @@
       class="fixed top-0 inset-x-0 z-50 border-b border-white/10 bg-ink/60 backdrop-blur-xl"
     >
       <nav
-        class="mx-auto flex max-w-7xl items-center justify-between px-5 py-4"
+        class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-5 py-4"
         aria-label="Main"
       >
         <a href="#home" aria-label="bitco, home"
           ><img
-            src="images/logo-bitco.svg"
+            src="logo-bitco.svg"
             alt="bitco production"
             class="logo-dark h-10 w-auto md:h-11" /><img
-            src="images/logo-bitco-light.svg"
+            src="logo-bitco-light.svg"
             alt="bitco production"
             class="logo-light h-10 w-auto md:h-11"
         /></a>
         <ul
-          class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300"
+          class="hidden md:flex items-center md:gap-4 min-[851px]:gap-8 text-sm font-medium text-slate-300"
         >
           <li><a class="hover:text-white transition" href="#home">Home</a></li>
           <li>
@@ -488,7 +536,7 @@
           </li>
         </ul>
         <!-- Right side: language switcher, then the CTA (desktop) or the burger (mobile) -->
-        <div class="flex items-center gap-2 md:gap-4">
+        <div class="flex items-center gap-2 md:gap-3 min-[851px]:gap-4">
           <div id="lang" class="relative">
             <button
               id="langBtn"
@@ -529,7 +577,10 @@
                   <path d="M2 12h20" />
                 </g>
               </svg>
-              <span id="langCode">EN</span>
+              <span id="langCode" class="lang-codes"
+                ><span data-code="en">EN</span
+                ><span data-code="ua" class="is-off">UA</span></span
+              >
               <svg
                 class="lang-chevron h-4 w-4 shrink-0 text-slate-400"
                 viewBox="0 0 24 24"
@@ -617,7 +668,7 @@
           </div>
           <a
             href="#contact"
-            class="grad-bg hidden md:inline-block rounded-full px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-violet/30 transition hover:scale-105"
+            class="grad-bg hidden md:inline-block rounded-full px-5 md:px-4 min-[851px]:px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-violet/30 transition hover:scale-105"
             >Get a Quote</a
           >
           <button
@@ -630,21 +681,43 @@
           </button>
         </div>
       </nav>
-      <!-- Mobile menu -->
+      <!-- Mobile menu: full width below 480px; a 300px panel on the right edge from 480 to 767px -->
       <div
         id="mobileMenu"
-        class="hidden md:hidden border-t border-white/10 bg-ink/95 px-5 pb-5"
+        class="hidden md:hidden border-t border-white/10 bg-ink/95 px-5 pb-5 pt-3 min-[480px]:ml-auto min-[480px]:w-[300px] min-[480px]:rounded-bl-2xl min-[480px]:border-b min-[480px]:border-l"
       >
-        <a class="block py-3" href="#home">Home</a>
-        <a class="block py-3" href="#services">Services</a>
-        <a class="block py-3" href="#portfolio">Portfolio</a>
-        <a class="block py-3" href="#process">Process</a>
-        <a class="block py-3" href="#contact">Contact</a>
-        <a
-          href="#contact"
-          class="grad-bg mt-2 block rounded-full px-5 py-3 text-center font-semibold text-white"
-          >Get a Quote</a
-        >
+        <div class="flex flex-col gap-1.5">
+          <a
+            class="flex h-12 items-center justify-center rounded-full border border-white/15 px-5 font-medium transition hover:bg-white/10"
+            href="#home"
+            >Home</a
+          >
+          <a
+            class="flex h-12 items-center justify-center rounded-full border border-white/15 px-5 font-medium transition hover:bg-white/10"
+            href="#services"
+            >Services</a
+          >
+          <a
+            class="flex h-12 items-center justify-center rounded-full border border-white/15 px-5 font-medium transition hover:bg-white/10"
+            href="#portfolio"
+            >Portfolio</a
+          >
+          <a
+            class="flex h-12 items-center justify-center rounded-full border border-white/15 px-5 font-medium transition hover:bg-white/10"
+            href="#process"
+            >Process</a
+          >
+          <a
+            class="flex h-12 items-center justify-center rounded-full border border-white/15 px-5 font-medium transition hover:bg-white/10"
+            href="#contact"
+            >Contact</a
+          >
+          <a
+            href="#contact"
+            class="grad-bg flex h-12 items-center justify-center rounded-full px-5 font-semibold text-white"
+            >Get a Quote</a
+          >
+        </div>
       </div>
     </header>
 
@@ -1368,80 +1441,91 @@
         <p class="text-sm text-slate-400">
           © <span id="year"></span> bitco. All rights reserved.
         </p>
-        <nav class="flex gap-6 text-sm text-slate-300" aria-label="Footer">
-          <a class="hover:text-white" href="#services">Services</a>
-          <a class="hover:text-white" href="#portfolio">Portfolio</a>
-          <a class="hover:text-white" href="#contact">Contact</a>
-        </nav>
-        <div class="flex items-center gap-5">
-          <!-- Block 1: social links -->
-          <div class="flex items-center gap-4">
-            <a
-              href="https://t.me/bitco_studio"
-              target="_blank"
-              rel="noopener"
-              aria-label="Telegram"
-              class="text-slate-400 hover:text-neon"
-              ><i data-lucide="send" class="h-5 w-5"></i
-            ></a>
-            <a
-              href="#"
-              aria-label="LinkedIn"
-              class="text-slate-400 hover:text-neon"
-              ><i data-lucide="linkedin" class="h-5 w-5"></i
-            ></a>
-          </div>
-          <span class="h-6 w-px bg-white/15" aria-hidden="true"></span>
-          <!-- Block 2: theme switcher (its own bordered pill) -->
-          <div
-            id="themeSwitch"
-            role="group"
-            aria-label="Color theme"
-            class="inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/5 p-1"
+        <!-- Below 768px these two blocks sit in one column and are stretched to the same width; from 768px up the wrapper disappears (md:contents) -->
+        <div class="flex flex-col items-stretch gap-6 md:contents">
+          <nav
+            class="flex justify-between gap-6 text-sm text-slate-300 md:justify-start"
+            aria-label="Footer"
           >
-            <button
-              type="button"
-              data-theme-set="light"
-              aria-pressed="false"
-              aria-label="Light theme"
-              class="theme-btn grid h-8 w-8 place-items-center rounded-full text-slate-400 transition hover:text-white"
+            <a class="hover:text-white" href="#services">Services</a>
+            <a class="hover:text-white" href="#portfolio">Portfolio</a>
+            <a class="hover:text-white" href="#contact">Contact</a>
+          </nav>
+          <div class="flex items-center justify-between gap-5">
+            <!-- Block 1: theme switcher (its own bordered pill) -->
+            <div
+              id="themeSwitch"
+              role="group"
+              aria-label="Color theme"
+              class="inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/5 p-1"
             >
-              <svg
-                class="h-4 w-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
+              <button
+                type="button"
+                data-theme-set="light"
+                aria-pressed="false"
+                aria-label="Light theme"
+                class="theme-btn grid h-8 w-8 place-items-center rounded-full text-slate-400 transition"
               >
-                <circle cx="12" cy="12" r="4" />
-                <path
-                  d="M12 2v2M12 20v2m-7.07-15.07 1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"
-                />
-              </svg>
-            </button>
-            <button
-              type="button"
-              data-theme-set="dark"
-              aria-pressed="true"
-              aria-label="Dark theme"
-              class="theme-btn grid h-8 w-8 place-items-center rounded-full text-slate-400 transition hover:text-white"
-            >
-              <svg
-                class="h-4 w-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
+                <svg
+                  class="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="12" r="4"></circle>
+                  <path d="M12 2v2"></path>
+                  <path d="M12 20v2"></path>
+                  <path d="m4.93 4.93 1.41 1.41"></path>
+                  <path d="m17.66 17.66 1.41 1.41"></path>
+                  <path d="M2 12h2"></path>
+                  <path d="M20 12h2"></path>
+                  <path d="m6.34 17.66-1.41 1.41"></path>
+                  <path d="m19.07 4.93-1.41 1.41"></path>
+                </svg>
+              </button>
+              <button
+                type="button"
+                data-theme-set="dark"
+                aria-pressed="true"
+                aria-label="Dark theme"
+                class="theme-btn grid h-8 w-8 place-items-center rounded-full text-slate-400 transition"
               >
-                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-              </svg>
-            </button>
+                <svg
+                  class="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+                </svg>
+              </button>
+            </div>
+            <span class="h-6 w-px bg-white/15" aria-hidden="true"></span>
+            <!-- Block 2: social links -->
+            <div class="flex items-center gap-4">
+              <a
+                href="https://t.me/bitco_studio"
+                target="_blank"
+                rel="noopener"
+                aria-label="Telegram"
+                class="text-slate-400 hover:text-neon"
+                ><i data-lucide="send" class="h-5 w-5"></i
+              ></a>
+              <a
+                href="#"
+                aria-label="LinkedIn"
+                class="text-slate-400 hover:text-neon"
+                ><i data-lucide="linkedin" class="h-5 w-5"></i
+              ></a>
+            </div>
           </div>
         </div>
       </div>
@@ -1490,7 +1574,11 @@
         const other = () => (current === "en" ? "ua" : "en");
 
         const renderButton = () => {
-          document.getElementById("langCode").textContent = LANGS[current].code;
+          document
+            .querySelectorAll("#langCode [data-code]")
+            .forEach((s) =>
+              s.classList.toggle("is-off", s.dataset.code !== current),
+            );
           btn.setAttribute(
             "aria-label",
             "Language: " + LANGS[current].name + ". Change language",
@@ -1573,12 +1661,10 @@
           b.addEventListener("click", () => {
             const t = b.dataset.themeSet;
             if (root.dataset.theme === t) return;
-            root.classList.add("theme-fade");
             apply(t);
             try {
               localStorage.setItem("theme", t);
             } catch (e) {}
-            setTimeout(() => root.classList.remove("theme-fade"), 400);
           }),
         );
         window.addEventListener("storage", (e) => {
