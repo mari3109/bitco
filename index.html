@@ -477,6 +477,35 @@
       html[data-theme="light"] #contactForm select {
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
       }
+      /* blurred, slightly tinted layer over the page while the burger menu is open (below the header, which stays sharp) */
+      #menuBackdrop {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 40;
+        background: rgba(7, 10, 26, 0.35);
+        -webkit-backdrop-filter: blur(8px);
+        backdrop-filter: blur(8px);
+        opacity: 0;
+        visibility: hidden;
+        transition:
+          opacity 0.25s ease,
+          visibility 0.25s;
+      }
+      html[data-theme="light"] #menuBackdrop {
+        background: rgba(248, 250, 252, 0.35);
+      }
+      #menuBackdrop.open {
+        opacity: 1;
+        visibility: visible;
+      }
+      @media (min-width: 768px) {
+        #menuBackdrop {
+          display: none;
+        }
+      }
       /* Language switcher: dropdown fade/slide and rotating chevron */
       .lang-menu {
         opacity: 0;
@@ -566,7 +595,8 @@
         }
         .lang-menu,
         .lang-chevron,
-        .burger span {
+        .burger span,
+        #menuBackdrop {
           transition: none;
         }
         .float,
@@ -590,6 +620,7 @@
 
   <body class="font-sans antialiased">
     <!-- ============ NAVIGATION ============ -->
+    <div id="menuBackdrop" aria-hidden="true"></div>
     <header
       class="fixed top-0 inset-x-0 z-50 border-b border-white/10 bg-ink/60 backdrop-blur-xl"
     >
@@ -774,103 +805,97 @@
           </button>
         </div>
       </nav>
-      <!-- Mobile menu: full width below 480px; a 300px panel on the right edge from 480 to 767px. It is positioned under the header bar (not inside its height), so the page stays visible to the left of it. -->
+      <!-- Mobile menu: full width below 480px; a 350px panel on the right edge from 480 to 767px. It sits under the header bar (not inside its height).
+       Layout: page links | divider | a vertical column (theme switcher, Telegram, LinkedIn) placed exactly under the close icon; "Get a Quote" at the bottom. -->
       <div
         id="mobileMenu"
-        class="hidden md:hidden absolute inset-x-0 top-full border-b border-white/10 bg-ink/95 px-5 pb-5 pt-3 backdrop-blur-xl min-[480px]:left-auto min-[480px]:right-0 min-[480px]:w-[300px] min-[480px]:rounded-bl-2xl min-[480px]:border-l"
+        class="hidden md:hidden absolute inset-x-0 top-full border-b border-white/10 bg-ink/85 px-5 pb-5 pt-3 min-[480px]:left-auto min-[480px]:right-0 min-[480px]:w-[350px] min-[480px]:rounded-bl-2xl min-[480px]:border-l"
       >
-        <div class="flex flex-col gap-1.5">
-          <a
-            class="mm-item relative flex h-12 items-center justify-center rounded-full px-5 font-medium transition hover:bg-white/10"
-            href="#home"
-            >Home</a
-          >
-          <a
-            class="mm-item relative flex h-12 items-center justify-center rounded-full px-5 font-medium transition hover:bg-white/10"
-            href="#services"
-            >Services</a
-          >
-          <a
-            class="mm-item relative flex h-12 items-center justify-center rounded-full px-5 font-medium transition hover:bg-white/10"
-            href="#portfolio"
-            >Portfolio</a
-          >
-          <a
-            class="mm-item relative flex h-12 items-center justify-center rounded-full px-5 font-medium transition hover:bg-white/10"
-            href="#process"
-            >Process</a
-          >
-          <a
-            class="mm-item relative flex h-12 items-center justify-center rounded-full px-5 font-medium transition hover:bg-white/10"
-            href="#contact"
-            >Contact</a
-          >
-          <a
-            href="#contact"
-            class="grad-bg flex h-12 items-center justify-center rounded-full px-5 font-semibold text-white"
-            >Get a Quote</a
-          >
-        </div>
-        <!-- Same row as in the footer: theme switcher | Telegram + LinkedIn -->
-        <div
-          class="mt-4 flex items-center justify-between gap-5 border-t border-white/10 pt-4"
-        >
-          <div
-            role="group"
-            aria-label="Color theme"
-            class="theme-switch inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/5 p-1"
-          >
-            <button
-              type="button"
-              data-theme-set="light"
-              aria-pressed="false"
-              aria-label="Light theme"
-              class="theme-btn grid h-8 w-8 place-items-center rounded-full text-slate-400 transition"
+        <div class="flex gap-3">
+          <div class="flex min-w-0 flex-1 flex-col gap-1.5">
+            <a
+              class="mm-item relative flex h-12 items-center justify-center rounded-full px-5 font-medium transition hover:bg-white/10"
+              href="#home"
+              >Home</a
             >
-              <svg
-                class="h-4 w-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <circle cx="12" cy="12" r="4"></circle>
-                <path d="M12 2v2"></path>
-                <path d="M12 20v2"></path>
-                <path d="m4.93 4.93 1.41 1.41"></path>
-                <path d="m17.66 17.66 1.41 1.41"></path>
-                <path d="M2 12h2"></path>
-                <path d="M20 12h2"></path>
-                <path d="m6.34 17.66-1.41 1.41"></path>
-                <path d="m19.07 4.93-1.41 1.41"></path>
-              </svg>
-            </button>
-            <button
-              type="button"
-              data-theme-set="dark"
-              aria-pressed="true"
-              aria-label="Dark theme"
-              class="theme-btn grid h-8 w-8 place-items-center rounded-full text-slate-400 transition"
+            <a
+              class="mm-item relative flex h-12 items-center justify-center rounded-full px-5 font-medium transition hover:bg-white/10"
+              href="#services"
+              >Services</a
             >
-              <svg
-                class="h-4 w-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-              </svg>
-            </button>
+            <a
+              class="mm-item relative flex h-12 items-center justify-center rounded-full px-5 font-medium transition hover:bg-white/10"
+              href="#portfolio"
+              >Portfolio</a
+            >
+            <a
+              class="mm-item relative flex h-12 items-center justify-center rounded-full px-5 font-medium transition hover:bg-white/10"
+              href="#process"
+              >Process</a
+            >
+            <a
+              class="mm-item relative flex h-12 items-center justify-center rounded-full px-5 font-medium transition hover:bg-white/10"
+              href="#contact"
+              >Contact</a
+            >
           </div>
-          <span class="h-6 w-px bg-white/15" aria-hidden="true"></span>
-          <div class="flex items-center gap-4">
+          <span class="w-px self-stretch bg-white/15" aria-hidden="true"></span>
+          <!-- 40px wide column; the panel has 20px side padding, so its centre is 40px from the screen edge, like the burger/close icon -->
+          <div class="flex w-10 shrink-0 flex-col items-center gap-4">
+            <div
+              role="group"
+              aria-label="Color theme"
+              class="theme-switch inline-flex flex-col items-center gap-1 rounded-full border border-white/15 bg-white/5 p-[3px]"
+            >
+              <button
+                type="button"
+                data-theme-set="light"
+                aria-pressed="false"
+                aria-label="Light theme"
+                class="theme-btn grid h-8 w-8 place-items-center rounded-full text-slate-400 transition"
+              >
+                <svg
+                  class="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="12" r="4"></circle>
+                  <path d="M12 2v2"></path>
+                  <path d="M12 20v2"></path>
+                  <path d="m4.93 4.93 1.41 1.41"></path>
+                  <path d="m17.66 17.66 1.41 1.41"></path>
+                  <path d="M2 12h2"></path>
+                  <path d="M20 12h2"></path>
+                  <path d="m6.34 17.66-1.41 1.41"></path>
+                  <path d="m19.07 4.93-1.41 1.41"></path>
+                </svg>
+              </button>
+              <button
+                type="button"
+                data-theme-set="dark"
+                aria-pressed="true"
+                aria-label="Dark theme"
+                class="theme-btn grid h-8 w-8 place-items-center rounded-full text-slate-400 transition"
+              >
+                <svg
+                  class="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+                </svg>
+              </button>
+            </div>
             <a
               href="https://t.me/bitco_studio"
               target="_blank"
@@ -887,6 +912,11 @@
             ></a>
           </div>
         </div>
+        <a
+          href="#contact"
+          class="grad-bg mt-1.5 flex h-12 items-center justify-center rounded-full px-5 font-semibold text-white"
+          >Get a Quote</a
+        >
       </div>
     </header>
 
@@ -1711,6 +1741,7 @@
         menu = document.getElementById("mobileMenu");
       const setMenu = (open) => {
         menu.classList.toggle("hidden", !open);
+        document.getElementById("menuBackdrop").classList.toggle("open", open);
         btn.setAttribute("aria-expanded", open); // the CSS animates the burger into a cross from this attribute
         btn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
       };
