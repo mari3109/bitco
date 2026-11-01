@@ -388,6 +388,50 @@
       .lang-codes > .is-off {
         visibility: hidden;
       }
+      /* Burger icon that morphs into a cross: top bar drops to the centre and turns 45deg (right end goes down),
+     bottom bar rises to the centre and turns -45deg (right end goes up), the middle bar shrinks from both ends to nothing. */
+      .burger {
+        position: relative;
+        display: block;
+        width: 24px;
+        height: 24px;
+      }
+      .burger span {
+        position: absolute;
+        left: 2px;
+        width: 20px;
+        height: 2px;
+        border-radius: 2px;
+        background: currentColor;
+        transition:
+          transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+          opacity 0.2s ease;
+      }
+      .burger span:nth-child(1) {
+        top: 5px;
+      }
+      .burger span:nth-child(2) {
+        top: 11px;
+      }
+      .burger span:nth-child(3) {
+        top: 17px;
+      }
+      #menuBtn[aria-expanded="true"] .burger span:nth-child(1) {
+        transform: translateY(6px) rotate(45deg);
+      }
+      #menuBtn[aria-expanded="true"] .burger span:nth-child(2) {
+        transform: scaleX(0);
+        opacity: 0;
+      }
+      #menuBtn[aria-expanded="true"] .burger span:nth-child(3) {
+        transform: translateY(-6px) rotate(-45deg);
+      }
+      /* on short screens (landscape phones) the open menu scrolls instead of running off the bottom */
+      #mobileMenu {
+        max-height: calc(100vh - 4.75rem);
+        max-height: calc(100dvh - 4.75rem);
+        overflow-y: auto;
+      }
       /* Language switcher: dropdown fade/slide and rotating chevron */
       .lang-menu {
         opacity: 0;
@@ -476,7 +520,8 @@
           transition: none;
         }
         .lang-menu,
-        .lang-chevron {
+        .lang-chevron,
+        .burger span {
           transition: none;
         }
         .float,
@@ -668,23 +713,26 @@
           </div>
           <a
             href="#contact"
-            class="grad-bg hidden md:inline-block rounded-full px-5 md:px-4 min-[851px]:px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-violet/30 transition hover:scale-105"
+            class="grad-bg hidden md:inline-block shrink-0 whitespace-nowrap rounded-full px-5 md:px-4 min-[851px]:px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-violet/30 transition hover:scale-105"
             >Get a Quote</a
           >
           <button
             id="menuBtn"
             class="md:hidden p-2"
-            aria-label="Toggle menu"
+            aria-label="Open menu"
             aria-expanded="false"
+            aria-controls="mobileMenu"
           >
-            <i data-lucide="menu" class="h-6 w-6"></i>
+            <span class="burger" aria-hidden="true"
+              ><span></span><span></span><span></span
+            ></span>
           </button>
         </div>
       </nav>
-      <!-- Mobile menu: full width below 480px; a 300px panel on the right edge from 480 to 767px -->
+      <!-- Mobile menu: full width below 480px; a 300px panel on the right edge from 480 to 767px. It is positioned under the header bar (not inside its height), so the page stays visible to the left of it. -->
       <div
         id="mobileMenu"
-        class="hidden md:hidden border-t border-white/10 bg-ink/95 px-5 pb-5 pt-3 min-[480px]:ml-auto min-[480px]:w-[300px] min-[480px]:rounded-bl-2xl min-[480px]:border-b min-[480px]:border-l"
+        class="hidden md:hidden absolute inset-x-0 top-full border-b border-white/10 bg-ink/95 px-5 pb-5 pt-3 backdrop-blur-xl min-[480px]:left-auto min-[480px]:right-0 min-[480px]:w-[300px] min-[480px]:rounded-bl-2xl min-[480px]:border-l"
       >
         <div class="flex flex-col gap-1.5">
           <a
@@ -1541,15 +1589,30 @@
       // Mobile menu toggle (closes after choosing a link)
       const btn = document.getElementById("menuBtn"),
         menu = document.getElementById("mobileMenu");
-      btn.addEventListener("click", () => {
-        const open = menu.classList.toggle("hidden") === false;
-        btn.setAttribute("aria-expanded", open);
-      });
+      const setMenu = (open) => {
+        menu.classList.toggle("hidden", !open);
+        btn.setAttribute("aria-expanded", open); // the CSS animates the burger into a cross from this attribute
+        btn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      };
+      btn.addEventListener("click", () =>
+        setMenu(menu.classList.contains("hidden")),
+      );
       menu
         .querySelectorAll("a")
-        .forEach((a) =>
-          a.addEventListener("click", () => menu.classList.add("hidden")),
-        );
+        .forEach((a) => a.addEventListener("click", () => setMenu(false)));
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !menu.classList.contains("hidden"))
+          setMenu(false);
+      });
+      // tapping the page beside the open menu closes it
+      document.addEventListener("click", (e) => {
+        if (
+          !menu.classList.contains("hidden") &&
+          !menu.contains(e.target) &&
+          !btn.contains(e.target)
+        )
+          setMenu(false);
+      });
 
       // Language switcher: shows the current language; the dropdown offers only the other one.
       // The button changes immediately on click; the dropdown content changes only after the dropdown has finished closing,
