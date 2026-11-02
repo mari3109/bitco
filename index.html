@@ -74,10 +74,10 @@
     overflow:hidden; border-top-left-radius:1rem;
     transition:width .5s cubic-bezier(.2,.7,.2,1), height .5s cubic-bezier(.2,.7,.2,1), border-radius .5s cubic-bezier(.2,.7,.2,1); }
   .shot-img img { object-position:50% 0; }  /* keep the top, trim the bottom */
-  .slide:focus-within .shot-img { width:100%; height:100%; border-top-left-radius:0; }
-  @media (hover:hover) and (pointer:fine) {
-    .slide:hover .shot-img { width:100%; height:100%; border-top-left-radius:0; }
-  }
+  /* .is-expanded is set from JS only for a real mouse pointer (taps never set it); .is-focused only for keyboard focus */
+  .slide.is-expanded .shot-img, .slide.is-focused .shot-img { width:100%; height:100%; border-top-left-radius:0; }
+  /* no slider arrows on phones (swipe instead) */
+  @media (max-width:479px) { #prevBtn, #nextBtn { display:none; } }
   .slide + .slide { margin-left:1.5rem; }  /* spacing between cards (margin works everywhere, unlike flex gap in old Safari) */
 
   /* ===== Light theme overrides: the Tailwind utilities below were written for a dark page ===== */
@@ -379,6 +379,30 @@
         <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
           <article>
             <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+            <a href="https://archimatika.com/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
+              <div class="shot-img bg-panel">
+                <img src="images/archimatika.webp" alt="Archimatika preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
+              </div>
+            </a>
+            <h3 class="mt-5 text-xl font-bold"><a href="https://archimatika.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">Archimatika <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
+            <p class="mt-2 text-sm text-slate-400">Archimatika is an innovative architectural and engineering firm specializing in large-scale residential, office, and mixed-use BIM-modeled design projects.</p>
+          </article>
+        </li>
+        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
+          <article>
+            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+            <a href="https://11mirrors-hotel.com/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
+              <div class="shot-img bg-panel">
+                <img src="images/11mirrors-hotel.webp" alt="11 Mirrors Hotel preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
+              </div>
+            </a>
+            <h3 class="mt-5 text-xl font-bold"><a href="https://11mirrors-hotel.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">11 Mirrors Hotel <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
+            <p class="mt-2 text-sm text-slate-400">11 Mirrors is a premium award-winning design boutique hotel in central Kyiv offering panoramic views, fine dining, and customized wellness services.</p>
+          </article>
+        </li>
+        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
+          <article>
+            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
             <a href="https://guzema.com/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
               <div class="shot-img bg-panel">
                 <img src="images/guzema.webp" alt="Guzema preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
@@ -386,18 +410,6 @@
             </a>
             <h3 class="mt-5 text-xl font-bold"><a href="https://guzema.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">Guzema <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
             <p class="mt-2 text-sm text-slate-400">Guzema is a Ukrainian fine jewelry brand offering handcrafted, timeless 18k gold and diamond pieces designed for everyday luxury.</p>
-          </article>
-        </li>
-        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
-          <article>
-            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
-            <a href="https://hemafund.com/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
-              <div class="shot-img bg-panel">
-                <img src="images/hemafund.webp" alt="Hemafund preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
-              </div>
-            </a>
-            <h3 class="mt-5 text-xl font-bold"><a href="https://hemafund.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">Hemafund <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
-            <p class="mt-2 text-sm text-slate-400">A leading Ukrainian cryobank providing collection, processing, and long-term storage of stem cells from cord blood, umbilical cord, and placenta.</p>
           </article>
         </li>
         <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
@@ -427,18 +439,6 @@
         <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
           <article>
             <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
-            <a href="https://bank.com.ua/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
-              <div class="shot-img bg-panel">
-                <img src="images/bank.webp" alt="Pivdenny Bank preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
-              </div>
-            </a>
-            <h3 class="mt-5 text-xl font-bold"><a href="https://bank.com.ua/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">Pivdenny Bank <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
-            <p class="mt-2 text-sm text-slate-400">The official website of Pivdenny Bank, a major Ukrainian commercial financial institution providing comprehensive corporate and retail banking services.</p>
-          </article>
-        </li>
-        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
-          <article>
-            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
             <a href="https://karabas.com/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
               <div class="shot-img bg-panel">
                 <img src="images/karabas.webp" alt="Karabas preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
@@ -446,6 +446,30 @@
             </a>
             <h3 class="mt-5 text-xl font-bold"><a href="https://karabas.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">Karabas <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
             <p class="mt-2 text-sm text-slate-400">Karabas is a premier national ticket operator in Ukraine providing safe online booking for concerts, theatrical plays, and festivals.</p>
+          </article>
+        </li>
+        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
+          <article>
+            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+            <a href="https://hemafund.com/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
+              <div class="shot-img bg-panel">
+                <img src="images/hemafund.webp" alt="Hemafund preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
+              </div>
+            </a>
+            <h3 class="mt-5 text-xl font-bold"><a href="https://hemafund.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">Hemafund <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
+            <p class="mt-2 text-sm text-slate-400">A leading Ukrainian cryobank providing collection, processing, and long-term storage of stem cells from cord blood, umbilical cord, and placenta.</p>
+          </article>
+        </li>
+        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
+          <article>
+            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+            <a href="https://bank.com.ua/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
+              <div class="shot-img bg-panel">
+                <img src="images/bank.webp" alt="Pivdenny Bank preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
+              </div>
+            </a>
+            <h3 class="mt-5 text-xl font-bold"><a href="https://bank.com.ua/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">Pivdenny Bank <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
+            <p class="mt-2 text-sm text-slate-400">The official website of Pivdenny Bank, a major Ukrainian commercial financial institution providing comprehensive corporate and retail banking services.</p>
           </article>
         </li>
         <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
@@ -547,18 +571,6 @@
         <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
           <article>
             <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
-            <a href="https://11mirrors-hotel.com/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
-              <div class="shot-img bg-panel">
-                <img src="images/11mirrors-hotel.webp" alt="11 Mirrors Hotel preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
-              </div>
-            </a>
-            <h3 class="mt-5 text-xl font-bold"><a href="https://11mirrors-hotel.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">11 Mirrors Hotel <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
-            <p class="mt-2 text-sm text-slate-400">11 Mirrors is a premium award-winning design boutique hotel in central Kyiv offering panoramic views, fine dining, and customized wellness services.</p>
-          </article>
-        </li>
-        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
-          <article>
-            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
             <a href="https://stemax.ua/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
               <div class="shot-img bg-panel">
                 <img src="images/stemax.webp" alt="STEMAX preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
@@ -607,18 +619,6 @@
         <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
           <article>
             <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
-            <a href="https://archimatika.com/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
-              <div class="shot-img bg-panel">
-                <img src="images/archimatika.webp" alt="Archimatika preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
-              </div>
-            </a>
-            <h3 class="mt-5 text-xl font-bold"><a href="https://archimatika.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">Archimatika <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
-            <p class="mt-2 text-sm text-slate-400">Archimatika is an innovative architectural and engineering firm specializing in large-scale residential, office, and mixed-use BIM-modeled design projects.</p>
-          </article>
-        </li>
-        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
-          <article>
-            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
             <a href="https://xoffice.pro/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
               <div class="shot-img bg-panel">
                 <img src="images/xoffice.webp" alt="xOffice preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
@@ -631,13 +631,25 @@
         <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
           <article>
             <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
-            <div class="shot grad-bg shadow-lg shadow-violet/20">
+            <a href="https://automir-pneu.sk/en" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
               <div class="shot-img bg-panel">
-                <img src="images/project-bank-tablet.svg" alt="Teller Window Display preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
+                <img src="images/automir-pneu.webp" alt="Automir Pneu preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
               </div>
-            </div>
-            <h3 class="mt-5 text-xl font-bold">Teller Window Display</h3>
-            <p class="mt-2 text-sm text-slate-400">Tablet app for bank service desks: cashier info, currency, metal and coin rates, documents and break timers.</p>
+            </a>
+            <h3 class="mt-5 text-xl font-bold"><a href="https://automir-pneu.sk/en" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">Automir Pneu <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
+            <p class="mt-2 text-sm text-slate-400">Automir is a Slovakian online store offering a wide selection of premium tires for passenger cars, trucks, SUVs, and motorcycles.</p>
+          </article>
+        </li>
+        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
+          <article>
+            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+            <a href="https://apps.apple.com/us/app/radioplayer-fm-radio-online/id1444878430" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
+              <div class="shot-img bg-panel">
+                <img src="images/radioplayer-fm-radio-online.webp" alt="RadioPlayer: FM-radio online preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
+              </div>
+            </a>
+            <h3 class="mt-5 text-xl font-bold"><a href="https://apps.apple.com/us/app/radioplayer-fm-radio-online/id1444878430" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">RadioPlayer: FM-radio online <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
+            <p class="mt-2 text-sm text-slate-400">RadioPlayer: FM-radio online is a free app providing high-quality, live streaming of the most popular Ukrainian radio stations.</p>
           </article>
         </li>
       </ul>
@@ -929,6 +941,44 @@
     track.addEventListener('dragstart', (e) => e.preventDefault());
     // a drag must not count as a click on a project link
     track.addEventListener('click', (e) => { if (moved > 5) { e.preventDefault(); e.stopPropagation(); moved = 0; } }, true);
+    // Hover effect driven from JS so that it reacts to a real mouse only (not to taps) and can never get stuck:
+    // after a drag the card under the cursor is looked up again, and a page restored with Back is reset.
+    const cardOf = (el) => (el && el.closest ? el.closest('.slide') : null);
+    let expanded = null, inside = false, lastX = 0, lastY = 0;
+    const expand = (card) => {
+      if (card === expanded) return;
+      if (expanded) expanded.classList.remove('is-expanded');
+      expanded = card;
+      if (card) card.classList.add('is-expanded');
+    };
+    track.addEventListener('pointerdown', (e) => { if (e.pointerType === 'mouse') expand(cardOf(e.target)); });
+    track.addEventListener('pointermove', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      inside = true; lastX = e.clientX; lastY = e.clientY;
+      if (!down) expand(cardOf(e.target));            // while dragging, the card you hold stays as it is
+    });
+    track.addEventListener('pointerleave', (e) => { if (e.pointerType !== 'mouse') return; inside = false; if (!down) expand(null); });
+    window.addEventListener('pointerup', (e) => {     // runs after endDrag: look again at what is under the cursor now
+      if (e.pointerType !== 'mouse') return;
+      const el = document.elementFromPoint(e.clientX, e.clientY);
+      inside = !!(el && track.contains(el));
+      expand(cardOf(el));
+    });
+    track.addEventListener('scroll', () => {           // wheel / arrow buttons moved other cards under a still cursor
+      if (inside && !down) expand(cardOf(document.elementFromPoint(lastX, lastY)));
+    }, { passive: true });
+    // keyboard focus (never mouse or touch) also expands the card
+    track.addEventListener('focusin', (e) => {
+      let kb = false; try { kb = e.target.matches(':focus-visible'); } catch (err) {}
+      const c = cardOf(e.target); if (kb && c) c.classList.add('is-focused');
+    });
+    track.addEventListener('focusout', (e) => { const c = cardOf(e.target); if (c) c.classList.remove('is-focused'); });
+    // coming back with the Back button (page restored from memory): nothing may stay expanded
+    window.addEventListener('pageshow', (e) => {
+      if (!e.persisted) return;
+      track.querySelectorAll('.is-expanded, .is-focused').forEach((c) => c.classList.remove('is-expanded', 'is-focused'));
+      expanded = null; inside = false;
+    });
     update();
   })();
 
