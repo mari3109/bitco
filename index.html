@@ -1,2050 +1,952 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>bitco | Websites and apps built bit by bit</title>
-    <link rel="icon" type="image/svg+xml" href="logo-icon.svg" />
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
-    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
-    <meta name="color-scheme" content="dark light" />
-    <meta name="theme-color" content="#070a1a" />
-    <script>
-      // Runs before the page is painted: use the saved choice, otherwise dark (the default look of the site).
-      (function () {
-        var t = "dark";
-        try {
-          var s = localStorage.getItem("theme");
-          if (s === "light" || s === "dark") t = s;
-        } catch (e) {}
-        document.documentElement.dataset.theme = t;
-        var m = document.querySelector('meta[name="theme-color"]');
-        if (m) m.content = t === "light" ? "#f8fafc" : "#070a1a";
-      })();
-    </script>
-    <meta
-      name="description"
-      content="Digital agency building websites, e-commerce stores, and Android & iOS apps."
-    />
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>bitco | Websites and apps built bit by bit</title>
+<link rel="icon" type="image/svg+xml" href="logo-icon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#070a1a">
+<script>
+  // Runs before the page is painted: use the saved choice, otherwise dark (the default look of the site).
+  (function () {
+    var t = 'dark';
+    try { var s = localStorage.getItem('theme'); if (s === 'light' || s === 'dark') t = s; } catch (e) {}
+    document.documentElement.dataset.theme = t;
+    var m = document.querySelector('meta[name="theme-color"]'); if (m) m.content = t === 'light' ? '#f8fafc' : '#070a1a';
+  })();
+</script>
+<meta name="description" content="Digital agency building websites, e-commerce stores, and Android & iOS apps.">
 
-    <!-- Fonts, Tailwind (play CDN) and Lucide icons -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-    <script src="https://cdn.jsdelivr.net/npm/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+<!-- Fonts, Tailwind (play CDN) and Lucide icons -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.344.0/dist/umd/lucide.min.js"></script>
 
-    <script>
-      // Tailwind theme extension: brand colors + font
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['"Plus Jakarta Sans"', "system-ui", "sans-serif"],
-            },
-            colors: {
-              ink: "rgb(var(--ink) / <alpha-value>)",
-              panel: "rgb(var(--panel) / <alpha-value>)",
-              neon: "rgb(var(--neon) / <alpha-value>)",
-              violet: "#8b5cf6",
-            },
-          },
-        },
-      };
-    </script>
+<script>
+  // Tailwind theme extension: brand colors + font
+  tailwind.config = {
+    theme: { extend: {
+      fontFamily: { sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'] },
+      colors: { ink: 'rgb(var(--ink) / <alpha-value>)', panel: 'rgb(var(--panel) / <alpha-value>)', neon: 'rgb(var(--neon) / <alpha-value>)', violet: '#8b5cf6' }
+    } }
+  };
+</script>
 
-    <style>
-      /* ===== Theme tokens (dark = default). Light values are set below on html[data-theme="light"] ===== */
-      :root {
-        --ink: 7 10 26;
-        --panel: 14 19 48;
-        --neon: 34 211 238;
-        --fg: #e2e8f0;
-        --g1: #60a5fa;
-        --g2: #a78bfa;
-        --g3: #22d3ee;
-        --sb-thumb: rgba(139, 92, 246, 0.38);
-        --sb-thumb-hover: rgba(139, 92, 246, 0.65);
-        --mm-aside: rgba(139, 92, 246, 0.16);
-        color-scheme: dark;
-      }
-      html[data-theme="light"] {
-        --ink: 248 250 252;
-        --panel: 255 255 255;
-        --neon: 14 116 144;
-        --fg: #0f172a;
-        --g1: #2563eb;
-        --g2: #7c3aed;
-        --g3: #0e7490;
-        --sb-thumb: rgba(124, 58, 237, 0.32);
-        --sb-thumb-hover: rgba(124, 58, 237, 0.6);
-        --mm-aside: rgba(124, 58, 237, 0.09);
-        color-scheme: light;
-      }
-      body {
-        background: rgb(var(--ink));
-        color: var(--fg);
-      }
-      /* Reusable brand gradient for text and buttons */
-      .grad-text {
-        background: linear-gradient(90deg, var(--g1), var(--g2) 50%, var(--g3));
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-      }
-      .grad-bg {
-        background: linear-gradient(135deg, #3b82f6, #8b5cf6 55%, #22d3ee);
-      }
-      /* Soft ambient glow blobs behind sections */
-      .blob {
-        position: absolute;
-        border-radius: 9999px;
-        filter: blur(90px);
-        opacity: 0.35;
-        pointer-events: none;
-      }
-      /* Card: glowing gradient border on hover (mask trick) */
-      .glow-card {
-        position: relative;
-        transition:
-          transform 0.3s ease,
-          box-shadow 0.3s ease;
-      }
-      /* pointer-events:none keeps this decorative border layer from covering (and blocking clicks on) the card's content */
-      .glow-card::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        border-radius: inherit;
-        padding: 1px;
-        pointer-events: none;
-        background: linear-gradient(
-          135deg,
-          rgba(96, 165, 250, 0.25),
-          rgba(255, 255, 255, 0.05),
-          rgba(34, 211, 238, 0.25)
-        );
-        -webkit-mask:
-          linear-gradient(#000 0 0) content-box,
-          linear-gradient(#000 0 0);
-        -webkit-mask-composite: xor;
-        mask-composite: exclude;
-        transition: background 0.3s;
-      }
-      .glow-card:hover {
-        transform: translateY(-6px) scale(1.02);
-        box-shadow: 0 0 40px -8px rgba(139, 92, 246, 0.6);
-      }
-      .glow-card:hover::before {
-        background: linear-gradient(135deg, #60a5fa, #a78bfa, #22d3ee);
-      }
-      /* Floating hero elements */
-      @keyframes float {
-        0%,
-        100% {
-          transform: translateY(0);
-        }
-        50% {
-          transform: translateY(-14px);
-        }
-      }
-      .float {
-        animation: float 6s ease-in-out infinite;
-      }
-      .float-slow {
-        animation: float 8s ease-in-out infinite reverse;
-      }
-      /* Fade-in on scroll */
-      .reveal {
-        opacity: 0;
-        transform: translateY(24px);
-        transition:
-          opacity 0.7s ease,
-          transform 0.7s ease;
-      }
-      .reveal.show {
-        opacity: 1;
-        transform: none;
-      }
-      /* Project card image. The gradient frame is 3:2. At rest the image sits in the bottom-right with EQUAL gradient strips
+<style>
+  /* ===== Theme tokens (dark = default). Light values are set below on html[data-theme="light"] ===== */
+  :root { --ink:7 10 26; --panel:14 19 48; --neon:34 211 238; --fg:#e2e8f0; --g1:#60a5fa; --g2:#a78bfa; --g3:#22d3ee; --sb-thumb:rgba(139,92,246,.38); --sb-thumb-hover:rgba(139,92,246,.65); color-scheme:dark; }
+  html[data-theme="light"] { --ink:248 250 252; --panel:255 255 255; --neon:6 182 212; --fg:#0f172a; --g1:#2563eb; --g2:#7c3aed; --g3:#0e7490; --sb-thumb:rgba(124,58,237,.32); --sb-thumb-hover:rgba(124,58,237,.6); color-scheme:light; }
+  body { background:rgb(var(--ink)); color:var(--fg); }
+  /* Reusable brand gradient for text and buttons */
+  .grad-text { background:linear-gradient(90deg,var(--g1),var(--g2) 50%,var(--g3)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .grad-bg { background:linear-gradient(135deg,#3b82f6,#8b5cf6 55%,#22d3ee); }
+  /* Soft ambient glow blobs behind sections */
+  .blob { position:absolute; border-radius:9999px; filter:blur(90px); opacity:.35; pointer-events:none; }
+  /* Card: glowing gradient border on hover (mask trick) */
+  .glow-card { position:relative; transition:transform .3s ease, box-shadow .3s ease; }
+  /* pointer-events:none keeps this decorative border layer from covering (and blocking clicks on) the card's content */
+  .glow-card::before { content:""; position:absolute; top:0; right:0; bottom:0; left:0; border-radius:inherit; padding:1px; pointer-events:none;
+    background:linear-gradient(135deg,rgba(96,165,250,.25),rgba(255,255,255,.05),rgba(34,211,238,.25));
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; transition:background .3s; }
+  .glow-card:hover { transform:translateY(-6px) scale(1.02); box-shadow:0 0 40px -8px rgba(139,92,246,.6); }
+  .glow-card:hover::before { background:linear-gradient(135deg,#60a5fa,#a78bfa,#22d3ee); }
+  /* Floating hero elements */
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+  .float { animation:float 6s ease-in-out infinite; }
+  .float-slow { animation:float 8s ease-in-out infinite reverse; }
+  /* Fade-in on scroll */
+  .reveal { opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease; }
+  .reveal.show { opacity:1; transform:none; }
+  /* Project card image. The gradient frame is 3:2. At rest the image sits in the bottom-right with EQUAL gradient strips
      (--o) on the top and left; its box is then a little too short for a 3:2 picture, so the picture is anchored to the top
      and trimmed slightly at the bottom. On hover the box grows to the full 3:2 frame and the whole picture is shown. */
-      .shot {
-        display: block;
-        --o: 16px;
-        position: relative;
-        overflow: hidden;
-        border-radius: 1.5rem;
-        aspect-ratio: 3/2;
-      }
-      @media (min-width: 640px) {
-        .shot {
-          --o: 24px;
-        }
-      }
-      @supports not (aspect-ratio: 1/1) {
-        .shot::before {
-          content: "";
-          display: block;
-          padding-top: 66.6667%;
-        }
-      }
-      a.shot {
-        cursor: pointer;
-      }
-      #track.dragging a.shot,
-      #track.dragging * {
-        cursor: grabbing;
-      }
-      .shot-img {
-        position: absolute;
-        right: 0;
-        bottom: 0;
-        width: calc(100% - var(--o));
-        height: calc(100% - var(--o));
-        overflow: hidden;
-        border-top-left-radius: 1rem;
-        transition:
-          width 0.5s cubic-bezier(0.2, 0.7, 0.2, 1),
-          height 0.5s cubic-bezier(0.2, 0.7, 0.2, 1),
-          border-radius 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
-      }
-      .shot-img img {
-        object-position: 50% 0;
-      } /* keep the top, trim the bottom */
-      .slide:focus-within .shot-img {
-        width: 100%;
-        height: 100%;
-        border-top-left-radius: 0;
-      }
-      @media (hover: hover) and (pointer: fine) {
-        .slide:hover .shot-img {
-          width: 100%;
-          height: 100%;
-          border-top-left-radius: 0;
-        }
-      }
-      .slide + .slide {
-        margin-left: 1.5rem;
-      } /* spacing between cards (margin works everywhere, unlike flex gap in old Safari) */
+  .shot { display:block; --o:16px; position:relative; overflow:hidden; border-radius:1.5rem; aspect-ratio:3/2; }
+  @media (min-width:640px) { .shot { --o:24px; } }
+  @supports not (aspect-ratio:1/1) { .shot::before { content:""; display:block; padding-top:66.6667%; } }
+  a.shot { cursor:pointer; }
+  #track.dragging a.shot, #track.dragging * { cursor:grabbing; }
+  .shot-img { position:absolute; right:0; bottom:0; width:calc(100% - var(--o)); height:calc(100% - var(--o));
+    overflow:hidden; border-top-left-radius:1rem;
+    transition:width .5s cubic-bezier(.2,.7,.2,1), height .5s cubic-bezier(.2,.7,.2,1), border-radius .5s cubic-bezier(.2,.7,.2,1); }
+  .shot-img img { object-position:50% 0; }  /* keep the top, trim the bottom */
+  .slide:focus-within .shot-img { width:100%; height:100%; border-top-left-radius:0; }
+  @media (hover:hover) and (pointer:fine) {
+    .slide:hover .shot-img { width:100%; height:100%; border-top-left-radius:0; }
+  }
+  .slide + .slide { margin-left:1.5rem; }  /* spacing between cards (margin works everywhere, unlike flex gap in old Safari) */
 
-      /* ===== Light theme overrides: the Tailwind utilities below were written for a dark page ===== */
-      html[data-theme="light"] .text-slate-300 {
-        color: #334155;
-      }
-      html[data-theme="light"] .text-slate-400 {
-        color: #475569;
-      }
-      html[data-theme="light"] .hover\:text-white:hover {
-        color: #0f172a;
-      }
-      html[data-theme="light"] .text-blue-300 {
-        color: #1d4ed8;
-      }
-      html[data-theme="light"] .text-purple-300,
-      html[data-theme="light"] .text-violet-300 {
-        color: #6d28d9;
-      }
-      html[data-theme="light"] .text-cyan-300 {
-        color: #0e7490;
-      }
-      html[data-theme="light"] .text-red-400 {
-        color: #dc2626;
-      }
-      html[data-theme="light"] .text-emerald-400 {
-        color: #047857;
-      }
-      html[data-theme="light"] .border-white\/10 {
-        border-color: rgba(15, 23, 42, 0.1);
-      }
-      html[data-theme="light"] .border-white\/15 {
-        border-color: rgba(15, 23, 42, 0.15);
-      }
-      html[data-theme="light"] .border-white\/20 {
-        border-color: rgba(15, 23, 42, 0.2);
-      }
-      html[data-theme="light"] .bg-white\/5 {
-        background-color: rgba(15, 23, 42, 0.04);
-      }
-      html[data-theme="light"] .bg-white\/10 {
-        background-color: rgba(15, 23, 42, 0.07);
-      }
-      html[data-theme="light"] .bg-white\/15 {
-        background-color: rgba(15, 23, 42, 0.1);
-      }
-      html[data-theme="light"] .hover\:bg-white\/5:hover {
-        background-color: rgba(15, 23, 42, 0.04);
-      }
-      html[data-theme="light"] .hover\:bg-white\/10:hover {
-        background-color: rgba(15, 23, 42, 0.07);
-      }
-      /* controls that use white text on a dark pill in the dark theme */
-      html[data-theme="light"] #langBtn,
-      html[data-theme="light"] #langItem,
-      html[data-theme="light"] #prevBtn,
-      html[data-theme="light"] #nextBtn {
-        color: #0f172a;
-      }
-      html[data-theme="light"] .blob {
-        opacity: 0.14;
-      }
-      html[data-theme="light"] .glow-card {
-        box-shadow:
-          0 1px 3px rgba(15, 23, 42, 0.08),
-          0 10px 28px -14px rgba(15, 23, 42, 0.18);
-      }
-      html[data-theme="light"] .glow-card:hover {
-        box-shadow: 0 0 40px -8px rgba(139, 92, 246, 0.45);
-      }
-      html[data-theme="light"] .glow-card::before {
-        background: linear-gradient(
-          135deg,
-          rgba(37, 99, 235, 0.3),
-          rgba(15, 23, 42, 0.08),
-          rgba(14, 116, 144, 0.3)
-        );
-      }
-      html[data-theme="light"] .glow-card:hover::before {
-        background: linear-gradient(135deg, #2563eb, #7c3aed, #0e7490);
-      }
-      /* logo: a darker variant for the light page */
-      .logo-light {
-        display: none;
-      }
-      html[data-theme="light"] .logo-dark {
-        display: none;
-      }
-      html[data-theme="light"] .logo-light {
-        display: inline;
-      }
-      /* footer theme switcher: the active icon gets the brand gradient */
-      .theme-btn {
-        -webkit-tap-highlight-color: transparent;
-      }
-      /* selected button: gradient + light icon, identical in normal / hover / focus / active (so a sticky tap-hover on phones looks the same) */
-      html[data-theme] .theme-btn[aria-pressed="true"],
-      html[data-theme] .theme-btn[aria-pressed="true"]:hover,
-      html[data-theme] .theme-btn[aria-pressed="true"]:focus,
-      html[data-theme] .theme-btn[aria-pressed="true"]:active {
-        background: linear-gradient(135deg, #3b82f6, #8b5cf6 55%, #22d3ee);
-        color: #fff;
-        box-shadow: 0 4px 12px -4px rgba(139, 92, 246, 0.6);
-      }
-      /* the unselected icon reacts to hover only on devices that really hover (no sticky hover after a tap) */
-      @media (hover: hover) and (pointer: fine) {
-        .theme-btn:not([aria-pressed="true"]):hover {
-          color: var(--fg);
-        }
-      }
-      /* in the light theme the switcher is a white pill with a clearer outline so it reads as its own block */
-      html[data-theme="light"] .theme-switch {
-        background-color: #fff;
-        border-color: rgba(15, 23, 42, 0.18);
-      }
-      /* ===== Thin, subtle scrollbar in the site's violet (page + textarea). The slider keeps its own hidden scrollbar. ===== */
-      html,
-      textarea {
-        scrollbar-width: thin;
-        scrollbar-color: var(--sb-thumb) transparent;
-      }
-      @supports not (scrollbar-width: thin) {
-        /* older Chrome / Safari */
-        ::-webkit-scrollbar {
-          width: 8px;
-          height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-          background: var(--sb-thumb);
-          border-radius: 9999px;
-          border: 2px solid transparent;
-          background-clip: padding-box;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-          background: var(--sb-thumb-hover);
-          background-clip: padding-box;
-        }
-      }
-      /* header logo: 10% smaller on phones */
-      @media (max-width: 480px) {
-        header .logo-dark,
-        header .logo-light {
-          height: 2.25rem;
-        }
-      }
-      /* language label: EN and UA are stacked in one grid cell, so the button always has the width of the wider one */
-      .lang-codes {
-        display: inline-grid;
-      }
-      .lang-codes > span {
-        grid-area: 1 / 1;
-      }
-      .lang-codes > .is-off {
-        visibility: hidden;
-      }
-      /* Burger icon that morphs into a cross: top bar drops to the centre and turns 45deg (right end goes down),
+  /* ===== Light theme overrides: the Tailwind utilities below were written for a dark page ===== */
+  html[data-theme="light"] .text-slate-300 { color:#334155; }
+  html[data-theme="light"] .text-slate-400 { color:#475569; }
+  html[data-theme="light"] .hover\:text-white:hover { color:#0f172a; }
+  /* the light override of .text-slate-400 above is more specific than Tailwind's hover:text-neon, so hover needs its own light rule */
+  html[data-theme="light"] .hover\:text-neon:hover { color:rgb(var(--neon)); }
+  html[data-theme="light"] .text-blue-300 { color:#1d4ed8; }
+  html[data-theme="light"] .text-purple-300, html[data-theme="light"] .text-violet-300 { color:#6d28d9; }
+  html[data-theme="light"] .text-cyan-300 { color:#0e7490; }
+  html[data-theme="light"] .text-red-400 { color:#dc2626; }
+  html[data-theme="light"] .text-emerald-400 { color:#047857; }
+  html[data-theme="light"] .border-white\/10 { border-color:rgba(15,23,42,.10); }
+  html[data-theme="light"] .border-white\/15 { border-color:rgba(15,23,42,.15); }
+  html[data-theme="light"] .border-white\/20 { border-color:rgba(15,23,42,.20); }
+  html[data-theme="light"] .bg-white\/5 { background-color:rgba(15,23,42,.04); }
+  html[data-theme="light"] .bg-white\/10 { background-color:rgba(15,23,42,.07); }
+  html[data-theme="light"] .bg-white\/15 { background-color:rgba(15,23,42,.10); }
+  html[data-theme="light"] .hover\:bg-white\/5:hover { background-color:rgba(15,23,42,.04); }
+  html[data-theme="light"] .hover\:bg-white\/10:hover { background-color:rgba(15,23,42,.07); }
+  /* controls that use white text on a dark pill in the dark theme */
+  html[data-theme="light"] #langBtn, html[data-theme="light"] #langItem,
+  html[data-theme="light"] #prevBtn, html[data-theme="light"] #nextBtn { color:#0f172a; }
+  html[data-theme="light"] .blob { opacity:.14; }
+  html[data-theme="light"] .glow-card { box-shadow:0 1px 3px rgba(15,23,42,.08), 0 10px 28px -14px rgba(15,23,42,.18); }
+  html[data-theme="light"] .glow-card:hover { box-shadow:0 0 40px -8px rgba(139,92,246,.45); }
+  html[data-theme="light"] .glow-card::before { background:linear-gradient(135deg,rgba(37,99,235,.30),rgba(15,23,42,.08),rgba(14,116,144,.30)); }
+  html[data-theme="light"] .glow-card:hover::before { background:linear-gradient(135deg,#2563eb,#7c3aed,#0e7490); }
+  /* logo: a darker variant for the light page */
+  .logo-light { display:none; }
+  html[data-theme="light"] .logo-dark { display:none; }
+  html[data-theme="light"] .logo-light { display:inline; }
+  /* footer theme switcher: the active icon gets the brand gradient */
+  .theme-btn { -webkit-tap-highlight-color:transparent; }
+  /* selected button: gradient + light icon, identical in normal / hover / focus / active (so a sticky tap-hover on phones looks the same) */
+  html[data-theme] .theme-btn[aria-pressed="true"], html[data-theme] .theme-btn[aria-pressed="true"]:hover,
+  html[data-theme] .theme-btn[aria-pressed="true"]:focus, html[data-theme] .theme-btn[aria-pressed="true"]:active {
+    background:linear-gradient(135deg,#3b82f6,#8b5cf6 55%,#22d3ee); color:#fff; box-shadow:0 4px 12px -4px rgba(139,92,246,.6); }
+  /* the unselected icon reacts to hover only on devices that really hover (no sticky hover after a tap) */
+  @media (hover:hover) and (pointer:fine) { .theme-btn:not([aria-pressed="true"]):hover { color:var(--fg); } }
+  /* in the light theme the switcher is a white pill with a clearer outline so it reads as its own block */
+  html[data-theme="light"] .theme-switch { background-color:#fff; border-color:rgba(15,23,42,.18); }
+  /* ===== Thin, subtle scrollbar in the site's violet (page + textarea). The slider keeps its own hidden scrollbar. ===== */
+  html, textarea { scrollbar-width:thin; scrollbar-color:var(--sb-thumb) transparent; }
+  @supports not (scrollbar-width:thin) {   /* older Chrome / Safari */
+    ::-webkit-scrollbar { width:8px; height:8px; }
+    ::-webkit-scrollbar-track { background:transparent; }
+    ::-webkit-scrollbar-thumb { background:var(--sb-thumb); border-radius:9999px; border:2px solid transparent; background-clip:padding-box; }
+    ::-webkit-scrollbar-thumb:hover { background:var(--sb-thumb-hover); background-clip:padding-box; }
+  }
+  /* header logo: 10% smaller on phones */
+  @media (max-width:480px) { header .logo-dark, header .logo-light { height:2.25rem; } }
+  /* language label: EN and UA are stacked in one grid cell, so the button always has the width of the wider one */
+  .lang-codes { display:inline-grid; }
+  .lang-codes > span { grid-area:1 / 1; }
+  .lang-codes > .is-off { visibility:hidden; }
+  /* Burger icon that morphs into a cross: top bar drops to the centre and turns 45deg (right end goes down),
      bottom bar rises to the centre and turns -45deg (right end goes up), the middle bar shrinks from both ends to nothing. */
-      .burger {
-        position: relative;
-        display: block;
-        width: 24px;
-        height: 24px;
-      }
-      .burger span {
-        position: absolute;
-        left: 2px;
-        width: 20px;
-        height: 2px;
-        border-radius: 2px;
-        background: currentColor;
-        transition:
-          transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-          opacity 0.2s ease;
-      }
-      .burger span:nth-child(1) {
-        top: 5px;
-      }
-      .burger span:nth-child(2) {
-        top: 11px;
-      }
-      .burger span:nth-child(3) {
-        top: 17px;
-      }
-      #menuBtn[aria-expanded="true"] .burger span:nth-child(1) {
-        transform: translateY(6px) rotate(45deg);
-      }
-      #menuBtn[aria-expanded="true"] .burger span:nth-child(2) {
-        transform: scaleX(0);
-        opacity: 0;
-      }
-      #menuBtn[aria-expanded="true"] .burger span:nth-child(3) {
-        transform: translateY(-6px) rotate(-45deg);
-      }
-      /* on short screens (landscape phones) the open menu scrolls instead of running off the bottom */
-      #mobileMenu {
-        max-height: calc(100vh - 4.75rem);
-        max-height: calc(100dvh - 4.75rem);
-        overflow-y: auto;
-      }
-      /* burger menu items: no border; while pressed the same gradient ring as the language switcher appears */
-      .mm-item::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        border-radius: inherit;
-        padding: 1px;
-        pointer-events: none;
-        background: linear-gradient(
-          135deg,
-          var(--g1),
-          var(--g2) 55%,
-          var(--g3)
-        );
-        -webkit-mask:
-          linear-gradient(#000 0 0) content-box,
-          linear-gradient(#000 0 0);
-        -webkit-mask-composite: xor;
-        mask-composite: exclude;
-        opacity: 0;
-        transition: opacity 0.15s ease;
-      }
-      .mm-item:active::before {
-        opacity: 1;
-      }
-      /* round social buttons (Telegram, LinkedIn): same outline style as the theme switcher; gradient ring on hover / press / keyboard focus */
-      .soc-btn {
-        -webkit-tap-highlight-color: transparent;
-      }
-      .soc-btn::before {
-        content: "";
-        position: absolute;
-        top: -1px;
-        right: -1px;
-        bottom: -1px;
-        left: -1px;
-        border-radius: inherit;
-        padding: 1px;
-        pointer-events: none;
-        background: linear-gradient(
-          135deg,
-          var(--g1),
-          var(--g2) 55%,
-          var(--g3)
-        );
-        -webkit-mask:
-          linear-gradient(#000 0 0) content-box,
-          linear-gradient(#000 0 0);
-        -webkit-mask-composite: xor;
-        mask-composite: exclude;
-        opacity: 0;
-        transition: opacity 0.25s ease;
-      }
-      .soc-btn:active::before,
-      .soc-btn:focus-visible::before {
-        opacity: 1;
-      }
-      @media (hover: hover) and (pointer: fine) {
-        /* no sticky hover after a tap on phones */
-        .soc-btn:hover::before {
-          opacity: 1;
-        }
-        html[data-theme] .soc-btn:hover {
-          color: rgb(var(--neon));
-        }
-      }
-      /* tinted side block of the burger menu (theme switcher + socials) */
-      .mm-aside {
-        background: var(--mm-aside);
-      }
-      /* <select> in the contact form: same height as the inputs in every browser and an arrow with a proper right margin */
-      #contactForm select {
-        -webkit-appearance: none;
-        appearance: none;
-        box-sizing: border-box;
-        height: 3.125rem;
-        line-height: 1.5rem;
-        padding-right: 2.75rem;
-        background-repeat: no-repeat;
-        background-position: right 1rem center;
-        background-size: 1rem 1rem;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-      }
-      html[data-theme="light"] #contactForm select {
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-      }
-      /* Language switcher: dropdown fade/slide and rotating chevron */
-      .lang-menu {
-        opacity: 0;
-        visibility: hidden;
-        transform: translateY(-6px);
-        transition:
-          opacity 0.2s ease,
-          transform 0.2s ease,
-          visibility 0.2s;
-      }
-      .lang-menu.open {
-        opacity: 1;
-        visibility: visible;
-        transform: none;
-      }
-      .lang-chevron {
-        transition: transform 0.25s ease;
-      }
-      #langBtn[aria-expanded="true"] .lang-chevron {
-        transform: rotate(180deg);
-      }
-      /* gradient border ring (same gradient as the buttons) shown on hover and while the menu is open */
-      #langBtn::before {
-        content: "";
-        position: absolute;
-        top: -1px;
-        right: -1px;
-        bottom: -1px;
-        left: -1px;
-        border-radius: inherit;
-        padding: 1px;
-        pointer-events: none;
-        background: linear-gradient(
-          135deg,
-          var(--g1),
-          var(--g2) 55%,
-          var(--g3)
-        );
-        -webkit-mask:
-          linear-gradient(#000 0 0) content-box,
-          linear-gradient(#000 0 0);
-        -webkit-mask-composite: xor;
-        mask-composite: exclude;
-        opacity: 0;
-        transition: opacity 0.25s ease;
-      }
-      #langBtn:hover::before,
-      #langBtn[aria-expanded="true"]::before {
-        opacity: 1;
-      }
-      /* slider arrows disappear when disabled (nothing more to scroll that way) */
-      #prevBtn:disabled,
-      #nextBtn:disabled {
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-      }
-      /* Projects slider: hidden scrollbar, mouse-drag state */
-      .no-scrollbar {
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-      }
-      .no-scrollbar::-webkit-scrollbar {
-        display: none;
-      }
-      #track {
-        cursor: grab;
-      }
-      #track.dragging {
-        scroll-snap-type: none !important;
-        scroll-behavior: auto !important;
-        cursor: grabbing;
-        user-select: none;
-      }
-      #track img {
-        -webkit-user-drag: none;
-        user-select: none;
-      }
-      /* Visible keyboard focus */
-      :focus-visible {
-        outline: 2px solid #22d3ee;
-        outline-offset: 3px;
-      }
-      @media (prefers-reduced-motion: reduce) {
-        .shot-img {
-          transition: none;
-        }
-        .lang-menu,
-        .lang-chevron,
-        .burger span,
-        .soc-btn::before {
-          transition: none;
-        }
-        .float,
-        .float-slow {
-          animation: none;
-        }
-        .reveal {
-          opacity: 1;
-          transform: none;
-          transition: none;
-        }
-        html {
-          scroll-behavior: auto;
-        }
-      }
-      section[id] {
-        scroll-margin-top: 80px;
-      }
-    </style>
-  </head>
+  .burger { position:relative; display:block; width:24px; height:24px; }
+  .burger span { position:absolute; left:2px; width:20px; height:2px; border-radius:2px; background:currentColor;
+    transition:transform .35s cubic-bezier(.4,0,.2,1), opacity .2s ease; }
+  .burger span:nth-child(1) { top:5px; }
+  .burger span:nth-child(2) { top:11px; }
+  .burger span:nth-child(3) { top:17px; }
+  #menuBtn[aria-expanded="true"] .burger span:nth-child(1) { transform:translateY(6px) rotate(45deg); }
+  #menuBtn[aria-expanded="true"] .burger span:nth-child(2) { transform:scaleX(0); opacity:0; }
+  #menuBtn[aria-expanded="true"] .burger span:nth-child(3) { transform:translateY(-6px) rotate(-45deg); }
+  /* on short screens (landscape phones) the open menu scrolls instead of running off the bottom */
+  #mobileMenu { max-height:calc(100vh - 4.75rem); max-height:calc(100dvh - 4.75rem); overflow-y:auto; }
+  /* burger menu items: no border; while pressed the same gradient ring as the language switcher appears */
+  .mm-item::before { content:""; position:absolute; top:0; right:0; bottom:0; left:0; border-radius:inherit; padding:1px; pointer-events:none;
+    background:linear-gradient(135deg,var(--g1),var(--g2) 55%,var(--g3));
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude;
+    opacity:0; transition:opacity .15s ease; }
+  .mm-item:active::before { opacity:1; }
+  /* <select> in the contact form: same height as the inputs in every browser and an arrow with a proper right margin */
+  #contactForm select { -webkit-appearance:none; appearance:none; box-sizing:border-box; height:3.125rem; line-height:1.5rem; padding-right:2.75rem;
+    background-repeat:no-repeat; background-position:right 1rem center; background-size:1rem 1rem;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); }
+  html[data-theme="light"] #contactForm select { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); }
+  /* blurred, slightly tinted layer over the whole page while the burger menu is open (below the header, which stays sharp) */
+  #menuBackdrop { position:fixed; top:0; right:0; bottom:0; left:0; z-index:40; background:rgba(7,10,26,.35);
+    -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); opacity:0; visibility:hidden; transition:opacity .25s ease, visibility .25s; }
+  html[data-theme="light"] #menuBackdrop { background:rgba(248,250,252,.35); }
+  #menuBackdrop.open { opacity:1; visibility:visible; }
+  @media (min-width:768px) { #menuBackdrop { display:none; } }
+  /* Language switcher: dropdown fade/slide and rotating chevron */
+  .lang-menu { opacity:0; visibility:hidden; transform:translateY(-6px); transition:opacity .2s ease, transform .2s ease, visibility .2s; }
+  .lang-menu.open { opacity:1; visibility:visible; transform:none; }
+  .lang-chevron { transition:transform .25s ease; }
+  #langBtn[aria-expanded="true"] .lang-chevron { transform:rotate(180deg); }
+  /* gradient border ring (same gradient as the buttons) shown on hover and while the menu is open */
+  #langBtn::before { content:""; position:absolute; top:-1px; right:-1px; bottom:-1px; left:-1px; border-radius:inherit; padding:1px; pointer-events:none;
+    background:linear-gradient(135deg,var(--g1),var(--g2) 55%,var(--g3));
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude;
+    opacity:0; transition:opacity .25s ease; }
+  #langBtn:hover::before, #langBtn[aria-expanded="true"]::before { opacity:1; }
+  /* slider arrows disappear when disabled (nothing more to scroll that way) */
+  #prevBtn:disabled, #nextBtn:disabled { opacity:0; visibility:hidden; pointer-events:none; }
+  /* Projects slider: hidden scrollbar, mouse-drag state */
+  .no-scrollbar { scrollbar-width:none; -ms-overflow-style:none; }
+  .no-scrollbar::-webkit-scrollbar { display:none; }
+  #track { cursor:grab; }
+  #track.dragging { scroll-snap-type:none !important; scroll-behavior:auto !important; cursor:grabbing; user-select:none; }
+  #track img { -webkit-user-drag:none; user-select:none; }
+  /* Visible keyboard focus */
+  :focus-visible { outline:2px solid #22d3ee; outline-offset:3px; }
+  @media (prefers-reduced-motion:reduce){ .shot-img{transition:none} .lang-menu,.lang-chevron,.burger span,#menuBackdrop{transition:none}  .float,.float-slow{animation:none} .reveal{opacity:1;transform:none;transition:none} html{scroll-behavior:auto} }
+  section[id] { scroll-margin-top:80px; }
+</style>
+</head>
 
-  <body class="font-sans antialiased">
-    <!-- ============ NAVIGATION ============ -->
-    <header class="fixed top-0 inset-x-0 z-50">
-      <!-- blurred bar background lives in its own layer behind the content (-z-10) -->
-      <div
-        class="absolute inset-0 -z-10 border-b border-white/10 bg-ink/60 backdrop-blur-xl"
-        aria-hidden="true"
-      ></div>
-      <nav
-        class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-5 py-4"
-        aria-label="Main"
-      >
-        <a href="#home" aria-label="bitco, home"
-          ><img
-            src="logo-bitco.svg"
-            alt="bitco production"
-            class="logo-dark h-10 w-auto md:h-11" /><img
-            src="logo-bitco-light.svg"
-            alt="bitco production"
-            class="logo-light h-10 w-auto md:h-11"
-        /></a>
-        <ul
-          class="hidden md:flex items-center md:gap-4 min-[851px]:gap-8 text-sm font-medium text-slate-300"
-        >
-          <li><a class="hover:text-white transition" href="#home">Home</a></li>
-          <li>
-            <a class="hover:text-white transition" href="#services">Services</a>
-          </li>
-          <li>
-            <a class="hover:text-white transition" href="#portfolio"
-              >Portfolio</a
-            >
-          </li>
-          <li>
-            <a class="hover:text-white transition" href="#process">Process</a>
-          </li>
-          <li>
-            <a class="hover:text-white transition" href="#contact">Contact</a>
-          </li>
-        </ul>
-        <!-- Right side: language switcher, then the CTA (desktop) or the burger (mobile) -->
-        <div class="flex items-center gap-2 md:gap-3 min-[851px]:gap-4">
-          <div id="lang" class="relative">
-            <button
-              id="langBtn"
-              type="button"
-              aria-haspopup="true"
-              aria-expanded="false"
-              aria-controls="langMenu"
-              aria-label="Language: English. Change language"
-              class="relative inline-flex h-9 items-center gap-1.5 rounded-full border border-white/15 bg-white/5 pl-3 pr-2.5 text-sm font-bold tracking-wide text-white transition hover:bg-white/10"
-            >
-              <!-- Globe icon with the same gradient as the site buttons -->
-              <svg
-                class="h-4 w-4 shrink-0"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <defs>
-                  <linearGradient
-                    id="globeGrad"
-                    gradientUnits="userSpaceOnUse"
-                    x1="2"
-                    y1="2"
-                    x2="22"
-                    y2="22"
-                  >
-                    <stop offset="0" style="stop-color: var(--g1)" />
-                    <stop offset=".55" style="stop-color: var(--g2)" />
-                    <stop offset="1" style="stop-color: var(--g3)" />
-                  </linearGradient>
-                </defs>
-                <g stroke="url(#globeGrad)">
-                  <circle cx="12" cy="12" r="10" />
-                  <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
-                  <path d="M2 12h20" />
-                </g>
-              </svg>
-              <span id="langCode" class="lang-codes"
-                ><span data-code="en">EN</span
-                ><span data-code="ua" class="is-off">UA</span></span
-              >
-              <svg
-                class="lang-chevron h-4 w-4 shrink-0 text-slate-400"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="m6 9 6 6 6-6" />
-              </svg>
-            </button>
-            <!-- Dropdown is as wide as the button and uses the same left padding and gap, so the flag sits exactly under the
+<body class="font-sans antialiased">
+
+<!-- ============ NAVIGATION ============ -->
+<div id="menuBackdrop" aria-hidden="true"></div>
+<header class="fixed top-0 inset-x-0 z-50">
+  <!-- blurred bar background lives in its own layer behind the content (-z-10) -->
+  <div class="absolute inset-0 -z-10 border-b border-white/10 bg-ink/60 backdrop-blur-xl" aria-hidden="true"></div>
+  <nav class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-5 py-4" aria-label="Main">
+    <a href="#home" aria-label="bitco, home"><img src="logo-bitco.svg" alt="bitco production" class="logo-dark h-10 w-auto md:h-11"><img src="logo-bitco-light.svg" alt="bitco production" class="logo-light h-10 w-auto md:h-11"></a>
+    <ul class="hidden md:flex items-center md:gap-4 min-[851px]:gap-8 text-sm font-medium text-slate-300">
+      <li><a class="hover:text-white transition" href="#home">Home</a></li>
+      <li><a class="hover:text-white transition" href="#services">Services</a></li>
+      <li><a class="hover:text-white transition" href="#portfolio">Portfolio</a></li>
+      <li><a class="hover:text-white transition" href="#process">Process</a></li>
+      <li><a class="hover:text-white transition" href="#contact">Contact</a></li>
+    </ul>
+    <!-- Right side: language switcher, then the CTA (desktop) or the burger (mobile) -->
+    <div class="flex items-center gap-2 md:gap-3 min-[851px]:gap-4">
+      <div id="lang" class="relative">
+        <button id="langBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="langMenu" aria-label="Language: English. Change language"
+          class="relative inline-flex h-9 items-center gap-1.5 rounded-full border border-white/15 bg-white/5 pl-3 pr-2.5 text-sm font-bold tracking-wide text-white transition hover:bg-white/10">
+          <!-- Globe icon with the same gradient as the site buttons -->
+          <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <defs><linearGradient id="globeGrad" gradientUnits="userSpaceOnUse" x1="2" y1="2" x2="22" y2="22"><stop offset="0" style="stop-color:var(--g1)"/><stop offset=".55" style="stop-color:var(--g2)"/><stop offset="1" style="stop-color:var(--g3)"/></linearGradient></defs>
+            <g stroke="url(#globeGrad)"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></g>
+          </svg>
+          <span id="langCode" class="lang-codes"><span data-code="en">EN</span><span data-code="ua" class="is-off">UA</span></span>
+          <svg class="lang-chevron h-4 w-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <!-- Dropdown is as wide as the button and uses the same left padding and gap, so the flag sits exactly under the
              globe and the abbreviation exactly under the current abbreviation. Only the NOT selected language is listed. -->
-            <div
-              id="langMenu"
-              class="lang-menu absolute left-0 top-full z-50 mt-2 w-full overflow-hidden rounded-2xl border border-white/10 bg-panel/95 shadow-xl shadow-violet/20 backdrop-blur-xl"
-            >
-              <button
-                id="langItem"
-                type="button"
-                data-lang="ua"
-                aria-label="Switch to Українська"
-                class="flex h-9 w-full items-center gap-1.5 pl-3 pr-2.5 text-left text-sm font-bold tracking-wide text-white transition hover:bg-white/10"
-              >
-                <span class="grid h-4 w-4 shrink-0 place-items-center"
-                  ><svg
-                    id="flagUa"
-                    class="h-4 w-4"
-                    viewBox="0 0 16 16"
-                    aria-hidden="true"
-                  >
-                    <defs>
-                      <clipPath id="clipUa">
-                        <circle cx="8" cy="8" r="8" />
-                      </clipPath>
-                    </defs>
-                    <g clip-path="url(#clipUa)">
-                      <rect width="16" height="8" fill="#0057b7" />
-                      <rect y="8" width="16" height="8" fill="#ffd700" />
-                    </g></svg
-                  ><svg
-                    id="flagEn"
-                    class="h-4 w-4 hidden"
-                    viewBox="15 0 30 30"
-                    aria-hidden="true"
-                  >
-                    <defs>
-                      <clipPath id="clipEn">
-                        <circle cx="30" cy="15" r="15" />
-                      </clipPath>
-                      <clipPath id="clipEnX">
-                        <path d="M30,15h30v15zv15h-30zh-30v-15zv-15h30z" />
-                      </clipPath>
-                    </defs>
-                    <g clip-path="url(#clipEn)">
-                      <rect x="0" width="60" height="30" fill="#012169" />
-                      <path
-                        d="M0,0L60,30M60,0L0,30"
-                        stroke="#fff"
-                        stroke-width="6"
-                      />
-                      <path
-                        d="M0,0L60,30M60,0L0,30"
-                        clip-path="url(#clipEnX)"
-                        stroke="#c8102e"
-                        stroke-width="4"
-                      />
-                      <path
-                        d="M30,0v30M0,15h60"
-                        stroke="#fff"
-                        stroke-width="10"
-                      />
-                      <path
-                        d="M30,0v30M0,15h60"
-                        stroke="#c8102e"
-                        stroke-width="6"
-                      />
-                    </g></svg
-                ></span>
-                <span id="langItemCode">UA</span>
-              </button>
-            </div>
-          </div>
-          <a
-            href="#contact"
-            class="grad-bg hidden md:inline-block shrink-0 whitespace-nowrap rounded-full px-5 md:px-4 min-[851px]:px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-violet/30 transition hover:scale-105"
-            >Get a Quote</a
-          >
-          <button
-            id="menuBtn"
-            class="md:hidden p-2"
-            aria-label="Open menu"
-            aria-expanded="false"
-            aria-controls="mobileMenu"
-          >
-            <span class="burger" aria-hidden="true"
-              ><span></span><span></span><span></span
-            ></span>
+        <div id="langMenu" class="lang-menu absolute left-0 top-full z-50 mt-2 w-full overflow-hidden rounded-2xl border border-white/10 bg-panel/95 shadow-xl shadow-violet/20 backdrop-blur-xl">
+          <button id="langItem" type="button" data-lang="ua" aria-label="Switch to Українська" class="flex h-9 w-full items-center gap-1.5 pl-3 pr-2.5 text-left text-sm font-bold tracking-wide text-white transition hover:bg-white/10">
+            <span class="grid h-4 w-4 shrink-0 place-items-center"><svg id="flagUa" class="h-4 w-4" viewBox="0 0 16 16" aria-hidden="true"><defs><clipPath id="clipUa"><circle cx="8" cy="8" r="8"/></clipPath></defs><g clip-path="url(#clipUa)"><rect width="16" height="8" fill="#0057b7"/><rect y="8" width="16" height="8" fill="#ffd700"/></g></svg><svg id="flagEn" class="h-4 w-4 hidden" viewBox="15 0 30 30" aria-hidden="true"><defs><clipPath id="clipEn"><circle cx="30" cy="15" r="15"/></clipPath><clipPath id="clipEnX"><path d="M30,15h30v15zv15h-30zh-30v-15zv-15h30z"/></clipPath></defs><g clip-path="url(#clipEn)"><rect x="0" width="60" height="30" fill="#012169"/><path d="M0,0L60,30M60,0L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0L60,30M60,0L0,30" clip-path="url(#clipEnX)" stroke="#c8102e" stroke-width="4"/><path d="M30,0v30M0,15h60" stroke="#fff" stroke-width="10"/><path d="M30,0v30M0,15h60" stroke="#c8102e" stroke-width="6"/></g></svg></span>
+            <span id="langItemCode">UA</span>
           </button>
         </div>
+      </div>
+      <a href="#contact" class="grad-bg hidden md:inline-block shrink-0 whitespace-nowrap rounded-full px-5 md:px-4 min-[851px]:px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-violet/30 transition hover:scale-105">Get a Quote</a>
+      <button id="menuBtn" class="md:hidden p-2" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu"><span class="burger" aria-hidden="true"><span></span><span></span><span></span></span></button>
+    </div>
+  </nav>
+  <!-- Mobile menu: full width below 480px; a 300px panel on the right edge from 480 to 767px. It sits under the header bar (not inside its height).
+       Links and "Get a Quote" share one width; below a horizontal divider: theme switcher | Telegram + LinkedIn. -->
+  <div id="mobileMenu" class="hidden md:hidden absolute inset-x-0 top-full border-b border-white/10 bg-ink/85 px-5 pb-5 pt-3 min-[480px]:left-auto min-[480px]:right-0 min-[480px]:w-[300px] min-[480px]:rounded-bl-2xl min-[480px]:border-l">
+    <div class="flex flex-col gap-1.5">
+      <a class="mm-item relative flex h-12 items-center justify-center rounded-full px-5 font-medium transition hover:bg-white/10" href="#home">Home</a>
+      <a class="mm-item relative flex h-12 items-center justify-center rounded-full px-5 font-medium transition hover:bg-white/10" href="#services">Services</a>
+      <a class="mm-item relative flex h-12 items-center justify-center rounded-full px-5 font-medium transition hover:bg-white/10" href="#portfolio">Portfolio</a>
+      <a class="mm-item relative flex h-12 items-center justify-center rounded-full px-5 font-medium transition hover:bg-white/10" href="#process">Process</a>
+      <a class="mm-item relative flex h-12 items-center justify-center rounded-full px-5 font-medium transition hover:bg-white/10" href="#contact">Contact</a>
+      <a href="#contact" class="grad-bg flex h-12 items-center justify-center rounded-full px-5 font-semibold text-white">Get a Quote</a>
+    </div>
+    <div class="mt-4 flex items-center justify-between gap-5 border-t border-white/10 pt-4">
+      <div role="group" aria-label="Color theme" class="theme-switch inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/5 p-1">
+        <button type="button" data-theme-set="light" aria-pressed="false" aria-label="Light theme" class="theme-btn grid h-8 w-8 place-items-center rounded-full text-slate-400 transition"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2"></path>
+          <path d="M12 20v2"></path>
+          <path d="m4.93 4.93 1.41 1.41"></path>
+          <path d="m17.66 17.66 1.41 1.41"></path>
+          <path d="M2 12h2"></path>
+          <path d="M20 12h2"></path>
+          <path d="m6.34 17.66-1.41 1.41"></path>
+          <path d="m19.07 4.93-1.41 1.41"></path>
+        </svg></button>
+        <button type="button" data-theme-set="dark" aria-pressed="true" aria-label="Dark theme" class="theme-btn grid h-8 w-8 place-items-center rounded-full text-slate-400 transition"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button>
+      </div>
+      <span class="h-6 w-px bg-white/15" aria-hidden="true"></span>
+      <div class="flex items-center gap-4">
+        <a href="https://t.me/bitco_studio" target="_blank" rel="noopener" aria-label="Telegram" class="text-slate-400 hover:text-neon"><i data-lucide="send" class="h-5 w-5"></i></a>
+        <a href="#" aria-label="LinkedIn" class="text-slate-400 hover:text-neon"><i data-lucide="linkedin" class="h-5 w-5"></i></a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+<!-- ============ HERO ============ -->
+<section id="home" class="relative overflow-hidden pt-36 pb-24 lg:pt-44">
+  <div class="blob -left-32 top-20 h-96 w-96 bg-blue-600"></div>
+  <div class="blob right-0 top-40 h-96 w-96 bg-violet"></div>
+  <div class="relative mx-auto grid max-w-7xl items-center gap-16 px-5 lg:grid-cols-2">
+    <div>
+      <p class="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-sm text-slate-300">
+        <span class="h-2 w-2 rounded-full bg-neon"></span> Booking new projects for next month
+      </p>
+      <h1 class="text-4xl font-extrabold leading-tight sm:text-5xl lg:text-6xl">
+        We turn your ideas into powerful <span class="grad-text">web &amp; mobile apps</span>
+      </h1>
+      <p class="mt-6 max-w-xl text-lg text-slate-400">
+        Websites, online stores and Android &amp; iOS apps, designed and built by one small team from first sketch to store launch.
+      </p>
+      <div class="mt-9 flex flex-wrap gap-4">
+        <a href="#portfolio" class="grad-bg inline-flex items-center gap-2 rounded-full px-7 py-3.5 font-semibold text-white shadow-lg shadow-violet/30 transition hover:scale-105">Our Work <i data-lucide="arrow-right" class="h-4 w-4"></i></a>
+        <a href="#contact" class="inline-flex items-center gap-2 rounded-full border border-white/20 px-7 py-3.5 font-semibold transition hover:border-neon hover:bg-white/5">Contact Us</a>
+      </div>
+    </div>
+
+    <!-- Floating UI mockups (pure HTML/CSS placeholders) -->
+    <div class="relative mx-auto h-[420px] w-full max-w-lg" aria-hidden="true">
+      <!-- Browser window -->
+      <div class="float absolute left-0 top-6 w-[78%] rounded-2xl border border-white/10 bg-panel/90 p-4 shadow-2xl backdrop-blur">
+        <div class="mb-4 flex gap-1.5"><i class="h-2.5 w-2.5 rounded-full bg-red-400"></i><i class="h-2.5 w-2.5 rounded-full bg-yellow-400"></i><i class="h-2.5 w-2.5 rounded-full bg-green-400"></i></div>
+        <div class="grad-bg mb-3 h-24 rounded-xl opacity-80"></div>
+        <div class="mb-2 h-3 w-3/4 rounded bg-white/15"></div>
+        <div class="mb-4 h-3 w-1/2 rounded bg-white/10"></div>
+        <div class="grid grid-cols-3 gap-2"><div class="h-14 rounded-lg bg-white/10"></div><div class="h-14 rounded-lg bg-white/10"></div><div class="h-14 rounded-lg bg-white/10"></div></div>
+      </div>
+      <!-- Phone -->
+      <div class="float-slow absolute bottom-0 right-2 w-[38%] rounded-[2rem] border-4 border-slate-700 bg-ink p-3 shadow-2xl shadow-violet/30">
+        <div class="mx-auto mb-3 h-1.5 w-10 rounded-full bg-slate-700"></div>
+        <div class="mb-2 h-20 rounded-xl bg-gradient-to-br from-neon to-violet"></div>
+        <div class="mb-2 h-2.5 w-full rounded bg-white/15"></div>
+        <div class="mb-3 h-2.5 w-2/3 rounded bg-white/10"></div>
+        <div class="grad-bg h-8 rounded-full"></div>
+      </div>
+      <!-- Stat chip -->
+      <div class="float absolute right-0 top-0 flex items-center gap-3 rounded-2xl border border-white/10 bg-panel/90 px-4 py-3 shadow-xl backdrop-blur">
+        <i data-lucide="trending-up" class="h-5 w-5 text-neon"></i>
+        <div><p class="text-sm font-bold">+68% conversions</p><p class="text-xs text-slate-400">after relaunch</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SERVICES ============ -->
+<section id="services" class="relative py-24">
+  <div class="mx-auto max-w-7xl px-5">
+    <div class="reveal mx-auto mb-14 max-w-2xl text-center">
+      <h2 class="text-3xl font-extrabold sm:text-4xl">What we build</h2>
+      <p class="mt-4 text-slate-400">Three services that cover everything from the first wireframe to the live product.</p>
+    </div>
+    <div class="grid gap-6 md:grid-cols-3">
+
+      <article class="reveal glow-card rounded-3xl bg-panel p-8">
+        <span class="grad-bg mb-6 grid h-14 w-14 place-items-center rounded-2xl"><i data-lucide="globe" class="h-7 w-7 text-white"></i></span>
+        <h3 class="text-xl font-bold">Web Development</h3>
+        <p class="mt-3 text-slate-400">Fast landing pages, online stores, and custom web apps that are easy to update and built to grow.</p>
+        <div class="mt-6 flex flex-wrap gap-2 text-xs">
+          <span class="rounded-full bg-blue-500/15 px-3 py-1 text-blue-300">React</span>
+          <span class="rounded-full bg-blue-500/15 px-3 py-1 text-blue-300">Node.js</span>
+          <span class="rounded-full bg-blue-500/15 px-3 py-1 text-blue-300">Next.js</span>
+        </div>
+      </article>
+
+      <article class="reveal glow-card rounded-3xl bg-panel p-8">
+        <span class="grad-bg mb-6 grid h-14 w-14 place-items-center rounded-2xl"><i data-lucide="smartphone" class="h-7 w-7 text-white"></i></span>
+        <h3 class="text-xl font-bold">Mobile App Development</h3>
+        <p class="mt-3 text-slate-400">One codebase, two stores. Native-feeling Android and iOS apps built with Flutter or React Native.</p>
+        <div class="mt-6 flex flex-wrap gap-2 text-xs">
+          <span class="rounded-full bg-violet/15 px-3 py-1 text-violet-300 text-purple-300">Flutter</span>
+          <span class="rounded-full bg-violet/15 px-3 py-1 text-purple-300">iOS</span>
+          <span class="rounded-full bg-violet/15 px-3 py-1 text-purple-300">Android</span>
+          <span class="rounded-full bg-violet/15 px-3 py-1 text-purple-300">Firebase</span>
+        </div>
+      </article>
+
+      <article class="reveal glow-card rounded-3xl bg-panel p-8">
+        <span class="grad-bg mb-6 grid h-14 w-14 place-items-center rounded-2xl"><i data-lucide="pen-tool" class="h-7 w-7 text-white"></i></span>
+        <h3 class="text-xl font-bold">UI/UX Design</h3>
+        <p class="mt-3 text-slate-400">Clear interfaces tested with real users, from low-fidelity wireframes to a full design system.</p>
+        <div class="mt-6 flex flex-wrap gap-2 text-xs">
+          <span class="rounded-full bg-cyan-500/15 px-3 py-1 text-cyan-300">Figma</span>
+          <span class="rounded-full bg-cyan-500/15 px-3 py-1 text-cyan-300">Wireframing</span>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ PORTFOLIO / PROJECTS SLIDER ============ -->
+<section id="portfolio" class="relative py-24">
+  <div class="mx-auto max-w-7xl px-5">
+    <div class="reveal mb-10">
+      <h2 class="text-3xl font-extrabold sm:text-4xl">Our Projects</h2>
+      <p class="mt-4 max-w-xl text-slate-400">Long-term partnerships and recent launches in ticketing, e-commerce and banking.</p>
+    </div>
+
+    <div class="reveal relative" role="region" aria-roledescription="carousel" aria-label="Our projects">
+      <!-- Prev / next buttons on the left and right sides (no autoplay: clicks, swipes or dragging only) -->
+      <button id="prevBtn" type="button" aria-label="Previous projects" class="absolute left-2 top-[36%] z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-ink/70 text-white backdrop-blur transition hover:border-neon disabled:invisible disabled:opacity-0 md:left-3"><i data-lucide="chevron-left" class="h-5 w-5"></i></button>
+      <button id="nextBtn" type="button" aria-label="Next projects" class="absolute right-2 top-[36%] z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-ink/70 text-white backdrop-blur transition hover:border-neon disabled:invisible disabled:opacity-0 md:right-3"><i data-lucide="chevron-right" class="h-5 w-5"></i></button>
+
+      <ul id="track" tabindex="0" class="no-scrollbar flex snap-x snap-mandatory overflow-x-auto scroll-smooth pb-2">
+        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
+          <article>
+            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+            <a href="https://guzema.com/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
+              <div class="shot-img bg-panel">
+                <img src="images/guzema.webp" alt="Guzema preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
+              </div>
+            </a>
+            <h3 class="mt-5 text-xl font-bold"><a href="https://guzema.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">Guzema <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
+            <p class="mt-2 text-sm text-slate-400">Guzema is a Ukrainian fine jewelry brand offering handcrafted, timeless 18k gold and diamond pieces designed for everyday luxury.</p>
+          </article>
+        </li>
+        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
+          <article>
+            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+            <a href="https://hemafund.com/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
+              <div class="shot-img bg-panel">
+                <img src="images/hemafund.webp" alt="Hemafund preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
+              </div>
+            </a>
+            <h3 class="mt-5 text-xl font-bold"><a href="https://hemafund.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">Hemafund <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
+            <p class="mt-2 text-sm text-slate-400">A leading Ukrainian cryobank providing collection, processing, and long-term storage of stem cells from cord blood, umbilical cord, and placenta.</p>
+          </article>
+        </li>
+        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
+          <article>
+            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+            <a href="https://business.diia.gov.ua/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
+              <div class="shot-img bg-panel">
+                <img src="images/diia-business.webp" alt="Diia.Business preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
+              </div>
+            </a>
+            <h3 class="mt-5 text-xl font-bold"><a href="https://business.diia.gov.ua/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">Diia.Business <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
+            <p class="mt-2 text-sm text-slate-400">Diia.Business is a state-backed Ukrainian portal providing free consulting, educational programs, and comprehensive infrastructure tools to support small and medium enterprises.</p>
+          </article>
+        </li>
+        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
+          <article>
+            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+            <a href="https://osvita.diia.gov.ua/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
+              <div class="shot-img bg-panel">
+                <img src="images/diia-osvita.webp" alt="Diia.Osvita preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
+              </div>
+            </a>
+            <h3 class="mt-5 text-xl font-bold"><a href="https://osvita.diia.gov.ua/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">Diia.Osvita <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
+            <p class="mt-2 text-sm text-slate-400">Ukrainian national educational platform providing free digital literacy testing, skill-building simulators, professional retraining courses, and career development tools.</p>
+          </article>
+        </li>
+        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
+          <article>
+            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+            <a href="https://bank.com.ua/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
+              <div class="shot-img bg-panel">
+                <img src="images/bank.webp" alt="Pivdenny Bank preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
+              </div>
+            </a>
+            <h3 class="mt-5 text-xl font-bold"><a href="https://bank.com.ua/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">Pivdenny Bank <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
+            <p class="mt-2 text-sm text-slate-400">The official website of Pivdenny Bank, a major Ukrainian commercial financial institution providing comprehensive corporate and retail banking services.</p>
+          </article>
+        </li>
+        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
+          <article>
+            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+            <a href="https://karabas.com/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
+              <div class="shot-img bg-panel">
+                <img src="images/karabas.webp" alt="Karabas preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
+              </div>
+            </a>
+            <h3 class="mt-5 text-xl font-bold"><a href="https://karabas.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">Karabas <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
+            <p class="mt-2 text-sm text-slate-400">Karabas is a premier national ticket operator in Ukraine providing safe online booking for concerts, theatrical plays, and festivals.</p>
+          </article>
+        </li>
+        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
+          <article>
+            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+            <a href="https://www.mgid.com/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
+              <div class="shot-img bg-panel">
+                <img src="images/mgid.webp" alt="MGID preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
+              </div>
+            </a>
+            <h3 class="mt-5 text-xl font-bold"><a href="https://www.mgid.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">MGID <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
+            <p class="mt-2 text-sm text-slate-400">MGID is an innovative global pioneer in native advertising that drives revenue growth for advertisers and publishers through programmatic technology.</p>
+          </article>
+        </li>
+        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
+          <article>
+            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+            <a href="https://mirs.com/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
+              <div class="shot-img bg-panel">
+                <img src="images/mirs.webp" alt="MIRS preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
+              </div>
+            </a>
+            <h3 class="mt-5 text-xl font-bold"><a href="https://mirs.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">MIRS <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
+            <p class="mt-2 text-sm text-slate-400">MIRS is a digital advertising full-circle agency providing programmatic, social media, and search solutions to maximize brand reach and ROI.</p>
+          </article>
+        </li>
+        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
+          <article>
+            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+            <a href="https://nqa.gov.ua/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
+              <div class="shot-img bg-panel">
+                <img src="images/nqa.webp" alt="NQA preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
+              </div>
+            </a>
+            <h3 class="mt-5 text-xl font-bold"><a href="https://nqa.gov.ua/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">NQA <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
+            <p class="mt-2 text-sm text-slate-400">The National Qualifications Agency (NQA) website is an official state platform overseeing Ukraine&#x27;s national qualifications system, registers, occupational standards, and certification center tracking.</p>
+          </article>
+        </li>
+        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
+          <article>
+            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+            <a href="https://zorg-biogas.com/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
+              <div class="shot-img bg-panel">
+                <img src="images/zorg-biogas.webp" alt="Zorg Biogas preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
+              </div>
+            </a>
+            <h3 class="mt-5 text-xl font-bold"><a href="https://zorg-biogas.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">Zorg Biogas <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
+            <p class="mt-2 text-sm text-slate-400">Zorg Biogas is a global engineering brand that designs, equips, and services advanced industrial biogas plants and generator sets.</p>
+          </article>
+        </li>
+        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
+          <article>
+            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+            <a href="https://www.it.ua/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
+              <div class="shot-img bg-panel">
+                <img src="images/it.webp" alt="IT-Enterprise preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
+              </div>
+            </a>
+            <h3 class="mt-5 text-xl font-bold"><a href="https://www.it.ua/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">IT-Enterprise <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
+            <p class="mt-2 text-sm text-slate-400">IT-Enterprise is a leading low-code platform providing ERP systems, AI assistants, and digital transformation solutions for diverse business processes.</p>
+          </article>
+        </li>
+        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
+          <article>
+            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+            <a href="https://shashlikyan.ua/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
+              <div class="shot-img bg-panel">
+                <img src="images/shashlikyan.webp" alt="Shashlikyan preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
+              </div>
+            </a>
+            <h3 class="mt-5 text-xl font-bold"><a href="https://shashlikyan.ua/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">Shashlikyan <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
+            <p class="mt-2 text-sm text-slate-400">Shashlikyan is a Ukrainian restaurant network offering authentic coal-cooked shashlik, eastern dishes, and fast food delivery in Kyiv.</p>
+          </article>
+        </li>
+        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
+          <article>
+            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+            <a href="https://jouvence-eternelle.com/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
+              <div class="shot-img bg-panel">
+                <img src="images/jouvence-eternelle.webp" alt="Jouvence Éternelle preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
+              </div>
+            </a>
+            <h3 class="mt-5 text-xl font-bold"><a href="https://jouvence-eternelle.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">Jouvence Éternelle <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
+            <p class="mt-2 text-sm text-slate-400">Jouvence Éternelle is a premium Swiss skincare brand offering luxury, cell-based anti-aging collections, creams, and targeted premium beauty treatments.</p>
+          </article>
+        </li>
+        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
+          <article>
+            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+            <a href="https://pocketbook.com.ua/uk-ua" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
+              <div class="shot-img bg-panel">
+                <img src="images/pocketbook.webp" alt="PocketBook preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
+              </div>
+            </a>
+            <h3 class="mt-5 text-xl font-bold"><a href="https://pocketbook.com.ua/uk-ua" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">PocketBook <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
+            <p class="mt-2 text-sm text-slate-400">PocketBook is the official Ukrainian website offering premium E Ink e-readers, color screen e-readers, digital notebooks, and reading accessories.</p>
+          </article>
+        </li>
+        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
+          <article>
+            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+            <a href="https://11mirrors-hotel.com/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
+              <div class="shot-img bg-panel">
+                <img src="images/11mirrors-hotel.webp" alt="11 Mirrors Hotel preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
+              </div>
+            </a>
+            <h3 class="mt-5 text-xl font-bold"><a href="https://11mirrors-hotel.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">11 Mirrors Hotel <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
+            <p class="mt-2 text-sm text-slate-400">11 Mirrors is a premium award-winning design boutique hotel in central Kyiv offering panoramic views, fine dining, and customized wellness services.</p>
+          </article>
+        </li>
+        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
+          <article>
+            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+            <a href="https://stemax.ua/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
+              <div class="shot-img bg-panel">
+                <img src="images/stemax.webp" alt="STEMAX preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
+              </div>
+            </a>
+            <h3 class="mt-5 text-xl font-bold"><a href="https://stemax.ua/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">STEMAX <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
+            <p class="mt-2 text-sm text-slate-400">STEMAX is a specialized Ukrainian online store supplying professional fasteners, electric and hand tools, and industrial consumables.</p>
+          </article>
+        </li>
+        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
+          <article>
+            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+            <a href="https://socar.ua/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
+              <div class="shot-img bg-panel">
+                <img src="images/socar.webp" alt="SOCAR Ukraine preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
+              </div>
+            </a>
+            <h3 class="mt-5 text-xl font-bold"><a href="https://socar.ua/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">SOCAR Ukraine <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
+            <p class="mt-2 text-sm text-slate-400">SOCAR Ukraine operates a premium network of filling stations offering high-quality fuel, exceptional services, and signature Buta Café amenities.</p>
+          </article>
+        </li>
+        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
+          <article>
+            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+            <a href="https://www.toyota.ua/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
+              <div class="shot-img bg-panel">
+                <img src="images/toyota.webp" alt="Toyota Ukraine preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
+              </div>
+            </a>
+            <h3 class="mt-5 text-xl font-bold"><a href="https://www.toyota.ua/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">Toyota Ukraine <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
+            <p class="mt-2 text-sm text-slate-400">Toyota Ukraine is the official website presenting new electrified and hybrid cars, certified pre-owned vehicles, financial programs, and authorized services.</p>
+          </article>
+        </li>
+        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
+          <article>
+            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+            <a href="https://hyla.ua/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
+              <div class="shot-img bg-panel">
+                <img src="images/hyla.webp" alt="HYLA Ukraine preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
+              </div>
+            </a>
+            <h3 class="mt-5 text-xl font-bold"><a href="https://hyla.ua/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">HYLA Ukraine <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
+            <p class="mt-2 text-sm text-slate-400">HYLA Ukraine is the official representative offering eco-friendly, filterless German cleaning systems that vacuum, wash, and purify indoor air.</p>
+          </article>
+        </li>
+        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
+          <article>
+            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+            <a href="https://archimatika.com/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
+              <div class="shot-img bg-panel">
+                <img src="images/archimatika.webp" alt="Archimatika preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
+              </div>
+            </a>
+            <h3 class="mt-5 text-xl font-bold"><a href="https://archimatika.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">Archimatika <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
+            <p class="mt-2 text-sm text-slate-400">Archimatika is an innovative architectural and engineering firm specializing in large-scale residential, office, and mixed-use BIM-modeled design projects.</p>
+          </article>
+        </li>
+        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
+          <article>
+            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+            <a href="https://xoffice.pro/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" class="shot grad-bg shadow-lg shadow-violet/20">
+              <div class="shot-img bg-panel">
+                <img src="images/xoffice.webp" alt="xOffice preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
+              </div>
+            </a>
+            <h3 class="mt-5 text-xl font-bold"><a href="https://xoffice.pro/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 transition hover:text-neon">xOffice <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></h3>
+            <p class="mt-2 text-sm text-slate-400">xOffice is a commission-free Ukrainian database offering direct office and coworking rentals from property owners in Kyiv.</p>
+          </article>
+        </li>
+        <li class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]">
+          <article>
+            <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
+            <div class="shot grad-bg shadow-lg shadow-violet/20">
+              <div class="shot-img bg-panel">
+                <img src="images/project-bank-tablet.svg" alt="Teller Window Display preview" draggable="false" loading="lazy" decoding="async" class="h-full w-full object-cover">
+              </div>
+            </div>
+            <h3 class="mt-5 text-xl font-bold">Teller Window Display</h3>
+            <p class="mt-2 text-sm text-slate-400">Tablet app for bank service desks: cashier info, currency, metal and coin rates, documents and break timers.</p>
+          </article>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROCESS ============ -->
+<section id="process" class="relative py-24">
+  <div class="mx-auto max-w-7xl px-5">
+    <div class="reveal mx-auto mb-14 max-w-2xl text-center">
+      <h2 class="text-3xl font-extrabold sm:text-4xl">How we work</h2>
+      <p class="mt-4 text-slate-400">Four stages, with a review at the end of each one so there are no surprises.</p>
+    </div>
+    <!-- Horizontal on desktop, vertical on mobile -->
+    <ol class="relative grid gap-10 md:grid-cols-4 md:gap-6">
+      <div class="absolute left-6 top-6 hidden h-px w-[calc(100%-3rem)] bg-gradient-to-r from-blue-500 via-violet to-neon md:block"></div>
+      <div class="absolute left-6 top-6 h-[calc(100%-3rem)] w-px bg-gradient-to-b from-blue-500 via-violet to-neon md:hidden"></div>
+
+      <li class="reveal relative pl-20 md:pl-0 md:pt-20">
+        <span class="grad-bg absolute left-0 top-0 grid h-12 w-12 place-items-center rounded-full ring-8 ring-ink"><i data-lucide="search" class="h-5 w-5 text-white"></i></span>
+        <h3 class="font-bold">Discovery</h3>
+        <p class="mt-2 text-sm text-slate-400">We learn your goals, users and budget, then agree on scope and timeline.</p>
+      </li>
+      <li class="reveal relative pl-20 md:pl-0 md:pt-20">
+        <span class="grad-bg absolute left-0 top-0 grid h-12 w-12 place-items-center rounded-full ring-8 ring-ink"><i data-lucide="pen-tool" class="h-5 w-5 text-white"></i></span>
+        <h3 class="font-bold">Design</h3>
+        <p class="mt-2 text-sm text-slate-400">Wireframes and clickable Figma prototypes you can test before any code is written.</p>
+      </li>
+      <li class="reveal relative pl-20 md:pl-0 md:pt-20">
+        <span class="grad-bg absolute left-0 top-0 grid h-12 w-12 place-items-center rounded-full ring-8 ring-ink"><i data-lucide="code-2" class="h-5 w-5 text-white"></i></span>
+        <h3 class="font-bold">Development</h3>
+        <p class="mt-2 text-sm text-slate-400">Two-week sprints with a working demo at the end of each one.</p>
+      </li>
+      <li class="reveal relative pl-20 md:pl-0 md:pt-20">
+        <span class="grad-bg absolute left-0 top-0 grid h-12 w-12 place-items-center rounded-full ring-8 ring-ink"><i data-lucide="rocket" class="h-5 w-5 text-white"></i></span>
+        <h3 class="font-bold">QA &amp; Launch</h3>
+        <p class="mt-2 text-sm text-slate-400">Device and browser testing, store submission, and 30 days of free support.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section id="contact" class="relative overflow-hidden py-24">
+  <div class="blob -right-20 bottom-0 h-96 w-96 bg-blue-600"></div>
+  <div class="relative mx-auto grid max-w-7xl gap-12 px-5 lg:grid-cols-2">
+    <div class="reveal">
+      <h2 class="text-3xl font-extrabold sm:text-4xl">Tell us about your project</h2>
+      <p class="mt-4 max-w-md text-slate-400">Send a few details and we will reply within one business day with questions and a rough estimate.</p>
+      <ul class="mt-8 space-y-4 text-slate-300">
+        <li><a href="https://t.me/bitco_studio" target="_blank" rel="noopener" class="flex items-center gap-3 transition hover:text-white"><i data-lucide="send" class="h-5 w-5 text-neon"></i> @bitco_studio</a></li>
+        <li><a href="mailto:hello@webmobilesolutions.example" class="flex items-center gap-3 transition hover:text-white"><i data-lucide="mail" class="h-5 w-5 text-neon"></i> hello@webmobilesolutions.example</a></li>
+        <li class="flex items-center gap-3"><i data-lucide="clock" class="h-5 w-5 text-neon"></i> Mon–Fri, 9:00–18:00</li>
+      </ul>
+    </div>
+
+    <form id="contactForm" class="reveal glow-card space-y-5 rounded-3xl bg-panel p-8" novalidate>
+      <div>
+        <label for="name" class="mb-2 block text-sm font-medium">Name</label>
+        <input id="name" name="name" required type="text" autocomplete="name" class="w-full rounded-xl border border-white/10 bg-ink px-4 py-3 outline-none transition focus:border-neon">
+      </div>
+      <div>
+        <label for="email" class="mb-2 block text-sm font-medium">Email</label>
+        <input id="email" name="email" required type="email" autocomplete="email" class="w-full rounded-xl border border-white/10 bg-ink px-4 py-3 outline-none transition focus:border-neon">
+      </div>
+      <div>
+        <label for="type" class="mb-2 block text-sm font-medium">Project type</label>
+        <select id="type" name="type" class="w-full rounded-xl border border-white/10 bg-ink px-4 py-3 outline-none transition focus:border-neon">
+          <option>Website or landing page</option>
+          <option>E-commerce store</option>
+          <option>Custom web app</option>
+          <option>Mobile app (Android &amp; iOS)</option>
+          <option>UI/UX design only</option>
+        </select>
+      </div>
+      <div>
+        <label for="message" class="mb-2 block text-sm font-medium">Message</label>
+        <textarea id="message" name="message" rows="4" required class="w-full rounded-xl border border-white/10 bg-ink px-4 py-3 outline-none transition focus:border-neon"></textarea>
+      </div>
+      <button type="submit" class="grad-bg w-full rounded-full py-3.5 font-semibold text-white shadow-lg shadow-violet/30 transition hover:scale-[1.02]">Send message</button>
+      <p id="formStatus" class="min-h-[1.25rem] text-center text-sm" role="status"></p>
+    </form>
+  </div>
+</section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="border-t border-white/10 py-10">
+  <div class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-5 md:flex-row">
+    <p class="text-sm text-slate-400">© <span id="year"></span> bitco. All rights reserved.</p>
+    <!-- Below 768px these two blocks sit in one column and are stretched to the same width; from 768px up the wrapper disappears (md:contents) -->
+    <div class="flex flex-col items-stretch gap-6 md:contents">
+      <nav class="flex justify-between gap-6 text-sm text-slate-300 md:justify-start" aria-label="Footer">
+        <a class="hover:text-white" href="#services">Services</a>
+        <a class="hover:text-white" href="#portfolio">Portfolio</a>
+        <a class="hover:text-white" href="#contact">Contact</a>
       </nav>
-      <!-- Mobile menu: full width below 480px; a 350px panel on the right edge from 480 to 767px. It sits under the header bar (not inside its height)
-       and blurs the page that shows through it. Left: links + "Get a Quote" (all the same width). Right: a tinted 80px block, full panel height,
-       with the theme switcher, Telegram and LinkedIn centred 40px from the screen edge, i.e. exactly under the close icon. -->
-      <div
-        id="mobileMenu"
-        class="hidden md:hidden absolute inset-x-0 top-full flex border-b border-white/10 bg-ink/75 backdrop-blur-xl min-[480px]:left-auto min-[480px]:right-0 min-[480px]:w-[350px] min-[480px]:rounded-bl-2xl min-[480px]:border-l"
-      >
-        <div class="flex min-w-0 flex-1 flex-col gap-1.5 pb-5 pl-5 pr-3 pt-3">
-          <a
-            class="mm-item relative flex h-12 items-center justify-center rounded-full px-5 font-medium transition hover:bg-white/10"
-            href="#home"
-            >Home</a
-          >
-          <a
-            class="mm-item relative flex h-12 items-center justify-center rounded-full px-5 font-medium transition hover:bg-white/10"
-            href="#services"
-            >Services</a
-          >
-          <a
-            class="mm-item relative flex h-12 items-center justify-center rounded-full px-5 font-medium transition hover:bg-white/10"
-            href="#portfolio"
-            >Portfolio</a
-          >
-          <a
-            class="mm-item relative flex h-12 items-center justify-center rounded-full px-5 font-medium transition hover:bg-white/10"
-            href="#process"
-            >Process</a
-          >
-          <a
-            class="mm-item relative flex h-12 items-center justify-center rounded-full px-5 font-medium transition hover:bg-white/10"
-            href="#contact"
-            >Contact</a
-          >
-          <a
-            href="#contact"
-            class="grad-bg flex h-12 items-center justify-center rounded-full px-5 font-semibold text-white"
-            >Get a Quote</a
-          >
+      <div class="flex items-center justify-between gap-5">
+        <!-- Block 1: theme switcher (its own bordered pill) -->
+        <div role="group" aria-label="Color theme" class="theme-switch inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/5 p-1">
+          <button type="button" data-theme-set="light" aria-pressed="false" aria-label="Light theme" class="theme-btn grid h-8 w-8 place-items-center rounded-full text-slate-400 transition"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2"></path>
+          <path d="M12 20v2"></path>
+          <path d="m4.93 4.93 1.41 1.41"></path>
+          <path d="m17.66 17.66 1.41 1.41"></path>
+          <path d="M2 12h2"></path>
+          <path d="M20 12h2"></path>
+          <path d="m6.34 17.66-1.41 1.41"></path>
+          <path d="m19.07 4.93-1.41 1.41"></path>
+        </svg></button>
+          <button type="button" data-theme-set="dark" aria-pressed="true" aria-label="Dark theme" class="theme-btn grid h-8 w-8 place-items-center rounded-full text-slate-400 transition"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button>
         </div>
-        <div
-          class="mm-aside flex w-20 shrink-0 flex-col items-center gap-4 pb-5 pt-3"
-        >
-          <div
-            role="group"
-            aria-label="Color theme"
-            class="theme-switch inline-flex flex-col items-center gap-1 rounded-full border border-white/15 bg-white/5 p-[3px]"
-          >
-            <button
-              type="button"
-              data-theme-set="light"
-              aria-pressed="false"
-              aria-label="Light theme"
-              class="theme-btn grid h-8 w-8 place-items-center rounded-full text-slate-400 transition"
-            >
-              <svg
-                class="h-4 w-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <circle cx="12" cy="12" r="4"></circle>
-                <path d="M12 2v2"></path>
-                <path d="M12 20v2"></path>
-                <path d="m4.93 4.93 1.41 1.41"></path>
-                <path d="m17.66 17.66 1.41 1.41"></path>
-                <path d="M2 12h2"></path>
-                <path d="M20 12h2"></path>
-                <path d="m6.34 17.66-1.41 1.41"></path>
-                <path d="m19.07 4.93-1.41 1.41"></path>
-              </svg>
-            </button>
-            <button
-              type="button"
-              data-theme-set="dark"
-              aria-pressed="true"
-              aria-label="Dark theme"
-              class="theme-btn grid h-8 w-8 place-items-center rounded-full text-slate-400 transition"
-            >
-              <svg
-                class="h-4 w-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-              </svg>
-            </button>
-          </div>
-          <a
-            href="https://t.me/bitco_studio"
-            target="_blank"
-            rel="noopener"
-            aria-label="Telegram"
-            class="soc-btn relative grid place-items-center rounded-full border border-white/15 text-slate-400 transition h-10 w-10"
-            ><i data-lucide="send" class="h-5 w-5"></i
-          ></a>
-          <a
-            href="#"
-            aria-label="LinkedIn"
-            class="soc-btn relative grid place-items-center rounded-full border border-white/15 text-slate-400 transition h-10 w-10"
-            ><i data-lucide="linkedin" class="h-5 w-5"></i
-          ></a>
+        <span class="h-6 w-px bg-white/15" aria-hidden="true"></span>
+        <!-- Block 2: social links -->
+        <div class="flex items-center gap-4">
+          <a href="https://t.me/bitco_studio" target="_blank" rel="noopener" aria-label="Telegram" class="text-slate-400 hover:text-neon"><i data-lucide="send" class="h-5 w-5"></i></a>
+          <a href="#" aria-label="LinkedIn" class="text-slate-400 hover:text-neon"><i data-lucide="linkedin" class="h-5 w-5"></i></a>
         </div>
       </div>
-    </header>
+    </div>
+  </div>
+</footer>
 
-    <main>
-      <!-- ============ HERO ============ -->
-      <section id="home" class="relative overflow-hidden pt-36 pb-24 lg:pt-44">
-        <div class="blob -left-32 top-20 h-96 w-96 bg-blue-600"></div>
-        <div class="blob right-0 top-40 h-96 w-96 bg-violet"></div>
-        <div
-          class="relative mx-auto grid max-w-7xl items-center gap-16 px-5 lg:grid-cols-2"
-        >
-          <div>
-            <p
-              class="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-sm text-slate-300"
-            >
-              <span class="h-2 w-2 rounded-full bg-neon"></span> Booking new
-              projects for next month
-            </p>
-            <h1
-              class="text-4xl font-extrabold leading-tight sm:text-5xl lg:text-6xl"
-            >
-              We turn your ideas into powerful
-              <span class="grad-text">web &amp; mobile apps</span>
-            </h1>
-            <p class="mt-6 max-w-xl text-lg text-slate-400">
-              Websites, online stores and Android &amp; iOS apps, designed and
-              built by one small team from first sketch to store launch.
-            </p>
-            <div class="mt-9 flex flex-wrap gap-4">
-              <a
-                href="#portfolio"
-                class="grad-bg inline-flex items-center gap-2 rounded-full px-7 py-3.5 font-semibold text-white shadow-lg shadow-violet/30 transition hover:scale-105"
-                >Our Work <i data-lucide="arrow-right" class="h-4 w-4"></i
-              ></a>
-              <a
-                href="#contact"
-                class="inline-flex items-center gap-2 rounded-full border border-white/20 px-7 py-3.5 font-semibold transition hover:border-neon hover:bg-white/5"
-                >Contact Us</a
-              >
-            </div>
-          </div>
+<script>
+  // Render Lucide icons
+  if (window.lucide) lucide.createIcons();
 
-          <!-- Floating UI mockups (pure HTML/CSS placeholders) -->
-          <div
-            class="relative mx-auto h-[420px] w-full max-w-lg"
-            aria-hidden="true"
-          >
-            <!-- Browser window -->
-            <div
-              class="float absolute left-0 top-6 w-[78%] rounded-2xl border border-white/10 bg-panel/90 p-4 shadow-2xl backdrop-blur"
-            >
-              <div class="mb-4 flex gap-1.5">
-                <i class="h-2.5 w-2.5 rounded-full bg-red-400"></i
-                ><i class="h-2.5 w-2.5 rounded-full bg-yellow-400"></i
-                ><i class="h-2.5 w-2.5 rounded-full bg-green-400"></i>
-              </div>
-              <div class="grad-bg mb-3 h-24 rounded-xl opacity-80"></div>
-              <div class="mb-2 h-3 w-3/4 rounded bg-white/15"></div>
-              <div class="mb-4 h-3 w-1/2 rounded bg-white/10"></div>
-              <div class="grid grid-cols-3 gap-2">
-                <div class="h-14 rounded-lg bg-white/10"></div>
-                <div class="h-14 rounded-lg bg-white/10"></div>
-                <div class="h-14 rounded-lg bg-white/10"></div>
-              </div>
-            </div>
-            <!-- Phone -->
-            <div
-              class="float-slow absolute bottom-0 right-2 w-[38%] rounded-[2rem] border-4 border-slate-700 bg-ink p-3 shadow-2xl shadow-violet/30"
-            >
-              <div
-                class="mx-auto mb-3 h-1.5 w-10 rounded-full bg-slate-700"
-              ></div>
-              <div
-                class="mb-2 h-20 rounded-xl bg-gradient-to-br from-neon to-violet"
-              ></div>
-              <div class="mb-2 h-2.5 w-full rounded bg-white/15"></div>
-              <div class="mb-3 h-2.5 w-2/3 rounded bg-white/10"></div>
-              <div class="grad-bg h-8 rounded-full"></div>
-            </div>
-            <!-- Stat chip -->
-            <div
-              class="float absolute right-0 top-0 flex items-center gap-3 rounded-2xl border border-white/10 bg-panel/90 px-4 py-3 shadow-xl backdrop-blur"
-            >
-              <i data-lucide="trending-up" class="h-5 w-5 text-neon"></i>
-              <div>
-                <p class="text-sm font-bold">+68% conversions</p>
-                <p class="text-xs text-slate-400">after relaunch</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+  // Footer year
+  document.getElementById('year').textContent = new Date().getFullYear();
 
-      <!-- ============ SERVICES ============ -->
-      <section id="services" class="relative py-24">
-        <div class="mx-auto max-w-7xl px-5">
-          <div class="reveal mx-auto mb-14 max-w-2xl text-center">
-            <h2 class="text-3xl font-extrabold sm:text-4xl">What we build</h2>
-            <p class="mt-4 text-slate-400">
-              Three services that cover everything from the first wireframe to
-              the live product.
-            </p>
-          </div>
-          <div class="grid gap-6 md:grid-cols-3">
-            <article class="reveal glow-card rounded-3xl bg-panel p-8">
-              <span
-                class="grad-bg mb-6 grid h-14 w-14 place-items-center rounded-2xl"
-                ><i data-lucide="globe" class="h-7 w-7 text-white"></i
-              ></span>
-              <h3 class="text-xl font-bold">Web Development</h3>
-              <p class="mt-3 text-slate-400">
-                Fast landing pages, online stores, and custom web apps that are
-                easy to update and built to grow.
-              </p>
-              <div class="mt-6 flex flex-wrap gap-2 text-xs">
-                <span
-                  class="rounded-full bg-blue-500/15 px-3 py-1 text-blue-300"
-                  >React</span
-                >
-                <span
-                  class="rounded-full bg-blue-500/15 px-3 py-1 text-blue-300"
-                  >Node.js</span
-                >
-                <span
-                  class="rounded-full bg-blue-500/15 px-3 py-1 text-blue-300"
-                  >Next.js</span
-                >
-              </div>
-            </article>
+  // Mobile menu toggle (closes after choosing a link)
+  const btn = document.getElementById('menuBtn'), menu = document.getElementById('mobileMenu');
+  const setMenu = (open) => {
+    menu.classList.toggle('hidden', !open);
+    document.getElementById('menuBackdrop').classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', open);          // the CSS animates the burger into a cross from this attribute
+    btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  };
+  btn.addEventListener('click', () => setMenu(menu.classList.contains('hidden')));
+  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
 
-            <article class="reveal glow-card rounded-3xl bg-panel p-8">
-              <span
-                class="grad-bg mb-6 grid h-14 w-14 place-items-center rounded-2xl"
-                ><i data-lucide="smartphone" class="h-7 w-7 text-white"></i
-              ></span>
-              <h3 class="text-xl font-bold">Mobile App Development</h3>
-              <p class="mt-3 text-slate-400">
-                One codebase, two stores. Native-feeling Android and iOS apps
-                built with Flutter or React Native.
-              </p>
-              <div class="mt-6 flex flex-wrap gap-2 text-xs">
-                <span
-                  class="rounded-full bg-violet/15 px-3 py-1 text-violet-300 text-purple-300"
-                  >Flutter</span
-                >
-                <span
-                  class="rounded-full bg-violet/15 px-3 py-1 text-purple-300"
-                  >iOS</span
-                >
-                <span
-                  class="rounded-full bg-violet/15 px-3 py-1 text-purple-300"
-                  >Android</span
-                >
-                <span
-                  class="rounded-full bg-violet/15 px-3 py-1 text-purple-300"
-                  >Firebase</span
-                >
-              </div>
-            </article>
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !menu.classList.contains('hidden')) setMenu(false); });
+  // tapping the page beside the open menu closes it
+  document.addEventListener('click', (e) => { if (!menu.classList.contains('hidden') && !menu.contains(e.target) && !btn.contains(e.target)) setMenu(false); });
 
-            <article class="reveal glow-card rounded-3xl bg-panel p-8">
-              <span
-                class="grad-bg mb-6 grid h-14 w-14 place-items-center rounded-2xl"
-                ><i data-lucide="pen-tool" class="h-7 w-7 text-white"></i
-              ></span>
-              <h3 class="text-xl font-bold">UI/UX Design</h3>
-              <p class="mt-3 text-slate-400">
-                Clear interfaces tested with real users, from low-fidelity
-                wireframes to a full design system.
-              </p>
-              <div class="mt-6 flex flex-wrap gap-2 text-xs">
-                <span
-                  class="rounded-full bg-cyan-500/15 px-3 py-1 text-cyan-300"
-                  >Figma</span
-                >
-                <span
-                  class="rounded-full bg-cyan-500/15 px-3 py-1 text-cyan-300"
-                  >Wireframing</span
-                >
-              </div>
-            </article>
-          </div>
-        </div>
-      </section>
+  // Language switcher: shows the current language; the dropdown offers only the other one.
+  // The button changes immediately on click; the dropdown content changes only after the dropdown has finished closing,
+  // so you never see it flip to the other language while it fades out.
+  (() => {
+    const LANGS = { en: { code: 'EN', name: 'English' }, ua: { code: 'UA', name: 'Українська' } };
+    const CLOSE_MS = 250;   // a little longer than the .2s CSS fade of .lang-menu
+    const wrap = document.getElementById('lang'), btn = document.getElementById('langBtn'), menu = document.getElementById('langMenu');
+    const item = document.getElementById('langItem');
+    if (!wrap) return;
+    let current = 'en', pending = null;
+    try { const s = localStorage.getItem('lang'); if (LANGS[s]) current = s; } catch (e) {}
+    const other = () => (current === 'en' ? 'ua' : 'en');
 
-      <!-- ============ PORTFOLIO / PROJECTS SLIDER ============ -->
-      <section id="portfolio" class="relative py-24">
-        <div class="mx-auto max-w-7xl px-5">
-          <div class="reveal mb-10">
-            <h2 class="text-3xl font-extrabold sm:text-4xl">Our Projects</h2>
-            <p class="mt-4 max-w-xl text-slate-400">
-              Long-term partnerships and recent launches in ticketing,
-              e-commerce and banking.
-            </p>
-          </div>
+    const renderButton = () => {
+      document.querySelectorAll('#langCode [data-code]').forEach((s) => s.classList.toggle('is-off', s.dataset.code !== current));
+      btn.setAttribute('aria-label', 'Language: ' + LANGS[current].name + '. Change language');
+      document.documentElement.dataset.lang = current;
+    };
+    const renderMenu = () => {
+      const o = other();
+      item.dataset.lang = o;
+      document.getElementById('langItemCode').textContent = LANGS[o].code;
+      document.getElementById('flagUa').classList.toggle('hidden', o !== 'ua');
+      document.getElementById('flagEn').classList.toggle('hidden', o !== 'en');
+      item.setAttribute('aria-label', 'Switch to ' + LANGS[o].name);
+    };
+    const flushMenu = () => { if (pending) { clearTimeout(pending); pending = null; renderMenu(); } };
+    const setOpen = (open) => {
+      if (open) flushMenu();   // reopened quickly: make sure the dropdown already shows the right language
+      menu.classList.toggle('open', open);
+      btn.setAttribute('aria-expanded', open);
+    };
 
-          <div
-            class="reveal relative"
-            role="region"
-            aria-roledescription="carousel"
-            aria-label="Our projects"
-          >
-            <!-- Prev / next buttons on the left and right sides (no autoplay: clicks, swipes or dragging only) -->
-            <button
-              id="prevBtn"
-              type="button"
-              aria-label="Previous projects"
-              class="absolute left-2 top-[36%] z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-ink/70 text-white backdrop-blur transition hover:border-neon disabled:invisible disabled:opacity-0 md:left-3"
-            >
-              <i data-lucide="chevron-left" class="h-5 w-5"></i>
-            </button>
-            <button
-              id="nextBtn"
-              type="button"
-              aria-label="Next projects"
-              class="absolute right-2 top-[36%] z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-ink/70 text-white backdrop-blur transition hover:border-neon disabled:invisible disabled:opacity-0 md:right-3"
-            >
-              <i data-lucide="chevron-right" class="h-5 w-5"></i>
-            </button>
+    btn.addEventListener('click', () => setOpen(!menu.classList.contains('open')));
+    item.addEventListener('click', () => {
+      if (pending) return;                       // the dropdown is still closing
+      current = item.dataset.lang;
+      try { localStorage.setItem('lang', current); } catch (e) {}
+      renderButton();                            // button: right away
+      setOpen(false); btn.focus();
+      pending = setTimeout(() => { pending = null; renderMenu(); }, CLOSE_MS);   // dropdown: after it has closed
+      document.dispatchEvent(new CustomEvent('languagechange', { detail: { lang: current } }));
+    });
+    document.addEventListener('click', (e) => { if (!wrap.contains(e.target)) setOpen(false); });   // click outside
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && menu.classList.contains('open')) { setOpen(false); btn.focus(); } });
+    renderButton(); renderMenu();
+  })();
 
-            <ul
-              id="track"
-              tabindex="0"
-              class="no-scrollbar flex snap-x snap-mandatory overflow-x-auto scroll-smooth pb-2"
-            >
-              <li
-                class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]"
-              >
-                <article>
-                  <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
-                  <a
-                    href="https://karabas.com"
-                    target="_blank"
-                    rel="noopener"
-                    tabindex="-1"
-                    aria-hidden="true"
-                    class="shot grad-bg shadow-lg shadow-violet/20"
-                  >
-                    <div class="shot-img bg-panel">
-                      <img
-                        src="images/karabas.jpg"
-                        alt="Illustration of an event ticket, seat map and calendar"
-                        draggable="false"
-                        loading="lazy"
-                        class="h-full w-full object-cover"
-                      />
-                    </div>
-                  </a>
-                  <h3 class="mt-5 text-xl font-bold">
-                    <a
-                      href="https://karabas.com"
-                      target="_blank"
-                      rel="noopener"
-                      class="inline-flex items-center gap-1 transition hover:text-neon"
-                      >Karabas
-                      <i data-lucide="arrow-up-right" class="h-4 w-4"></i
-                    ></a>
-                  </h3>
-                  <p class="mt-2 text-sm text-slate-400">
-                    Ticketing platform for cultural events. We have supported it
-                    for 3+ years and launched 9 localized versions for European
-                    countries.
-                  </p>
-                </article>
-              </li>
-              <li
-                class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]"
-              >
-                <article>
-                  <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
-                  <a
-                    href="https://automir-pneu.sk/en"
-                    target="_blank"
-                    rel="noopener"
-                    tabindex="-1"
-                    aria-hidden="true"
-                    class="shot grad-bg shadow-lg shadow-violet/20"
-                  >
-                    <div class="shot-img bg-panel">
-                      <img
-                        src="images/automir-pneu.jpg"
-                        alt="Illustration of a tire and online store product cards"
-                        draggable="false"
-                        loading="lazy"
-                        class="h-full w-full object-cover"
-                      />
-                    </div>
-                  </a>
-                  <h3 class="mt-5 text-xl font-bold">
-                    <a
-                      href="https://automir-pneu.sk/en"
-                      target="_blank"
-                      rel="noopener"
-                      class="inline-flex items-center gap-1 transition hover:text-neon"
-                      >Automir Pneu
-                      <i data-lucide="arrow-up-right" class="h-4 w-4"></i
-                    ></a>
-                  </h3>
-                  <p class="mt-2 text-sm text-slate-400">
-                    Online store for car tires, built for our new client from
-                    the Czech Republic.
-                  </p>
-                </article>
-              </li>
-              <li
-                class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]"
-              >
-                <article>
-                  <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
-                  <div class="shot grad-bg shadow-lg shadow-violet/20">
-                    <div class="shot-img bg-panel">
-                      <img
-                        src="images/project-bank-tablet.svg"
-                        alt="Illustration of a bank teller-window tablet app"
-                        draggable="false"
-                        loading="lazy"
-                        class="h-full w-full object-cover"
-                      />
-                    </div>
-                  </div>
-                  <h3 class="mt-5 text-xl font-bold">Teller Window Display</h3>
-                  <p class="mt-2 text-sm text-slate-400">
-                    Tablet app for bank service desks: cashier info, currency,
-                    metal and coin rates, documents and break timers.
-                  </p>
-                </article>
-              </li>
-              <li
-                class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]"
-              >
-                <article>
-                  <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
-                  <a
-                    href="https://karabas.com"
-                    target="_blank"
-                    rel="noopener"
-                    tabindex="-1"
-                    aria-hidden="true"
-                    class="shot grad-bg shadow-lg shadow-violet/20"
-                  >
-                    <div class="shot-img bg-panel">
-                      <img
-                        src="images/project-karabas.svg"
-                        alt="Illustration of an event ticket, seat map and calendar"
-                        draggable="false"
-                        loading="lazy"
-                        class="h-full w-full object-cover"
-                      />
-                    </div>
-                  </a>
-                  <h3 class="mt-5 text-xl font-bold">
-                    <a
-                      href="https://karabas.com"
-                      target="_blank"
-                      rel="noopener"
-                      class="inline-flex items-center gap-1 transition hover:text-neon"
-                      >Karabas
-                      <i data-lucide="arrow-up-right" class="h-4 w-4"></i
-                    ></a>
-                  </h3>
-                  <p class="mt-2 text-sm text-slate-400">
-                    Ticketing platform for cultural events. We have supported it
-                    for 3+ years and launched 9 localized versions for European
-                    countries.
-                  </p>
-                </article>
-              </li>
-              <li
-                class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]"
-              >
-                <article>
-                  <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
-                  <a
-                    href="https://automir-pneu.sk/en"
-                    target="_blank"
-                    rel="noopener"
-                    tabindex="-1"
-                    aria-hidden="true"
-                    class="shot grad-bg shadow-lg shadow-violet/20"
-                  >
-                    <div class="shot-img bg-panel">
-                      <img
-                        src="images/project-automir.svg"
-                        alt="Illustration of a tire and online store product cards"
-                        draggable="false"
-                        loading="lazy"
-                        class="h-full w-full object-cover"
-                      />
-                    </div>
-                  </a>
-                  <h3 class="mt-5 text-xl font-bold">
-                    <a
-                      href="https://automir-pneu.sk/en"
-                      target="_blank"
-                      rel="noopener"
-                      class="inline-flex items-center gap-1 transition hover:text-neon"
-                      >Automir Pneu
-                      <i data-lucide="arrow-up-right" class="h-4 w-4"></i
-                    ></a>
-                  </h3>
-                  <p class="mt-2 text-sm text-slate-400">
-                    Online store for car tires, built for our new client from
-                    the Czech Republic.
-                  </p>
-                </article>
-              </li>
-              <li
-                class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]"
-              >
-                <article>
-                  <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
-                  <div class="shot grad-bg shadow-lg shadow-violet/20">
-                    <div class="shot-img bg-panel">
-                      <img
-                        src="images/archimatika4.jpg"
-                        alt="Illustration of a bank teller-window tablet app"
-                        draggable="false"
-                        loading="lazy"
-                        class="h-full w-full object-cover"
-                      />
-                    </div>
-                  </div>
-                  <h3 class="mt-5 text-xl font-bold">Teller Window Display</h3>
-                  <p class="mt-2 text-sm text-slate-400">
-                    Tablet app for bank service desks: cashier info, currency,
-                    metal and coin rates, documents and break timers.
-                  </p>
-                </article>
-              </li>
-              <li
-                class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]"
-              >
-                <article>
-                  <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
-                  <a
-                    href="https://karabas.com"
-                    target="_blank"
-                    rel="noopener"
-                    tabindex="-1"
-                    aria-hidden="true"
-                    class="shot grad-bg shadow-lg shadow-violet/20"
-                  >
-                    <div class="shot-img bg-panel">
-                      <img
-                        src="images/archimatika3.jpg"
-                        alt="Illustration of an event ticket, seat map and calendar"
-                        draggable="false"
-                        loading="lazy"
-                        class="h-full w-full object-cover"
-                      />
-                    </div>
-                  </a>
-                  <h3 class="mt-5 text-xl font-bold">
-                    <a
-                      href="https://karabas.com"
-                      target="_blank"
-                      rel="noopener"
-                      class="inline-flex items-center gap-1 transition hover:text-neon"
-                      >Karabas
-                      <i data-lucide="arrow-up-right" class="h-4 w-4"></i
-                    ></a>
-                  </h3>
-                  <p class="mt-2 text-sm text-slate-400">
-                    Ticketing platform for cultural events. We have supported it
-                    for 3+ years and launched 9 localized versions for European
-                    countries.
-                  </p>
-                </article>
-              </li>
-              <li
-                class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]"
-              >
-                <article>
-                  <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
-                  <a
-                    href="https://automir-pneu.sk/en"
-                    target="_blank"
-                    rel="noopener"
-                    tabindex="-1"
-                    aria-hidden="true"
-                    class="shot grad-bg shadow-lg shadow-violet/20"
-                  >
-                    <div class="shot-img bg-panel">
-                      <img
-                        src="images/archimatika2.jpg"
-                        alt="Illustration of a tire and online store product cards"
-                        draggable="false"
-                        loading="lazy"
-                        class="h-full w-full object-cover"
-                      />
-                    </div>
-                  </a>
-                  <h3 class="mt-5 text-xl font-bold">
-                    <a
-                      href="https://automir-pneu.sk/en"
-                      target="_blank"
-                      rel="noopener"
-                      class="inline-flex items-center gap-1 transition hover:text-neon"
-                      >Automir Pneu
-                      <i data-lucide="arrow-up-right" class="h-4 w-4"></i
-                    ></a>
-                  </h3>
-                  <p class="mt-2 text-sm text-slate-400">
-                    Online store for car tires, built for our new client from
-                    the Czech Republic.
-                  </p>
-                </article>
-              </li>
-              <li
-                class="slide w-[85%] shrink-0 snap-start sm:w-[46%] lg:w-[38%]"
-              >
-                <article>
-                  <!-- Same brand-gradient frame for every card; the image sits down-right (bottom trimmed a little) and grows to fill the 3:2 frame on hover -->
-                  <div class="shot grad-bg shadow-lg shadow-violet/20">
-                    <div class="shot-img bg-panel">
-                      <img
-                        src="images/archimatika.jpg"
-                        alt="Illustration of a bank teller-window tablet app"
-                        draggable="false"
-                        loading="lazy"
-                        class="h-full w-full object-cover"
-                      />
-                    </div>
-                  </div>
-                  <h3 class="mt-5 text-xl font-bold">Teller Window Display</h3>
-                  <p class="mt-2 text-sm text-slate-400">
-                    Tablet app for bank service desks: cashier info, currency,
-                    metal and coin rates, documents and break timers.
-                  </p>
-                </article>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </section>
+  // Theme switcher: saves the choice in localStorage (the pre-paint script in <head> applies it on the next visit).
+  (() => {
+    const root = document.documentElement;
+    const btns = document.querySelectorAll('[data-theme-set]');   // the footer switcher and the one in the burger menu
+    if (!btns.length) return;
+    const meta = document.querySelector('meta[name="theme-color"]');
+    const apply = (t) => {
+      root.dataset.theme = t;
+      if (meta) meta.content = t === 'light' ? '#f8fafc' : '#070a1a';
+      btns.forEach((b) => b.setAttribute('aria-pressed', b.dataset.themeSet === t));
+    };
+    btns.forEach((b) => b.addEventListener('click', () => {
+      const t = b.dataset.themeSet;
+      if (root.dataset.theme === t) return;
+      apply(t);
+      try { localStorage.setItem('theme', t); } catch (e) {}
+    }));
+    window.addEventListener('storage', (e) => { if (e.key === 'theme' && (e.newValue === 'light' || e.newValue === 'dark')) apply(e.newValue); });  // other tabs
+    apply(root.dataset.theme === 'light' ? 'light' : 'dark');
+  })();
 
-      <!-- ============ PROCESS ============ -->
-      <section id="process" class="relative py-24">
-        <div class="mx-auto max-w-7xl px-5">
-          <div class="reveal mx-auto mb-14 max-w-2xl text-center">
-            <h2 class="text-3xl font-extrabold sm:text-4xl">How we work</h2>
-            <p class="mt-4 text-slate-400">
-              Four stages, with a review at the end of each one so there are no
-              surprises.
-            </p>
-          </div>
-          <!-- Horizontal on desktop, vertical on mobile -->
-          <ol class="relative grid gap-10 md:grid-cols-4 md:gap-6">
-            <div
-              class="absolute left-6 top-6 hidden h-px w-[calc(100%-3rem)] bg-gradient-to-r from-blue-500 via-violet to-neon md:block"
-            ></div>
-            <div
-              class="absolute left-6 top-6 h-[calc(100%-3rem)] w-px bg-gradient-to-b from-blue-500 via-violet to-neon md:hidden"
-            ></div>
+  // Fade-in on scroll
+  if (!('IntersectionObserver' in window)) {
+    // very old browser: just show everything
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('show'));
+  } else {
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('show'); io.unobserve(e.target); } });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  }
 
-            <li class="reveal relative pl-20 md:pl-0 md:pt-20">
-              <span
-                class="grad-bg absolute left-0 top-0 grid h-12 w-12 place-items-center rounded-full ring-8 ring-ink"
-                ><i data-lucide="search" class="h-5 w-5 text-white"></i
-              ></span>
-              <h3 class="font-bold">Discovery</h3>
-              <p class="mt-2 text-sm text-slate-400">
-                We learn your goals, users and budget, then agree on scope and
-                timeline.
-              </p>
-            </li>
-            <li class="reveal relative pl-20 md:pl-0 md:pt-20">
-              <span
-                class="grad-bg absolute left-0 top-0 grid h-12 w-12 place-items-center rounded-full ring-8 ring-ink"
-                ><i data-lucide="pen-tool" class="h-5 w-5 text-white"></i
-              ></span>
-              <h3 class="font-bold">Design</h3>
-              <p class="mt-2 text-sm text-slate-400">
-                Wireframes and clickable Figma prototypes you can test before
-                any code is written.
-              </p>
-            </li>
-            <li class="reveal relative pl-20 md:pl-0 md:pt-20">
-              <span
-                class="grad-bg absolute left-0 top-0 grid h-12 w-12 place-items-center rounded-full ring-8 ring-ink"
-                ><i data-lucide="code-2" class="h-5 w-5 text-white"></i
-              ></span>
-              <h3 class="font-bold">Development</h3>
-              <p class="mt-2 text-sm text-slate-400">
-                Two-week sprints with a working demo at the end of each one.
-              </p>
-            </li>
-            <li class="reveal relative pl-20 md:pl-0 md:pt-20">
-              <span
-                class="grad-bg absolute left-0 top-0 grid h-12 w-12 place-items-center rounded-full ring-8 ring-ink"
-                ><i data-lucide="rocket" class="h-5 w-5 text-white"></i
-              ></span>
-              <h3 class="font-bold">QA &amp; Launch</h3>
-              <p class="mt-2 text-sm text-slate-400">
-                Device and browser testing, store submission, and 30 days of
-                free support.
-              </p>
-            </li>
-          </ol>
-        </div>
-      </section>
+  // Projects slider: buttons, mouse drag and keyboard. Touch uses native swipe + scroll-snap. No autoplay.
+  (() => {
+    const track = document.getElementById('track');
+    if (!track) return;
+    const prev = document.getElementById('prevBtn'), next = document.getElementById('nextBtn');
+    const step = () => {
+      const cards = track.querySelectorAll('.slide');
+      // distance from one card's left edge to the next one's, so it includes the spacing
+      return cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : cards[0].getBoundingClientRect().width;
+    };
+    const update = () => {
+      const max = track.scrollWidth - track.clientWidth;
+      prev.disabled = track.scrollLeft <= 2;
+      next.disabled = track.scrollLeft >= max - 2;
+      // hide arrows when every card already fits on screen
+      prev.classList.toggle('hidden', max <= 2);
+      next.classList.toggle('hidden', max <= 2);
+    };
+    prev.addEventListener('click', () => track.scrollBy({ left: -step(), behavior: 'smooth' }));
+    next.addEventListener('click', () => track.scrollBy({ left: step(), behavior: 'smooth' }));
+    track.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    window.addEventListener('load', update);
+    // Tailwind's CDN builds its CSS a moment after this script runs, so re-check whenever the layout changes
+    if ('ResizeObserver' in window) {
+      const ro = new ResizeObserver(update);
+      ro.observe(track);
+      track.querySelectorAll('.slide').forEach((s) => ro.observe(s));
+    }
+    track.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') prev.click();
+      if (e.key === 'ArrowRight') next.click();
+    });
 
-      <!-- ============ CONTACT ============ -->
-      <section id="contact" class="relative overflow-hidden py-24">
-        <div class="blob -right-20 bottom-0 h-96 w-96 bg-blue-600"></div>
-        <div class="relative mx-auto grid max-w-7xl gap-12 px-5 lg:grid-cols-2">
-          <div class="reveal">
-            <h2 class="text-3xl font-extrabold sm:text-4xl">
-              Tell us about your project
-            </h2>
-            <p class="mt-4 max-w-md text-slate-400">
-              Send a few details and we will reply within one business day with
-              questions and a rough estimate.
-            </p>
-            <ul class="mt-8 space-y-4 text-slate-300">
-              <li>
-                <a
-                  href="https://t.me/bitco_studio"
-                  target="_blank"
-                  rel="noopener"
-                  class="flex items-center gap-3 transition hover:text-white"
-                  ><i data-lucide="send" class="h-5 w-5 text-neon"></i>
-                  @bitco_studio</a
-                >
-              </li>
-              <li>
-                <a
-                  href="mailto:hello@webmobilesolutions.example"
-                  class="flex items-center gap-3 transition hover:text-white"
-                  ><i data-lucide="mail" class="h-5 w-5 text-neon"></i>
-                  hello@webmobilesolutions.example</a
-                >
-              </li>
-              <li class="flex items-center gap-3">
-                <i data-lucide="clock" class="h-5 w-5 text-neon"></i> Mon–Fri,
-                9:00–18:00
-              </li>
-            </ul>
-          </div>
-
-          <form
-            id="contactForm"
-            class="reveal glow-card space-y-5 rounded-3xl bg-panel p-8"
-            novalidate
-          >
-            <div>
-              <label for="name" class="mb-2 block text-sm font-medium"
-                >Name</label
-              >
-              <input
-                id="name"
-                name="name"
-                required
-                type="text"
-                autocomplete="name"
-                class="w-full rounded-xl border border-white/10 bg-ink px-4 py-3 outline-none transition focus:border-neon"
-              />
-            </div>
-            <div>
-              <label for="email" class="mb-2 block text-sm font-medium"
-                >Email</label
-              >
-              <input
-                id="email"
-                name="email"
-                required
-                type="email"
-                autocomplete="email"
-                class="w-full rounded-xl border border-white/10 bg-ink px-4 py-3 outline-none transition focus:border-neon"
-              />
-            </div>
-            <div>
-              <label for="type" class="mb-2 block text-sm font-medium"
-                >Project type</label
-              >
-              <select
-                id="type"
-                name="type"
-                class="w-full rounded-xl border border-white/10 bg-ink px-4 py-3 outline-none transition focus:border-neon"
-              >
-                <option>Website or landing page</option>
-                <option>E-commerce store</option>
-                <option>Custom web app</option>
-                <option>Mobile app (Android &amp; iOS)</option>
-                <option>UI/UX design only</option>
-              </select>
-            </div>
-            <div>
-              <label for="message" class="mb-2 block text-sm font-medium"
-                >Message</label
-              >
-              <textarea
-                id="message"
-                name="message"
-                rows="4"
-                required
-                class="w-full rounded-xl border border-white/10 bg-ink px-4 py-3 outline-none transition focus:border-neon"
-              ></textarea>
-            </div>
-            <button
-              type="submit"
-              class="grad-bg w-full rounded-full py-3.5 font-semibold text-white shadow-lg shadow-violet/30 transition hover:scale-[1.02]"
-            >
-              Send message
-            </button>
-            <p
-              id="formStatus"
-              class="min-h-[1.25rem] text-center text-sm"
-              role="status"
-            ></p>
-          </form>
-        </div>
-      </section>
-    </main>
-
-    <!-- ============ FOOTER ============ -->
-    <footer class="border-t border-white/10 py-10">
-      <div
-        class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-5 md:flex-row"
-      >
-        <p class="text-sm text-slate-400">
-          © <span id="year"></span> bitco. All rights reserved.
-        </p>
-        <!-- Below 768px these two blocks sit in one column and are stretched to the same width; from 768px up the wrapper disappears (md:contents) -->
-        <div class="flex flex-col items-stretch gap-6 md:contents">
-          <nav
-            class="flex justify-between gap-6 text-sm text-slate-300 md:justify-start"
-            aria-label="Footer"
-          >
-            <a class="hover:text-white" href="#services">Services</a>
-            <a class="hover:text-white" href="#portfolio">Portfolio</a>
-            <a class="hover:text-white" href="#contact">Contact</a>
-          </nav>
-          <div class="flex items-center justify-between gap-5">
-            <!-- Block 1: theme switcher (its own bordered pill) -->
-            <div
-              role="group"
-              aria-label="Color theme"
-              class="theme-switch inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/5 p-1"
-            >
-              <button
-                type="button"
-                data-theme-set="light"
-                aria-pressed="false"
-                aria-label="Light theme"
-                class="theme-btn grid h-8 w-8 place-items-center rounded-full text-slate-400 transition"
-              >
-                <svg
-                  class="h-4 w-4"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <circle cx="12" cy="12" r="4"></circle>
-                  <path d="M12 2v2"></path>
-                  <path d="M12 20v2"></path>
-                  <path d="m4.93 4.93 1.41 1.41"></path>
-                  <path d="m17.66 17.66 1.41 1.41"></path>
-                  <path d="M2 12h2"></path>
-                  <path d="M20 12h2"></path>
-                  <path d="m6.34 17.66-1.41 1.41"></path>
-                  <path d="m19.07 4.93-1.41 1.41"></path>
-                </svg>
-              </button>
-              <button
-                type="button"
-                data-theme-set="dark"
-                aria-pressed="true"
-                aria-label="Dark theme"
-                class="theme-btn grid h-8 w-8 place-items-center rounded-full text-slate-400 transition"
-              >
-                <svg
-                  class="h-4 w-4"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-                </svg>
-              </button>
-            </div>
-            <span class="h-6 w-px bg-white/15" aria-hidden="true"></span>
-            <!-- Block 2: social links -->
-            <div class="flex items-center gap-2">
-              <a
-                href="https://t.me/bitco_studio"
-                target="_blank"
-                rel="noopener"
-                aria-label="Telegram"
-                class="soc-btn relative grid place-items-center rounded-full border border-white/15 text-slate-400 transition h-[42px] w-[42px]"
-                ><i data-lucide="send" class="h-5 w-5"></i
-              ></a>
-              <a
-                href="#"
-                aria-label="LinkedIn"
-                class="soc-btn relative grid place-items-center rounded-full border border-white/15 text-slate-400 transition h-[42px] w-[42px]"
-                ><i data-lucide="linkedin" class="h-5 w-5"></i
-              ></a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </footer>
-
-    <script>
-      // Render Lucide icons
-      if (window.lucide) lucide.createIcons();
-
-      // Footer year
-      document.getElementById("year").textContent = new Date().getFullYear();
-
-      // Mobile menu toggle (closes after choosing a link)
-      const btn = document.getElementById("menuBtn"),
-        menu = document.getElementById("mobileMenu");
-      const setMenu = (open) => {
-        menu.classList.toggle("hidden", !open);
-        btn.setAttribute("aria-expanded", open); // the CSS animates the burger into a cross from this attribute
-        btn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
-      };
-      btn.addEventListener("click", () =>
-        setMenu(menu.classList.contains("hidden")),
-      );
-      menu
-        .querySelectorAll("a")
-        .forEach((a) => a.addEventListener("click", () => setMenu(false)));
-
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && !menu.classList.contains("hidden"))
-          setMenu(false);
-      });
-      // tapping the page beside the open menu closes it
-      document.addEventListener("click", (e) => {
-        if (
-          !menu.classList.contains("hidden") &&
-          !menu.contains(e.target) &&
-          !btn.contains(e.target)
-        )
-          setMenu(false);
-      });
-
-      // Language switcher: shows the current language; the dropdown offers only the other one.
-      // The button changes immediately on click; the dropdown content changes only after the dropdown has finished closing,
-      // so you never see it flip to the other language while it fades out.
-      (() => {
-        const LANGS = {
-          en: { code: "EN", name: "English" },
-          ua: { code: "UA", name: "Українська" },
-        };
-        const CLOSE_MS = 250; // a little longer than the .2s CSS fade of .lang-menu
-        const wrap = document.getElementById("lang"),
-          btn = document.getElementById("langBtn"),
-          menu = document.getElementById("langMenu");
-        const item = document.getElementById("langItem");
-        if (!wrap) return;
-        let current = "en",
-          pending = null;
-        try {
-          const s = localStorage.getItem("lang");
-          if (LANGS[s]) current = s;
-        } catch (e) {}
-        const other = () => (current === "en" ? "ua" : "en");
-
-        const renderButton = () => {
-          document
-            .querySelectorAll("#langCode [data-code]")
-            .forEach((s) =>
-              s.classList.toggle("is-off", s.dataset.code !== current),
-            );
-          btn.setAttribute(
-            "aria-label",
-            "Language: " + LANGS[current].name + ". Change language",
-          );
-          document.documentElement.dataset.lang = current;
-        };
-        const renderMenu = () => {
-          const o = other();
-          item.dataset.lang = o;
-          document.getElementById("langItemCode").textContent = LANGS[o].code;
-          document
-            .getElementById("flagUa")
-            .classList.toggle("hidden", o !== "ua");
-          document
-            .getElementById("flagEn")
-            .classList.toggle("hidden", o !== "en");
-          item.setAttribute("aria-label", "Switch to " + LANGS[o].name);
-        };
-        const flushMenu = () => {
-          if (pending) {
-            clearTimeout(pending);
-            pending = null;
-            renderMenu();
-          }
-        };
-        const setOpen = (open) => {
-          if (open) flushMenu(); // reopened quickly: make sure the dropdown already shows the right language
-          menu.classList.toggle("open", open);
-          btn.setAttribute("aria-expanded", open);
-        };
-
-        btn.addEventListener("click", () =>
-          setOpen(!menu.classList.contains("open")),
-        );
-        item.addEventListener("click", () => {
-          if (pending) return; // the dropdown is still closing
-          current = item.dataset.lang;
-          try {
-            localStorage.setItem("lang", current);
-          } catch (e) {}
-          renderButton(); // button: right away
-          setOpen(false);
-          btn.focus();
-          pending = setTimeout(() => {
-            pending = null;
-            renderMenu();
-          }, CLOSE_MS); // dropdown: after it has closed
-          document.dispatchEvent(
-            new CustomEvent("languagechange", { detail: { lang: current } }),
-          );
-        });
-        document.addEventListener("click", (e) => {
-          if (!wrap.contains(e.target)) setOpen(false);
-        }); // click outside
-        document.addEventListener("keydown", (e) => {
-          if (e.key === "Escape" && menu.classList.contains("open")) {
-            setOpen(false);
-            btn.focus();
-          }
-        });
-        renderButton();
-        renderMenu();
-      })();
-
-      // Theme switcher: saves the choice in localStorage (the pre-paint script in <head> applies it on the next visit).
-      (() => {
-        const root = document.documentElement;
-        const btns = document.querySelectorAll("[data-theme-set]"); // the footer switcher and the one in the burger menu
-        if (!btns.length) return;
-        const meta = document.querySelector('meta[name="theme-color"]');
-        const apply = (t) => {
-          root.dataset.theme = t;
-          if (meta) meta.content = t === "light" ? "#f8fafc" : "#070a1a";
-          btns.forEach((b) =>
-            b.setAttribute("aria-pressed", b.dataset.themeSet === t),
-          );
-        };
-        btns.forEach((b) =>
-          b.addEventListener("click", () => {
-            const t = b.dataset.themeSet;
-            if (root.dataset.theme === t) return;
-            apply(t);
-            try {
-              localStorage.setItem("theme", t);
-            } catch (e) {}
-          }),
-        );
-        window.addEventListener("storage", (e) => {
-          if (
-            e.key === "theme" &&
-            (e.newValue === "light" || e.newValue === "dark")
-          )
-            apply(e.newValue);
-        }); // other tabs
-        apply(root.dataset.theme === "light" ? "light" : "dark");
-      })();
-
-      // Fade-in on scroll
-      if (!("IntersectionObserver" in window)) {
-        // very old browser: just show everything
-        document
-          .querySelectorAll(".reveal")
-          .forEach((el) => el.classList.add("show"));
-      } else {
-        const io = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((e) => {
-              if (e.isIntersecting) {
-                e.target.classList.add("show");
-                io.unobserve(e.target);
-              }
-            });
-          },
-          { threshold: 0.15 },
-        );
-        document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+    // Drag with the mouse (touch screens scroll natively)
+    let down = false, startX = 0, startLeft = 0, moved = 0;
+    track.addEventListener('pointerdown', (e) => {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      down = true; moved = 0; startX = e.clientX; startLeft = track.scrollLeft;
+      track.classList.add('dragging');
+    });
+    window.addEventListener('pointermove', (e) => {
+      if (!down) return;
+      const dx = e.clientX - startX;
+      moved = Math.max(moved, Math.abs(dx));
+      track.scrollLeft = startLeft - dx;
+    });
+    const endDrag = () => {
+      if (!down) return;
+      down = false;
+      track.classList.remove('dragging');
+      // settle on the nearest card position (the last positions are clamped to the end of the track)
+      const s = step(), max = track.scrollWidth - track.clientWidth;
+      let target = 0, best = Infinity;
+      for (let i = 0; i < track.children.length; i++) {
+        const t = Math.min(i * s, max), d = Math.abs(t - track.scrollLeft);
+        if (d < best) { best = d; target = t; }
       }
+      track.scrollTo({ left: target, behavior: 'smooth' });
+    };
+    window.addEventListener('pointerup', endDrag);
+    window.addEventListener('pointercancel', endDrag);
+    track.addEventListener('dragstart', (e) => e.preventDefault());
+    // a drag must not count as a click on a project link
+    track.addEventListener('click', (e) => { if (moved > 5) { e.preventDefault(); e.stopPropagation(); moved = 0; } }, true);
+    update();
+  })();
 
-      // Projects slider: buttons, mouse drag and keyboard. Touch uses native swipe + scroll-snap. No autoplay.
-      (() => {
-        const track = document.getElementById("track");
-        if (!track) return;
-        const prev = document.getElementById("prevBtn"),
-          next = document.getElementById("nextBtn");
-        const step = () => {
-          const cards = track.querySelectorAll(".slide");
-          // distance from one card's left edge to the next one's, so it includes the spacing
-          return cards.length > 1
-            ? cards[1].offsetLeft - cards[0].offsetLeft
-            : cards[0].getBoundingClientRect().width;
-        };
-        const update = () => {
-          const max = track.scrollWidth - track.clientWidth;
-          prev.disabled = track.scrollLeft <= 2;
-          next.disabled = track.scrollLeft >= max - 2;
-          // hide arrows when every card already fits on screen
-          prev.classList.toggle("hidden", max <= 2);
-          next.classList.toggle("hidden", max <= 2);
-        };
-        prev.addEventListener("click", () =>
-          track.scrollBy({ left: -step(), behavior: "smooth" }),
-        );
-        next.addEventListener("click", () =>
-          track.scrollBy({ left: step(), behavior: "smooth" }),
-        );
-        track.addEventListener("scroll", update, { passive: true });
-        window.addEventListener("resize", update);
-        window.addEventListener("load", update);
-        // Tailwind's CDN builds its CSS a moment after this script runs, so re-check whenever the layout changes
-        if ("ResizeObserver" in window) {
-          const ro = new ResizeObserver(update);
-          ro.observe(track);
-          track.querySelectorAll(".slide").forEach((s) => ro.observe(s));
-        }
-        track.addEventListener("keydown", (e) => {
-          if (e.key === "ArrowLeft") prev.click();
-          if (e.key === "ArrowRight") next.click();
-        });
-
-        // Drag with the mouse (touch screens scroll natively)
-        let down = false,
-          startX = 0,
-          startLeft = 0,
-          moved = 0;
-        track.addEventListener("pointerdown", (e) => {
-          if (e.pointerType !== "mouse" || e.button !== 0) return;
-          down = true;
-          moved = 0;
-          startX = e.clientX;
-          startLeft = track.scrollLeft;
-          track.classList.add("dragging");
-        });
-        window.addEventListener("pointermove", (e) => {
-          if (!down) return;
-          const dx = e.clientX - startX;
-          moved = Math.max(moved, Math.abs(dx));
-          track.scrollLeft = startLeft - dx;
-        });
-        const endDrag = () => {
-          if (!down) return;
-          down = false;
-          track.classList.remove("dragging");
-          // settle on the nearest card position (the last positions are clamped to the end of the track)
-          const s = step(),
-            max = track.scrollWidth - track.clientWidth;
-          let target = 0,
-            best = Infinity;
-          for (let i = 0; i < track.children.length; i++) {
-            const t = Math.min(i * s, max),
-              d = Math.abs(t - track.scrollLeft);
-            if (d < best) {
-              best = d;
-              target = t;
-            }
-          }
-          track.scrollTo({ left: target, behavior: "smooth" });
-        };
-        window.addEventListener("pointerup", endDrag);
-        window.addEventListener("pointercancel", endDrag);
-        track.addEventListener("dragstart", (e) => e.preventDefault());
-        // a drag must not count as a click on a project link
-        track.addEventListener(
-          "click",
-          (e) => {
-            if (moved > 5) {
-              e.preventDefault();
-              e.stopPropagation();
-              moved = 0;
-            }
-          },
-          true,
-        );
-        update();
-      })();
-
-      // Contact form: front-end validation only. Replace the body of this handler
-      // with a fetch() to your backend or a service like Formspree.
-      document.getElementById("contactForm").addEventListener("submit", (e) => {
-        e.preventDefault();
-        const form = e.target,
-          status = document.getElementById("formStatus");
-        const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.value);
-        if (!form.name.value.trim() || !emailOk || !form.message.value.trim()) {
-          status.textContent =
-            "Please enter your name, a valid email and a message.";
-          status.className = "min-h-[1.25rem] text-center text-sm text-red-400";
-          return;
-        }
-        status.textContent =
-          "Message sent. We will reply within one business day.";
-        status.className =
-          "min-h-[1.25rem] text-center text-sm text-emerald-400";
-        form.reset();
-      });
-    </script>
-  </body>
+  // Contact form: front-end validation only. Replace the body of this handler
+  // with a fetch() to your backend or a service like Formspree.
+  document.getElementById('contactForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const form = e.target, status = document.getElementById('formStatus');
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.value);
+    if (!form.name.value.trim() || !emailOk || !form.message.value.trim()) {
+      status.textContent = 'Please enter your name, a valid email and a message.';
+      status.className = 'min-h-[1.25rem] text-center text-sm text-red-400';
+      return;
+    }
+    status.textContent = 'Message sent. We will reply within one business day.';
+    status.className = 'min-h-[1.25rem] text-center text-sm text-emerald-400';
+    form.reset();
+  });
+</script>
+</body>
 </html>
