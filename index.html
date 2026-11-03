@@ -165,6 +165,11 @@
   html[data-theme="light"] #menuBackdrop { background:rgba(248,250,252,.35); }
   #menuBackdrop.open { opacity:1; visibility:visible; }
   @media (min-width:768px) { #menuBackdrop { display:none; } }
+  /* Telegram / LinkedIn icons: one colour in both themes; neon on hover, but only for a real mouse (no sticky hover after a tap) */
+  .soc-link { color:#7278f4; transition:color .2s ease; }
+  @media (hover:hover) and (pointer:fine) { .soc-link:hover { color:rgb(var(--neon)); } }
+  /* contact form: neon focus highlight in the light theme too (the generic light border rule is more specific than Tailwind's focus:border-neon) */
+  html[data-theme="light"] .focus\:border-neon:focus { border-color:rgb(var(--neon)); box-shadow:0 0 0 3px rgb(var(--neon) / .18); }
   /* Language switcher: dropdown fade/slide and rotating chevron */
   .lang-menu { opacity:0; visibility:hidden; transform:translateY(-6px); transition:opacity .2s ease, transform .2s ease, visibility .2s; }
   .lang-menu.open { opacity:1; visibility:visible; transform:none; }
@@ -260,8 +265,8 @@
       </div>
       <span class="h-6 w-px bg-white/15" aria-hidden="true"></span>
       <div class="flex items-center gap-4">
-        <a href="https://t.me/bitco_studio" target="_blank" rel="noopener" aria-label="Telegram" class="text-slate-400 hover:text-neon"><i data-lucide="send" class="h-5 w-5"></i></a>
-        <a href="#" aria-label="LinkedIn" class="text-slate-400 hover:text-neon"><i data-lucide="linkedin" class="h-5 w-5"></i></a>
+        <a href="https://t.me/bitco_studio" target="_blank" rel="noopener" aria-label="Telegram" class="soc-link"><i data-lucide="send" class="h-5 w-5"></i></a>
+        <a href="#" aria-label="LinkedIn" class="soc-link"><i data-lucide="linkedin" class="h-5 w-5"></i></a>
       </div>
     </div>
   </div>
@@ -667,7 +672,7 @@
     <!-- Horizontal on desktop, vertical on mobile -->
     <ol class="relative grid gap-10 md:grid-cols-4 md:gap-6">
       <div class="absolute left-6 top-6 hidden h-px w-[calc(100%-3rem)] bg-gradient-to-r from-blue-500 via-violet to-neon md:block"></div>
-      <div class="absolute left-6 top-6 h-[calc(100%-3rem)] w-px bg-gradient-to-b from-blue-500 via-violet to-neon md:hidden"></div>
+      <div class="absolute bottom-0 left-6 top-6 w-px bg-gradient-to-b from-blue-500 via-violet to-neon md:hidden"></div>
 
       <li class="reveal relative pl-20 md:pl-0 md:pt-20">
         <span class="grad-bg absolute left-0 top-0 grid h-12 w-12 place-items-center rounded-full ring-8 ring-ink"><i data-lucide="search" class="h-5 w-5 text-white"></i></span>
@@ -766,8 +771,8 @@
         <span class="h-6 w-px bg-white/15" aria-hidden="true"></span>
         <!-- Block 2: social links -->
         <div class="flex items-center gap-4">
-          <a href="https://t.me/bitco_studio" target="_blank" rel="noopener" aria-label="Telegram" class="text-slate-400 hover:text-neon"><i data-lucide="send" class="h-5 w-5"></i></a>
-          <a href="#" aria-label="LinkedIn" class="text-slate-400 hover:text-neon"><i data-lucide="linkedin" class="h-5 w-5"></i></a>
+          <a href="https://t.me/bitco_studio" target="_blank" rel="noopener" aria-label="Telegram" class="soc-link"><i data-lucide="send" class="h-5 w-5"></i></a>
+          <a href="#" aria-label="LinkedIn" class="soc-link"><i data-lucide="linkedin" class="h-5 w-5"></i></a>
         </div>
       </div>
     </div>
