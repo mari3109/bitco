@@ -75,7 +75,7 @@
     transition:width .5s cubic-bezier(.2,.7,.2,1), height .5s cubic-bezier(.2,.7,.2,1), border-radius .5s cubic-bezier(.2,.7,.2,1); }
   .shot-img img { object-position:50% 0; }  /* keep the top, trim the bottom */
   /* .is-expanded is set from JS only for a real mouse pointer (taps never set it); .is-focused only for keyboard focus */
-  .slide.is-expanded .shot-img, .slide.is-focused .shot-img { width:100%; height:100%; border-top-left-radius:0; }
+  .slide.is-expanded .shot-img, .slide.is-focused .shot-img { width:100%; height:100%; border-top-left-radius:1.5rem; }   /* 1.5rem = radius of .shot */
   /* no slider arrows on phones (swipe instead) */
   @media (max-width:479px) { #prevBtn, #nextBtn { display:none; } }
   .slide + .slide { margin-left:1.5rem; }  /* spacing between cards (margin works everywhere, unlike flex gap in old Safari) */
@@ -170,6 +170,11 @@
   @media (hover:hover) and (pointer:fine) { .soc-link:hover { color:rgb(var(--neon)); } }
   /* contact form: neon focus highlight in the light theme too (the generic light border rule is more specific than Tailwind's focus:border-neon) */
   html[data-theme="light"] .focus\:border-neon:focus { border-color:rgb(var(--neon)); box-shadow:0 0 0 3px rgb(var(--neon) / .18); }
+  /* desktop menu: underline grows from the centre under the hovered / keyboard-focused item (mouse only, no sticky hover on touch) */
+  .nav-link::after { content:""; position:absolute; left:0; right:0; bottom:-6px; height:2px; border-radius:2px;
+    background:linear-gradient(90deg,var(--g1),var(--g2),var(--g3)); transform:scaleX(0); transition:transform .3s ease; }
+  .nav-link:focus-visible::after { transform:scaleX(1); }
+  @media (hover:hover) and (pointer:fine) { .nav-link:hover::after { transform:scaleX(1); } }
   /* Language switcher: dropdown fade/slide and rotating chevron */
   .lang-menu { opacity:0; visibility:hidden; transform:translateY(-6px); transition:opacity .2s ease, transform .2s ease, visibility .2s; }
   .lang-menu.open { opacity:1; visibility:visible; transform:none; }
@@ -191,7 +196,7 @@
   #track img { -webkit-user-drag:none; user-select:none; }
   /* Visible keyboard focus */
   :focus-visible { outline:2px solid #22d3ee; outline-offset:3px; }
-  @media (prefers-reduced-motion:reduce){ .shot-img{transition:none} .lang-menu,.lang-chevron,.burger span,#menuBackdrop{transition:none}  .float,.float-slow{animation:none} .reveal{opacity:1;transform:none;transition:none} html{scroll-behavior:auto} }
+  @media (prefers-reduced-motion:reduce){ .shot-img{transition:none} .lang-menu,.lang-chevron,.burger span,#menuBackdrop,.nav-link::after{transition:none}  .float,.float-slow{animation:none} .reveal{opacity:1;transform:none;transition:none} html{scroll-behavior:auto} }
   section[id] { scroll-margin-top:80px; }
 </style>
 </head>
@@ -206,11 +211,11 @@
   <nav class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-5 py-4" aria-label="Main">
     <a href="#home" aria-label="bitco, home"><img src="logo-bitco.svg" alt="bitco production" class="logo-dark h-10 w-auto md:h-11"><img src="logo-bitco-light.svg" alt="bitco production" class="logo-light h-10 w-auto md:h-11"></a>
     <ul class="hidden md:flex items-center md:gap-4 min-[851px]:gap-8 text-sm font-medium text-slate-300">
-      <li><a class="hover:text-white transition" href="#home">Home</a></li>
-      <li><a class="hover:text-white transition" href="#services">Services</a></li>
-      <li><a class="hover:text-white transition" href="#portfolio">Portfolio</a></li>
-      <li><a class="hover:text-white transition" href="#process">Process</a></li>
-      <li><a class="hover:text-white transition" href="#contact">Contact</a></li>
+      <li><a class="nav-link relative hover:text-white transition" href="#home">Home</a></li>
+      <li><a class="nav-link relative hover:text-white transition" href="#services">Services</a></li>
+      <li><a class="nav-link relative hover:text-white transition" href="#portfolio">Portfolio</a></li>
+      <li><a class="nav-link relative hover:text-white transition" href="#process">Process</a></li>
+      <li><a class="nav-link relative hover:text-white transition" href="#contact">Contact</a></li>
     </ul>
     <!-- Right side: language switcher, then the CTA (desktop) or the burger (mobile) -->
     <div class="flex items-center gap-2 md:gap-3 min-[851px]:gap-4">
@@ -706,8 +711,8 @@
       <h2 class="text-3xl font-extrabold sm:text-4xl">Tell us about your project</h2>
       <p class="mt-4 max-w-md text-slate-400">Send a few details and we will reply within one business day with questions and a rough estimate.</p>
       <ul class="mt-8 space-y-4 text-slate-300">
-        <li><a href="https://t.me/bitco_studio" target="_blank" rel="noopener" class="flex items-center gap-3 transition hover:text-white"><i data-lucide="send" class="h-5 w-5 text-neon"></i> @bitco_studio</a></li>
-        <li><a href="mailto:hello@webmobilesolutions.example" class="flex items-center gap-3 transition hover:text-white"><i data-lucide="mail" class="h-5 w-5 text-neon"></i> hello@webmobilesolutions.example</a></li>
+        <li><a href="https://t.me/bitco_studio" target="_blank" rel="noopener" class="inline-flex items-center gap-3 transition hover:text-white"><i data-lucide="send" class="h-5 w-5 text-neon"></i> @bitco_studio</a></li>
+        <li><a href="mailto:hello@webmobilesolutions.example" class="inline-flex items-center gap-3 transition hover:text-white"><i data-lucide="mail" class="h-5 w-5 text-neon"></i> hello@webmobilesolutions.example</a></li>
         <li class="flex items-center gap-3"><i data-lucide="clock" class="h-5 w-5 text-neon"></i> Mon–Fri, 9:00–18:00</li>
       </ul>
     </div>
